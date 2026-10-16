@@ -16,7 +16,7 @@
   --sans:'Avenir Next','Avenir','Segoe UI','Helvetica Neue','Helvetica',Arial,sans-serif;
   --fs:1;
   --sky1:#07061a; --sky2:#1d0e33; --stars:1; --sun:0;
-  --pscale:min(1.75vh, 2.6vw);
+  --ph:min(94vh,140vw);
 }
 *{box-sizing:border-box;}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden;
@@ -57,17 +57,18 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 #menu{background:#07040b;overflow:hidden;}
 #menu .menu-bg{position:absolute;inset:0;}
 #menu .menu-bg .sign,#menu .menu-bg .facade::before{display:none;}
-#menu .menu-portraits{position:absolute;left:0;right:0;bottom:-16vh;display:flex;justify-content:center;align-items:flex-end;gap:0;opacity:.26;
-  filter:saturate(.9) blur(.6px);pointer-events:none;--pscale:min(1.6vh,2.2vw);}
-#menu .menu-portraits .portrait{margin:0 -3em;}
-#menu .menu-portraits .portrait:nth-child(2){transform:translateY(-3vh) scale(1.08);z-index:2;}
+#menu .menu-portraits{position:absolute;left:0;right:0;bottom:-10vh;display:flex;justify-content:center;align-items:flex-end;gap:0;opacity:.42;
+  pointer-events:none;--ph:min(82vh,64vw);}
+#menu .menu-portraits .portrait{margin:0 -9vh;}
+#menu .menu-portraits .portrait:nth-child(2){transform:translateY(-2vh) scale(1.06);z-index:2;}
 #menu .menu-portraits::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,#07040b 92%);}
 .menu-inner{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4vh 16px;text-align:center;}
 .logo{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(3rem,10vw,7.5rem);line-height:.95;margin:0;color:#fff4fa;
   animation:flicker 7s infinite;letter-spacing:.02em;}
 .logo small{display:block;font-style:normal;font-family:var(--sans);font-size:.14em;letter-spacing:.7em;color:var(--gold);margin-top:1.1em;text-shadow:none;animation:none;}
 .tagline{color:var(--muted);font-family:var(--serif);font-style:italic;font-size:calc(1.05rem * var(--fs));margin:1.4em 0 2em;max-width:34em;}
-.menu-buttons{display:flex;flex-direction:column;gap:.7em;width:min(320px,90vw);}
+.menu-buttons{display:flex;flex-direction:column;gap:.7em;width:min(360px,92vw);padding:18px;border-radius:26px;background:rgba(10,5,15,.62);
+  border:1px solid rgba(255,255,255,.07);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 30px 60px rgba(0,0,0,.5);}
 .menu-buttons .btn{width:100%;}
 .menu-note{margin-top:2em;font-size:.75rem;color:rgba(255,255,255,.45);max-width:36em;line-height:1.5;}
 .btn .sub{font-size:.75em;color:var(--muted);}
@@ -262,7 +263,7 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 /* ================= PERSONAGEM EM CENA ================= */
 #charLayer{position:absolute;left:0;right:0;bottom:0;top:0;z-index:5;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;
   transition:transform .6s ease;}
-#charLayer .portrait{margin-bottom:-2vh;transition:opacity .5s ease,transform .5s ease;}
+#charLayer .portrait{margin-bottom:-3vh;transition:opacity .5s ease,transform .5s ease;}
 #charLayer .portrait.leaving{opacity:0;transform:translateY(20px);}
 #charLayer .portrait.entering{animation:rise .6s ease both;}
 #game.mode-hub #charLayer{transform:translateX(18vw);}
@@ -286,7 +287,7 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 .action .meta{font-size:.72rem;color:var(--muted);white-space:nowrap;}
 .action .why{display:block;font-size:.74rem;color:var(--muted);margin-top:.2em;}
 .action.special{border-color:rgba(217,181,108,.55);background:linear-gradient(90deg,rgba(217,181,108,.14),rgba(255,79,147,.06));}
-.action.special .label::before{content:'✦ ';color:var(--gold-2);}
+.action.special .label::before{content:'';display:inline-block;width:7px;height:7px;margin:0 .55em .12em 0;background:var(--gold-2);transform:rotate(45deg);box-shadow:0 0 8px var(--gold);}
 .map{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
 .map .action{flex-direction:column;align-items:flex-start;gap:2px;padding:.65em .8em;}
 .map .action.here{border-color:rgba(68,230,216,.55);background:rgba(68,230,216,.07);}
@@ -351,15 +352,15 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 .seg button.on{background:linear-gradient(135deg,rgba(255,79,147,.45),rgba(155,107,255,.4));color:#fff;}
 .rel-card{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);}
 .rel-card .mini{position:relative;width:110px;height:130px;overflow:hidden;border-radius:12px;background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.07),transparent 70%);}
-.rel-card .mini .portrait{position:absolute;left:50%;top:-2px;margin-left:-60px;--pscale:5px;}
+.rel-card .mini .portrait{position:absolute;inset:0;width:100%;height:100%;filter:none;}
 .rel-card h4{margin:0;font-family:var(--serif);font-size:1.3rem;font-weight:400;}
 .rel-card .role{font-size:.78rem;color:var(--muted);}
 .bar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:.5em 0 .2em;}
 .bar > i{display:block;height:100%;border-radius:999px;transition:width .6s ease;}
 .rel-meta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);}
-.chap-dots{display:flex;gap:4px;margin:.4em 0;}
-.chap-dots i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.3);}
-.chap-dots i.on{border-color:transparent;}
+.chap-dots{display:flex;gap:4px;margin:.5em 0;align-items:center;}
+.chap-dots i{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.14);}
+.chap-dots span{font-size:.72rem;color:var(--muted);margin-left:.5em;}
 .rel-card .bio{font-size:.84rem;line-height:1.5;color:#d8c8d8;margin:.4em 0 0;}
 .rel-card .likes{font-size:.78rem;color:var(--muted);margin-top:.4em;}
 .rel-card .invite{font-size:.8rem;color:var(--gold-2);margin-top:.4em;}
@@ -393,8 +394,8 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
 
 /* ================= RESPONSIVO ================= */
 @media (max-width:760px){
-  :root{--pscale:min(1.45vh,3.6vw);}
-  #game.mode-hub #charLayer{transform:translateY(-43vh) scale(.62);transform-origin:50% 100%;}
+  :root{--ph:min(80vh,170vw);}
+  #game.mode-hub #charLayer{transform:translateY(-33vh) scale(.6);transform-origin:50% 100%;}
   #hub{top:auto;left:8px;right:8px;width:auto;bottom:8px;max-height:50vh;}
   #dialogue{padding:26px 18px 18px;min-height:150px;}
   #dialogue .text{font-size:calc(1rem * var(--fs));}
@@ -402,277 +403,38 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
   #choices{padding:70px 12px 180px;}
   .clock .d{display:none;}
   .rel-card{grid-template-columns:1fr;}
-  .rel-card .mini{width:100%;}
-  .rel-card .mini .portrait{left:50%;}
+  .rel-card .mini{width:100%;height:190px;}
   #hud{padding-left:10px;padding-right:10px;}
   .icon-btn .lbl{display:none;}
 }
 @media (max-height:520px) and (orientation:landscape){
-  :root{--pscale:2.2vh;}
+  :root{--ph:96vh;}
   #dialogue{min-height:120px;padding:22px 18px 14px;}
   #hub{top:60px;}
 }
-/* ================= RETRATOS EM CSS ================= */
-.portrait{
-  --lid:16%; --iris-y:0em; --iris-x:0em; --blush:0;
-  --bl-r:-2deg; --br-r:2deg; --bl-y:0em; --br-y:0em;
-  position:relative; width:24em; height:36em; flex:none;
-  font-size:var(--pscale,14px);
-  filter: drop-shadow(0 0 1.4em var(--aura));
-}
-.portrait > div{position:absolute;}
-.portrait.breathe{animation:breathe 5s ease-in-out infinite;}
-.p-aura{left:50%;top:6em;width:22em;height:26em;margin-left:-11em;border-radius:50%;
-  background:radial-gradient(ellipse at 50% 45%, var(--aura) 0%, transparent 65%);opacity:.55;}
 
-/* Cabelo de trás */
-.p-hairback{left:50%;}
-.p-hairback i{position:absolute;display:block;}
-
-/* Corpo */
-.p-body{left:50%;top:16.7em;width:19.6em;height:18.8em;margin-left:-9.8em;
-  border-radius:50% 50% 8% 8% / 32% 32% 0 0;background:var(--cloth);overflow:hidden;
-  -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%);}
-.p-body::after{content:'';position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 18%,transparent 82%,rgba(0,0,0,.35));}
-.p-chest{position:absolute;left:50%;top:-.2em;width:7em;height:6em;margin-left:-3.5em;
-  background:linear-gradient(180deg,var(--skin-d) 0%,var(--skin) 35%,var(--skin-l) 100%);}
-.p-cloth{position:absolute;inset:0;}
-.p-neck{left:50%;top:13.4em;width:3.5em;height:5.6em;margin-left:-1.75em;
-  background:linear-gradient(180deg,var(--skin-d) 0%,var(--skin-d) 22%,var(--skin) 55%,var(--skin) 100%);
-  border-radius:0 0 1.2em 1.2em;}
-.p-front{left:0;top:0;width:100%;height:100%;pointer-events:none;}
-.p-front > div{position:absolute;}
-
-/* Cabeça */
-.p-headwrap{left:50%;top:3.6em;width:8.4em;height:10.8em;margin-left:-4.2em;}
-.p-headwrap > div{position:absolute;}
-.p-skin{inset:0;border-radius:50% 50% 46% 46% / 42% 42% 58% 58%;
-  background:
-    radial-gradient(ellipse at 50% 108%, var(--skin-d) 0%, transparent 38%),
-    radial-gradient(ellipse at 50% 38%, var(--skin-l) 0%, var(--skin) 55%, var(--skin-d) 100%);
-  box-shadow: inset -.5em -.3em 1em rgba(0,0,0,.18), inset .3em 0 .8em rgba(255,255,255,.05);}
-.p-ear{top:4.5em;width:1.15em;height:2.1em;border-radius:50%;
-  background:radial-gradient(ellipse at 60% 50%, var(--skin-d), var(--skin) 70%);}
-.p-ear.l{left:-.45em;} .p-ear.r{right:-.45em;}
-.p-blush{top:6.5em;width:2.3em;height:1.1em;border-radius:50%;
-  background:radial-gradient(ellipse, rgba(255,70,110,.55), transparent 70%);opacity:var(--blush);transition:opacity .4s;}
-.p-blush.l{left:.7em;} .p-blush.r{right:.7em;}
-
-/* Sobrancelhas */
-.p-brow{top:3.85em;width:2em;height:.62em;border-top:.24em solid var(--brow);
-  border-radius:50% 50% 0 0 / 100% 100% 0 0;transition:transform .35s ease;}
-.p-brow.l{left:1.15em;transform:translateY(var(--bl-y)) rotate(var(--bl-r));}
-.p-brow.r{right:1.15em;transform:translateY(var(--br-y)) rotate(var(--br-r));}
-
-/* Olhos */
-.p-eye{top:4.75em;width:1.8em;height:.9em;}
-.p-eye.l{left:1.25em;} .p-eye.r{right:1.25em;}
-.p-ball{position:absolute;inset:0;overflow:hidden;background:#fbf4f1;
-  border-top:.17em solid var(--lash);
-  border-radius:60% 60% 50% 50% / 90% 90% 45% 45%;
-  box-shadow:inset 0 .14em .1em rgba(0,0,0,.18);transition:opacity .25s;}
-.p-iris{position:absolute;width:.98em;height:.98em;border-radius:50%;left:50%;
-  top:50%;margin:-.56em 0 0 -.49em;
-  transform:translate(var(--iris-x),var(--iris-y));transition:transform .35s ease;
-  background:radial-gradient(circle at 50% 50%, #0a0508 0 24%, var(--iris) 30%, var(--iris-d) 78%, #120a08 100%);}
-.p-iris::after{content:'';position:absolute;width:.24em;height:.24em;border-radius:50%;background:#fff;top:.16em;right:.2em;opacity:.9;}
-.p-eye.r .p-iris{background:radial-gradient(circle at 50% 50%, #0a0508 0 24%, var(--iris-r,var(--iris)) 30%, var(--iris-rd,var(--iris-d)) 78%, #120a08 100%);}
-.p-lid{position:absolute;left:0;right:0;top:0;height:var(--lid);
-  background:linear-gradient(180deg,var(--skin-d),var(--skin));
-  border-bottom:.08em solid rgba(40,10,20,.45);transition:height .3s ease;}
-.portrait.blink .p-lid{animation:blink 6s infinite;}
-.p-eye::after{content:'';position:absolute;top:-.12em;right:-.3em;width:.55em;height:.2em;
-  background:var(--lash);border-radius:0 100% 0 100%;transform:rotate(-24deg);}
-.p-eye.l::after{right:auto;left:-.3em;transform:scaleX(-1) rotate(-24deg);}
-.p-eye::before{content:'';position:absolute;display:none;left:.12em;right:.12em;top:.15em;height:.6em;
-  border-top:.2em solid var(--lash);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
-.mood-laugh .p-ball{opacity:0;}
-.mood-laugh .p-eye::before{display:block;}
-
-/* Nariz */
-.p-nose{left:50%;top:5.7em;width:.8em;height:1.7em;margin-left:-.4em;
-  background:linear-gradient(90deg, transparent 35%, rgba(70,25,15,.16) 62%, transparent 85%);
-  border-radius:0 0 50% 50%;}
-.p-nose::after{content:'';position:absolute;left:50%;bottom:-.05em;width:1em;height:.42em;margin-left:-.5em;
-  border-radius:50%;box-shadow:inset 0 -.12em .12em rgba(70,25,15,.28);}
-
-/* Boca */
-.p-mouth{left:50%;top:8.05em;width:2.2em;height:.62em;margin-left:-1.1em;
-  background:linear-gradient(180deg, var(--lip) 0 46%, var(--lip-d) 46% 54%, var(--lip) 54% 100%);
-  border-radius:45% 45% 50% 50% / 55% 55% 65% 65%;transition:all .3s ease;}
-.p-mouth::before{content:'';position:absolute;left:50%;top:0;width:.5em;height:.18em;margin-left:-.25em;
-  border-radius:0 0 50% 50%;background:rgba(0,0,0,.18);}
-.p-mouth::after{content:'';position:absolute;left:32%;top:62%;width:.5em;height:.12em;border-radius:50%;background:rgba(255,255,255,.45);}
-.mood-smile .p-mouth,.mood-laugh .p-mouth{width:2.5em;margin-left:-1.25em;height:.8em;
-  background:#3b0c18;border:.15em solid var(--lip);border-top-width:.11em;
-  border-radius:.25em .25em 1.25em 1.25em / .25em .25em .95em .95em;}
-.mood-laugh .p-mouth{height:1.05em;width:2.6em;margin-left:-1.3em;}
-.mood-smile .p-mouth::before,.mood-laugh .p-mouth::before{left:8%;right:8%;width:auto;margin:0;top:0;height:38%;
-  background:#f6efea;border-radius:0 0 .3em .3em;}
-.mood-smile .p-mouth::after,.mood-laugh .p-mouth::after{display:none;}
-.mood-smirk .p-mouth{transform:rotate(-7deg) translateX(.18em);width:2em;margin-left:-1em;}
-.mood-surprised .p-mouth{width:1.05em;height:1.15em;margin-left:-.52em;top:7.95em;background:#3b0c18;
-  border:.16em solid var(--lip);border-radius:50%;}
-.mood-surprised .p-mouth::before,.mood-surprised .p-mouth::after{display:none;}
-.mood-sad .p-mouth{width:1.8em;margin-left:-.9em;height:.48em;top:8.2em;
-  border-radius:55% 55% 30% 30% / 90% 90% 25% 25%;}
-.mood-shy .p-mouth{width:1.55em;margin-left:-.78em;height:.52em;}
-.mood-flirty .p-mouth{width:2.25em;margin-left:-1.12em;height:.7em;transform:rotate(-3deg);
-  background:linear-gradient(180deg, var(--lip) 0 42%, #3b0c18 42% 58%, var(--lip) 58% 100%);}
-
-.p-mark,.p-freckles,.p-extra,.p-hairside,.p-hairfront{pointer-events:none;}
-.p-mark{display:none;}
-.p-freckles{display:none;}
-
-/* Estados de humor */
-.mood-smile{ --lid:22%; --blush:.25; --bl-r:-5deg; --br-r:5deg; --bl-y:-.06em; --br-y:-.06em;}
-.mood-laugh{ --blush:.5; --bl-y:-.18em; --br-y:-.18em; --bl-r:-7deg; --br-r:7deg;}
-.mood-smirk{ --lid:32%; --bl-r:3deg; --br-r:-9deg; --br-y:-.28em; --iris-x:.1em; --blush:.1;}
-.mood-shy{ --lid:46%; --iris-y:.2em; --iris-x:-.12em; --blush:.85; --bl-r:-11deg; --br-r:11deg; --bl-y:-.06em; --br-y:-.06em;}
-.mood-surprised{ --lid:0%; --bl-y:-.42em; --br-y:-.42em; --bl-r:-3deg; --br-r:3deg;}
-.mood-sad{ --lid:38%; --iris-y:.14em; --bl-r:-14deg; --br-r:14deg; --bl-y:-.1em; --br-y:-.1em;}
-.mood-flirty{ --lid:48%; --blush:.55; --bl-r:-2deg; --br-r:-8deg; --br-y:-.2em; --iris-x:.1em;}
-
-@keyframes blink{0%,93%,100%{height:var(--lid);}95.5%{height:100%;}}
-@keyframes breathe{0%,100%{transform:translateY(0);}50%{transform:translateY(-.18em);}}
-
-/* ---------- VICTORIA ---------- */
-.char-victoria{--skin:#c68a62;--skin-l:#d9a07a;--skin-d:#a26a48;--hair:#0d0b11;--hair-l:#3e3852;
-  --iris:#c9822e;--iris-d:#5c3311;--lip:#a8132f;--lip-d:#5e0716;--brow:#140c10;--lash:#0e070b;
-  --cloth:#0c0a0f;--aura:rgba(232,176,74,.42);}
-.char-victoria .p-hairback{top:2.4em;width:12.8em;height:21.5em;margin-left:-6.6em;
-  border-radius:6.4em 6.4em 2.8em 3.6em / 6.4em 6.4em 3em 3em;
-  background:linear-gradient(100deg,var(--hair) 0%,#1d1a26 26%,var(--hair-l) 34%,#17141e 43%,var(--hair) 66%,#26212f 82%,var(--hair) 100%);}
-.char-victoria .p-body{background:
-  linear-gradient(115deg, transparent 0 33%, #1d1a22 33% 34.5%, transparent 34.5%),
-  linear-gradient(245deg, transparent 0 33%, #1d1a22 33% 34.5%, transparent 34.5%),
-  linear-gradient(180deg,#1a1720,#09080c 60%);}
-.char-victoria .p-chest{width:6.4em;margin-left:-3.2em;height:7.5em;clip-path:polygon(0 0,100% 0,50% 100%);}
-.char-victoria .p-cloth{background:
-  linear-gradient(118deg, transparent 0 30%, rgba(255,255,255,.07) 30% 31%, transparent 31% 100%),
-  linear-gradient(242deg, transparent 0 30%, rgba(255,255,255,.07) 30% 31%, transparent 31% 100%);}
-.char-victoria .p-necklace{left:50%;top:16.9em;width:4.6em;height:3.6em;margin-left:-2.3em;
-  border:.09em solid #e8c475;border-top:none;border-radius:0 0 50% 50% / 0 0 100% 100%;}
-.char-victoria .p-necklace::after{content:'';position:absolute;left:50%;bottom:-.55em;width:.6em;height:.8em;margin-left:-.3em;
-  background:linear-gradient(135deg,#fff3c4,#d6a64a 60%,#8a6420);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
-.char-victoria .p-lock.l{left:calc(50% - 6.4em);top:9.2em;width:2.9em;height:15.5em;
-  border-radius:50% 40% 60% 50% / 8% 20% 85% 90%;transform:rotate(3deg);
-  background:linear-gradient(95deg,var(--hair) 0%,#2a2636 45%,var(--hair-l) 55%,var(--hair) 100%);}
-.char-victoria .p-hairfront{top:-.8em;left:-.7em;width:9.8em;height:6.6em;
-  border-radius:50% 50% 0 0 / 62% 62% 0 0;
-  background:linear-gradient(105deg,var(--hair) 0%,#221e2c 30%,var(--hair-l) 44%,#1a1722 56%,var(--hair) 75%);
-  clip-path:polygon(0 0,100% 0,100% 62%,94% 54%,86% 46%,76% 40%,66% 36%,60% 35%,54% 38%,46% 42%,36% 48%,26% 56%,17% 66%,10% 80%,5% 96%,0 100%);}
-.char-victoria .p-hairfront::before{content:'';position:absolute;left:8%;top:30%;width:50%;height:30%;
-  border-bottom:.12em solid rgba(120,110,160,.35);border-radius:0 0 100% 0 / 0 0 100% 0;transform:rotate(-12deg);}
-.char-victoria .p-hairside{left:-.9em;top:3.4em;width:2.2em;height:8.4em;
-  background:linear-gradient(90deg,var(--hair) 30%,#26212f 70%,var(--hair));
-  border-radius:60% 20% 30% 70% / 30% 30% 70% 70%;}
-.char-victoria .p-ear.r::after{content:'';position:absolute;left:30%;bottom:-1.1em;width:.55em;height:1.2em;
-  border-radius:50%;border:.12em solid #e8c475;}
-.char-victoria .p-mark{display:block;left:6.2em;top:7.6em;width:.18em;height:.18em;border-radius:50%;background:#4a2414;}
-
-/* ---------- LUNA ---------- */
-.char-luna{--skin:#f0d4cc;--skin-l:#fbe6df;--skin-d:#d8b0a6;--hair:#c9b5ea;--hair-l:#efe6ff;--hair-d:#8f78bf;
-  --iris:#9a63ff;--iris-d:#3d1c7a;--iris-r:#2fd6c5;--iris-rd:#0b5a55;--lip:#7a2b63;--lip-d:#3e0f33;
-  --brow:#6d5a92;--lash:#1d1222;--cloth:#16141c;--aura:rgba(160,120,255,.45);}
-.char-luna .p-hairback{top:2.5em;width:12.2em;height:15.2em;margin-left:-6.1em;
-  border-radius:6em 6em 0 0 / 6em 6em 0 0;
-  background:linear-gradient(100deg,var(--hair-d) 0%,var(--hair) 30%,var(--hair-l) 42%,var(--hair) 55%,var(--hair-d) 100%);
-  clip-path:polygon(0 0,100% 0,100% 82%,95% 93%,90% 86%,84% 100%,78% 90%,72% 96%,28% 96%,22% 88%,15% 100%,10% 86%,4% 95%,0 84%);}
-.char-luna .p-hairback i{left:68%;top:28%;width:12%;height:72%;
-  background:linear-gradient(180deg,transparent,#3fe6d4 25%,#2bb8c9 80%,transparent);opacity:.85;
-  clip-path:polygon(0 0,100% 0,100% 90%,50% 100%,0 92%);}
-.char-luna .p-body{background:
-  radial-gradient(circle at 22% 62%, rgba(68,230,216,.55) 0 .35em, transparent .4em),
-  radial-gradient(circle at 26% 70%, rgba(255,79,147,.6) 0 .22em, transparent .26em),
-  radial-gradient(circle at 78% 55%, rgba(155,107,255,.6) 0 .3em, transparent .34em),
-  radial-gradient(circle at 70% 80%, rgba(68,230,216,.5) 0 .2em, transparent .25em),
-  linear-gradient(100deg,#1d1a24 0 28%, #2c2838 28% 29%, transparent 29% 71%, #2c2838 71% 72%, #1d1a24 72%),
-  linear-gradient(180deg,#5b3d8f 0%,#3b2763 100%);}
-.char-luna .p-chest{width:8.6em;margin-left:-4.3em;height:3.4em;border-radius:0 0 50% 50% / 0 0 100% 100%;}
-.char-luna .p-cloth{background:linear-gradient(180deg,transparent 0 30%, rgba(255,255,255,.04) 30% 31%, transparent 31%);}
-.char-luna .p-necklace{left:50%;top:15.9em;width:3.9em;height:.55em;margin-left:-1.95em;background:#141018;border-radius:.2em;
-  box-shadow:0 .05em 0 rgba(255,255,255,.12) inset;}
-.char-luna .p-necklace::after{content:'';position:absolute;left:50%;top:.3em;width:.6em;height:.6em;margin-left:-.3em;border:.1em solid #d6d6e8;border-radius:50%;}
-.char-luna .p-hairfront{top:-.7em;left:-.65em;width:9.7em;height:5.6em;
-  border-radius:50% 50% 0 0 / 70% 70% 0 0;
-  background:linear-gradient(95deg,var(--hair-d) 0%,var(--hair) 25%,var(--hair-l) 48%,var(--hair) 65%,var(--hair-d) 100%);
-  clip-path:polygon(0 0,100% 0,100% 82%,93% 70%,88% 86%,80% 62%,72% 80%,63% 60%,55% 74%,46% 58%,38% 76%,30% 60%,22% 80%,14% 64%,8% 88%,0 74%);}
-.char-luna .p-hairfront::after{content:'';position:absolute;left:62%;top:30%;width:9%;height:46%;
-  background:linear-gradient(180deg,#3fe6d4,#2bb8c9);clip-path:polygon(0 0,100% 0,80% 100%,30% 80%);opacity:.9;}
-.char-luna .p-hairside{left:-1.05em;top:2.4em;width:10.5em;height:9.8em;}
-.char-luna .p-hairside::before,.char-luna .p-hairside::after{content:'';position:absolute;top:0;width:2em;height:100%;
-  background:linear-gradient(180deg,var(--hair),var(--hair-d));}
-.char-luna .p-hairside::before{left:0;clip-path:polygon(0 0,100% 0,70% 35%,85% 60%,60% 78%,70% 100%,35% 84%,20% 100%,0 80%);}
-.char-luna .p-hairside::after{right:0;clip-path:polygon(0 0,100% 0,100% 80%,80% 100%,65% 84%,30% 100%,40% 78%,15% 60%,30% 35%);}
-.char-luna .p-mark{display:block;left:6.3em;top:6.15em;width:.17em;height:.17em;border-radius:50%;background:#5a3a4a;}
-.char-luna .p-nose::before{content:'';position:absolute;left:.62em;bottom:.05em;width:.22em;height:.22em;border-radius:50%;
-  border:.07em solid #e2e2f0;border-left-color:transparent;}
-.char-luna .p-ear.l::after,.char-luna .p-ear.r::after{content:'';position:absolute;left:25%;top:.25em;width:.5em;height:.5em;border-radius:50%;border:.1em solid #d6d6e8;}
-.char-luna .p-lock.r{left:calc(50% + 3.6em);top:10.6em;width:2.4em;height:7.8em;
-  background:linear-gradient(85deg,var(--hair),var(--hair-d));
-  clip-path:polygon(0 0,100% 0,90% 70%,100% 100%,60% 85%,40% 100%,20% 75%);}
-
-/* ---------- SOPHIE ---------- */
-.char-sophie{--skin:#f2c8a9;--skin-l:#fcdcc3;--skin-d:#d9a685;--hair:#7b3a22;--hair-l:#b8643a;--hair-d:#4e2214;
-  --iris:#5f9b55;--iris-d:#213f1c;--lip:#d27682;--lip-d:#9b4552;--brow:#5a2a18;--lash:#2a140c;
-  --cloth:#6b1f30;--aura:rgba(255,110,160,.42);}
-.char-sophie .p-hairback{top:2.6em;width:10.6em;height:11.2em;margin-left:-5.3em;
-  border-radius:50% 50% 42% 42% / 56% 56% 44% 44%;
-  background:radial-gradient(ellipse at 40% 30%,var(--hair-l) 0%,var(--hair) 45%,var(--hair-d) 100%);}
-.char-sophie .p-hairback i{left:66%;top:62%;width:4.6em;height:4.2em;border-radius:50%;
-  background:radial-gradient(circle at 40% 35%,var(--hair-l),var(--hair) 50%,var(--hair-d));
-  box-shadow:-.3em .2em .6em rgba(0,0,0,.35);}
-.char-sophie .p-body{background:
-  linear-gradient(90deg, transparent 0 31%, #f4efe9 31% 69%, transparent 69%) top/100% 40% no-repeat,
-  linear-gradient(180deg,#7a2236,#521424 70%);}
-.char-sophie .p-chest{width:3em;margin-left:-1.5em;height:1.6em;clip-path:polygon(0 0,100% 0,50% 100%);}
-.char-sophie .p-cloth{background:
-  linear-gradient(108deg, transparent 0 34%, #7a2236 34% 100%) left/50% 100% no-repeat,
-  linear-gradient(252deg, transparent 0 34%, #7a2236 34% 100%) right/50% 100% no-repeat;}
-.char-sophie .p-cloth::after{content:'SOPHIE';position:absolute;left:66%;top:28%;font:700 .55em/1 var(--sans);letter-spacing:.15em;
-  color:#3a1a0a;background:linear-gradient(135deg,#f3dc9a,#c9a24f);padding:.35em .7em;border-radius:.2em;}
-.char-sophie .p-necklace{left:50%;top:16.8em;width:3.2em;height:1.4em;margin-left:-1.6em;
-  background:
-    radial-gradient(circle at 50% 50%, #8e2a40 0 .32em, transparent .34em),
-    linear-gradient(60deg, transparent 0 20%, #9b2f47 20% 48%, transparent 48%) left/50% 100% no-repeat,
-    linear-gradient(-60deg, transparent 0 20%, #9b2f47 20% 48%, transparent 48%) right/50% 100% no-repeat;}
-.char-sophie .p-lock.l,.char-sophie .p-lock.r{top:13.6em;width:3.2em;height:4.4em;border-radius:50%;opacity:0;}
-.char-sophie .p-front::before{content:'';position:absolute;left:50%;top:16.7em;width:6.4em;height:1.8em;margin-left:-3.2em;
-  background:
-    linear-gradient(35deg, transparent 0 40%, #fbf7f2 40% 100%) left/50% 100% no-repeat,
-    linear-gradient(-35deg, transparent 0 40%, #fbf7f2 40% 100%) right/50% 100% no-repeat;
-  filter:drop-shadow(0 .1em .1em rgba(0,0,0,.2));}
-.char-sophie .p-hairfront{top:-.7em;left:-.6em;width:9.6em;height:6.2em;
-  border-radius:50% 50% 0 0 / 62% 62% 0 0;
-  background:radial-gradient(ellipse at 42% 18%,var(--hair-l),var(--hair) 50%,var(--hair-d));
-  clip-path:polygon(0 0,100% 0,100% 92%,96% 76%,90% 62%,82% 52%,72% 46%,62% 43%,55% 41%,50% 44%,45% 41%,38% 43%,28% 46%,18% 52%,10% 62%,4% 76%,0 92%);}
-.char-sophie .p-hairfront::before{content:'';position:absolute;left:24%;top:38%;width:24%;height:22%;
-  border-bottom:.1em solid rgba(255,190,140,.35);border-radius:0 0 0 100%;}
-.char-sophie .p-hairfront::after{content:'';position:absolute;right:24%;top:38%;width:24%;height:22%;
-  border-bottom:.1em solid rgba(255,190,140,.35);border-radius:0 0 100% 0;}
-.char-sophie .p-hairside{left:-.7em;top:3.6em;width:9.8em;height:8.2em;}
-.char-sophie .p-hairside::before,.char-sophie .p-hairside::after{content:'';position:absolute;top:0;width:1.3em;height:100%;
-  background:linear-gradient(180deg,var(--hair),var(--hair-d));}
-.char-sophie .p-hairside::before{left:0;clip-path:polygon(30% 0,100% 0,70% 30%,60% 55%,75% 80%,40% 100%,10% 78%,0 45%);}
-.char-sophie .p-hairside::after{right:0;clip-path:polygon(0 0,70% 0,100% 45%,90% 78%,60% 100%,25% 80%,40% 55%,30% 30%);}
-.char-sophie .p-freckles{display:block;left:1.5em;top:6.2em;width:5.4em;height:1em;opacity:.55;
-  background:
-    radial-gradient(circle at 8% 40%, #a8613f 0 .07em, transparent .09em),
-    radial-gradient(circle at 16% 70%, #a8613f 0 .06em, transparent .08em),
-    radial-gradient(circle at 24% 30%, #a8613f 0 .07em, transparent .09em),
-    radial-gradient(circle at 76% 30%, #a8613f 0 .07em, transparent .09em),
-    radial-gradient(circle at 84% 70%, #a8613f 0 .06em, transparent .08em),
-    radial-gradient(circle at 92% 40%, #a8613f 0 .07em, transparent .09em),
-    radial-gradient(circle at 50% 10%, #a8613f 0 .05em, transparent .07em);}
-.char-sophie .p-extra{left:.75em;top:4.05em;width:6.9em;height:2.3em;
-  background:linear-gradient(#c9a35a,#c9a35a) center 38%/1.2em .12em no-repeat;}
-.char-sophie .p-extra::before,.char-sophie .p-extra::after{content:'';position:absolute;top:0;width:2.75em;height:2.25em;
-  border:.13em solid #c9a35a;border-radius:46%;background:rgba(255,255,255,.06);
-  box-shadow:inset .3em -.3em .5em rgba(255,255,255,.08);}
-.char-sophie .p-extra::before{left:0;} .char-sophie .p-extra::after{right:0;}
-.char-sophie.unmasked .p-extra{display:none;}
+/* ================= RETRATOS SVG ================= */
+.portrait{position:relative;flex:none;height:var(--ph);width:calc(var(--ph) * 2 / 3);}
+.portrait .vn-svg{display:block;width:100%;height:100%;overflow:visible;}
+.portrait.animated .vn-breathe{animation:vnBreathe 5.5s ease-in-out infinite;transform-box:view-box;transform-origin:300px 900px;}
+.vn-shut{opacity:0;}
+.portrait.animated .vn-open{animation:vnOpen 6.5s infinite;}
+.portrait.animated .vn-shut{animation:vnShut 6.5s infinite;}
+@keyframes vnBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px) scale(1.003)}}
+@keyframes vnOpen{0%,94%,100%{opacity:1}95.2%,97.4%{opacity:0}}
+@keyframes vnShut{0%,94%,100%{opacity:0}95.2%,97.4%{opacity:1}}
+body.reduce-motion .vn-shut{opacity:0 !important;}
+.portrait.avatar{width:26px;height:26px;border-radius:50%;overflow:hidden;background:#140b1a;box-shadow:0 0 0 1px rgba(255,255,255,.15);}
+.tag{padding:.2em .75em .2em .25em;}
+.vn-icon{display:block;flex:none;}
+.icon-btn .vn-icon{width:15px;height:15px;}
+.row .ico{color:var(--gold-2);display:flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:12px;
+  background:radial-gradient(circle at 50% 35%,rgba(217,181,108,.18),rgba(217,181,108,.03));border:1px solid rgba(217,181,108,.25);}
+.clock .orb{display:flex;align-items:center;justify-content:center;color:#f4ecd6;}
+.clock .orb::after{display:none;}
+.clock .orb.sun{color:#ffd27f;}
+.end-portrait{position:absolute;right:-4vw;bottom:-8vh;opacity:.5;--ph:100vh;-webkit-mask-image:linear-gradient(90deg,transparent,#000 40%);mask-image:linear-gradient(90deg,transparent,#000 40%);}
+@media (max-width:760px){ .end-portrait{opacity:.25;right:-30vw;} }
 </style>
 </head>
 <body>
@@ -705,9 +467,9 @@ body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{an
     </div>
     <div class="hud-right">
       <span class="money" id="money" title="Dinheiro">100 €</span>
-      <button class="icon-btn" id="btnRel" title="Relações">♥ <span class="lbl">Relações</span></button>
-      <button class="icon-btn" id="btnInv" title="Inventário">✦ <span class="lbl">Inventário</span></button>
-      <button class="icon-btn" id="btnPause" title="Menu (Esc)">☰ <span class="lbl">Menu</span></button>
+      <button class="icon-btn" id="btnRel" title="Relações"><span class="lbl">Relações</span></button>
+      <button class="icon-btn" id="btnInv" title="Inventário"><span class="lbl">Inventário</span></button>
+      <button class="icon-btn" id="btnPause" title="Menu (Esc)"><span class="lbl">Menu</span></button>
     </div>
   </header>
   <div id="hub" class="hidden"></div>
@@ -839,14 +601,14 @@ function affLevel(v) {
 
 /* ---------- presentes ---------- */
 const ITEMS = {
-  rosa:      { name: 'Rosa Vermelha',          price: 12, icon: '🌹', desc: 'Um clássico. Há quem ache romântico; há quem ache um cliché.' },
-  chocolate: { name: 'Bombons Artesanais',     price: 18, icon: '🍫', desc: 'Caixa de bombons de uma chocolataria da Baixa.' },
-  poesia:    { name: 'Livro de Poesia',        price: 22, icon: '📖', desc: 'Edição antiga de sonetos, com dedicatória em branco.' },
-  pinceis:   { name: 'Pincéis de Pelo de Marta', price: 30, icon: '🖌️', desc: 'Pincéis profissionais. Caros, finos, perfeitos.' },
-  vinil:     { name: 'Vinil de Jazz Raro',     price: 38, icon: '🎷', desc: 'Primeira prensagem de um disco de jazz de 1959.' },
-  caixa:     { name: 'Caixinha de Música',     price: 40, icon: '🎶', desc: 'Toca uma valsa antiga quando se abre a tampa.' },
-  vinho:     { name: 'Vinho do Porto Vintage', price: 48, icon: '🍷', desc: 'Uma garrafa de 1994. Para quem sabe apreciar.' },
-  perfume:   { name: 'Perfume Noir',           price: 65, icon: '🖤', desc: 'Âmbar, couro e rosa negra. Frasco de cristal.' }
+  rosa:      { name: 'Rosa Vermelha',          price: 12, desc: 'Um clássico. Há quem ache romântico; há quem ache um cliché.' },
+  chocolate: { name: 'Bombons Artesanais',     price: 18, desc: 'Caixa de bombons de uma chocolataria da Baixa.' },
+  poesia:    { name: 'Livro de Poesia',        price: 22, desc: 'Edição antiga de sonetos, com dedicatória em branco.' },
+  pinceis:   { name: 'Pincéis de Pelo de Marta', price: 30, desc: 'Pincéis profissionais. Caros, finos, perfeitos.' },
+  vinil:     { name: 'Vinil de Jazz Raro',     price: 38, desc: 'Primeira prensagem de um disco de jazz de 1959.' },
+  caixa:     { name: 'Caixinha de Música',     price: 40, desc: 'Toca uma valsa antiga quando se abre a tampa.' },
+  vinho:     { name: 'Vinho do Porto Vintage', price: 48, desc: 'Uma garrafa de 1994. Para quem sabe apreciar.' },
+  perfume:   { name: 'Perfume Noir',           price: 65, desc: 'Âmbar, couro e rosa negra. Frasco de cristal.' }
 };
 const ITEM_IDS = Object.keys(ITEMS);
 const PREFS = {
@@ -1081,7 +843,7 @@ function promisedChars(s) { return CHAR_IDS.filter(c => s.flags['promise_' + c])
 function promiseNote(c) {
   return s => {
     const others = promisedChars(s).filter(x => x !== c);
-    return others.length ? '⚠ Já prometeste o teu coração a ' + others.map(x => CHARS[x].name).join(' e ') + '.' : '';
+    return others.length ? 'Atenção: já prometeste o teu coração a ' + others.map(x => CHARS[x].name).join(' e ') + '.' : '';
   };
 }
 
@@ -1158,7 +920,7 @@ function addAff(c, n) {
   const before = state.aff[c];
   state.aff[c] = clamp(before + n, 0, 100);
   const d = state.aff[c] - before;
-  if (d !== 0 && settings.showAff) UI.toast(`${d > 0 ? '♥' : '♡'} ${CHARS[c].name} ${d > 0 ? '+' : ''}${d}`, d > 0 ? 'good' : 'bad');
+  if (d !== 0 && settings.showAff) UI.toast(`${CHARS[c].name} · afinidade ${d > 0 ? '+' : ''}${d}`, d > 0 ? 'good' : 'bad');
 }
 function addMoney(n) {
   if (!state || !n) return;
@@ -1190,6 +952,608 @@ const FX = fn => ({ fx: fn });
 const CH = (...opts) => ({ choice: opts });
 const has = f => s => !!s.flags[f];
 const not = f => s => !s.flags[f];
+/* =====================================================================
+   VELVET NIGHTS — retratos vetoriais (SVG inline gerado em JavaScript)
+   Sistema de coordenadas: viewBox 0 0 600 900, busto centrado em x=300.
+   Luz principal quente vinda de cima à esquerda; luz de recorte (rim light)
+   colorida à direita, com a cor de cada personagem.
+   ===================================================================== */
+const Art = (() => {
+  let uidCounter = 0;
+  const W = 600;
+
+  /* espelha um caminho horizontalmente (só comandos absolutos M/L/C/Q/Z) */
+  function mirror(d) {
+    let i = 0;
+    return d.replace(/-?\d*\.?\d+/g, n => (i++ % 2 === 0) ? String(+(W - parseFloat(n)).toFixed(2)) : n);
+  }
+  const f2 = n => +n.toFixed(2);
+
+  /* ---------- paletas ---------- */
+  const PAL = {
+    victoria: {
+      skin: ['#ecb68e', '#cf8f66', '#a5643f', '#6e3a22'], line: '#5a2a18',
+      blush: '#e0566e', lip: ['#d0213f', '#8c0b24', '#5c0616'],
+      iris: ['#ffc861', '#c27a22', '#4a2207'], lash: '#140a0c', brow: '#1d1114', eyeshadow: '#7a2236',
+      hair: ['#050408', '#120f19', '#2a2537', '#6f6690', '#b8b0d6'], hairLine: '#000000',
+      rim: '#ff5d73', rim2: '#ffcf7a', aura: 'rgba(232,176,74,.35)'
+    },
+    luna: {
+      skin: ['#fff0ea', '#f5d3c8', '#dca69c', '#a86f6c'], line: '#8a5058',
+      blush: '#ff6f9f', lip: ['#a8428a', '#6c1f5a', '#3e0c34'],
+      iris: ['#d2b4ff', '#7b48e8', '#26105e'], iris2: ['#8ffff0', '#17b3a3', '#053f3a'],
+      lash: '#1d1026', brow: '#7e6aa8', eyeshadow: '#8a5cc9',
+      hair: ['#5d4b91', '#9a86cf', '#c7b8ee', '#ece5ff', '#ffffff'], hairLine: '#3c2d66', under: ['#3ff0de', '#108c95'],
+      rim: '#44e6d8', rim2: '#ff4fa0', aura: 'rgba(150,110,255,.38)'
+    },
+    sophie: {
+      skin: ['#ffe6d3', '#f6c8a8', '#db9c79', '#a8664a'], line: '#8a4a32',
+      blush: '#ff7f88', lip: ['#e27f8c', '#b8505f', '#7a2a36'],
+      iris: ['#a8e08a', '#4f9142', '#163a12'], lash: '#2b150d', brow: '#6e321c', eyeshadow: '#c0786a',
+      hair: ['#3a170c', '#76331a', '#a8522a', '#e08a52', '#ffc08a'], hairLine: '#2a0f06',
+      rim: '#ff8fc0', rim2: '#ffd2a0', aura: 'rgba(255,120,170,.35)'
+    }
+  };
+
+  /* ---------- expressões ---------- */
+  const MOOD = {
+    neutral:   { o: 1,    lift: 0, gx: 0,  gy: 0,  bIn: 0,  bArch: 0,  bOut: 0, bR: 0,  mouth: 'neutral', blush: .12 },
+    smile:     { o: .82,  lift: 5, gx: 0,  gy: 0,  bIn: -2, bArch: -3, bOut: 0, bR: 0,  mouth: 'smile',   blush: .3 },
+    laugh:     { happy: true,      gx: 0,  gy: 0,  bIn: -5, bArch: -7, bOut: -2, bR: 0, mouth: 'laugh',   blush: .5 },
+    smirk:     { o: .74,  lift: 2, gx: 3,  gy: 0,  bIn: 3,  bArch: 0,  bOut: 0, bR: -9, mouth: 'smirk',   blush: .15 },
+    shy:       { o: .56,  lift: 3, gx: -5, gy: 5,  bIn: -7, bArch: -2, bOut: 3, bR: 0,  mouth: 'shy',     blush: .85 },
+    surprised: { o: 1.22, lift: 0, gx: 0,  gy: -1, bIn: -10, bArch: -11, bOut: -6, bR: 0, mouth: 'o',     blush: .15 },
+    sad:       { o: .7,   lift: 0, gx: -2, gy: 5,  bIn: -10, bArch: -2, bOut: 5, bR: 0, mouth: 'sad',     blush: .08 },
+    flirty:    { o: .56,  lift: 3, gx: 4,  gy: 0,  bIn: 1,  bArch: -3, bOut: 0, bR: -7, mouth: 'flirty',  blush: .5 }
+  };
+
+  /* ---------- geometria base partilhada ---------- */
+  const FACE = 'M 300 452 C 284 452 266 443 250 427 C 229 405 214 373 209 336 C 205 306 204 274 206 250 C 210 192 250 152 300 152 C 350 152 390 192 394 250 C 396 274 395 306 391 336 C 386 373 371 405 350 427 C 334 443 316 452 300 452 Z';
+  const EAR_L = 'M 211 292 C 198 282 186 292 188 314 C 190 336 200 350 216 350 C 214 330 213 310 211 292 Z';
+  const EAR_L_IN = 'M 207 302 C 199 298 195 306 197 318 C 199 330 205 336 211 336';
+  const NECK = 'M 265 396 C 267 440 266 476 259 506 C 282 518 318 518 341 506 C 334 476 333 440 335 396 Z';
+  const TORSO = 'M 255 500 C 230 520 160 530 112 552 C 72 572 52 616 44 686 L 28 900 L 572 900 L 556 686 C 548 616 528 572 488 552 C 440 530 370 520 345 500 Z';
+  const CLAV = ['M 262 530 C 244 534 216 534 182 544', 'M 338 530 C 356 534 384 534 418 544'];
+
+  /* ---------- olho (esquerdo; o direito é espelhado) ---------- */
+  function eyeLeft(cx, cy, m) {
+    const H = 22 * (m.o == null ? 1 : m.o);
+    const lift = m.lift || 0;
+    const O = [cx - 27, cy - 3], I = [cx + 27, cy + 2];
+    const upper = `M ${O[0]} ${O[1]} C ${cx - 14} ${f2(cy - H - 3)} ${cx + 12} ${f2(cy - H - 2)} ${I[0]} ${I[1]}`;
+    const shape = upper + ` C ${cx + 12} ${f2(cy + H * .5 + 2 - lift)} ${cx - 14} ${f2(cy + H * .55 + 1 - lift)} ${O[0]} ${O[1]} Z`;
+    const lower = `M ${cx - 20} ${f2(cy + H * .42 + 2 - lift)} C ${cx - 6} ${f2(cy + H * .52 + 3 - lift)} ${cx + 10} ${f2(cy + H * .5 + 3 - lift)} ${cx + 22} ${f2(cy + H * .3 + 3 - lift)}`;
+    const crease = `M ${cx - 22} ${f2(cy - H - 5)} C ${cx - 8} ${f2(cy - H - 12)} ${cx + 12} ${f2(cy - H - 11)} ${cx + 23} ${f2(cy - H - 4)}`;
+    const closed = `M ${O[0]} ${O[1]} C ${cx - 12} ${cy + 6} ${cx + 12} ${cy + 7} ${I[0]} ${I[1]}`;
+    const happy = `M ${O[0]} ${O[1] + 5} C ${cx - 12} ${cy - 11} ${cx + 12} ${cy - 11} ${I[0]} ${I[1] + 4}`;
+    const wing = `M ${O[0] + 8} ${O[1] - 1} C ${O[0]} ${O[1] - 3} ${O[0] - 7} ${O[1] - 6} ${O[0] - 13} ${O[1] - 11}`;
+    const lashes = `M ${O[0] + 4} ${O[1] - 1} L ${O[0] - 4} ${O[1] - 7} M ${cx - 16} ${f2(cy - H * .78 - 2)} L ${cx - 21} ${f2(cy - H * .78 - 8)}`;
+    return { upper, shape, lower, crease, closed, happy, wing, lashes, O, I };
+  }
+
+  /* ---------- sobrancelha (esquerda; direita espelhada) ---------- */
+  function browLeft(cx, by, bIn, bArch, bOut, thick) {
+    const I = [cx + 26, by + bIn], K = [cx - 4, by - 9 + bArch], O = [cx - 31, by + 3 + bOut];
+    const t = thick;
+    return `M ${I[0]} ${I[1] - t} Q ${K[0]} ${K[1] - t * .9} ${O[0]} ${O[1]} Q ${K[0]} ${K[1] + t * .55} ${I[0] - 1} ${I[1] + t} Z`;
+  }
+
+  /* ---------- bocas ---------- */
+  function mouth(type, p, id) {
+    const up = `url(#${id}-lipU)`, lo = `url(#${id}-lipL)`, dark = '#3a0b16', line = p.lip[2];
+    const hl = (x, y, rx) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="2.2" fill="#fff" opacity=".42"/>`;
+    switch (type) {
+      case 'smile': return `
+        <path d="M 277 397 C 288 402 312 402 323 397 C 318 408 309 412 300 412 C 291 412 282 408 277 397 Z" fill="${lo}"/>
+        <path d="M 273 394 C 284 393 292 390 300 393 C 308 390 316 393 327 394 C 316 399 308 401 300 401 C 292 401 284 399 273 394 Z" fill="${up}"/>
+        <path d="M 273 394 C 286 401 314 401 327 394" fill="none" stroke="${line}" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M 269 390 C 271 393 272 396 271 399 M 331 390 C 329 393 328 396 329 399" fill="none" stroke="${p.skin[3]}" stroke-width="1.2" opacity=".45" stroke-linecap="round"/>
+        ${hl(300, 406, 6)}`;
+      case 'laugh': return `
+        <path d="M 270 391 C 284 397 316 397 330 391 C 324 414 312 425 300 425 C 288 425 276 414 270 391 Z" fill="${dark}"/>
+        <path d="M 284 419 C 292 412 308 412 316 419 C 310 424 290 424 284 419 Z" fill="#c4525e"/>
+        <path d="M 274 393 C 288 398 312 398 326 393 L 324 400 C 312 404 288 404 276 400 Z" fill="#fbf3ef"/>
+        <path d="M 270 391 C 282 386 292 384 300 387 C 308 384 318 386 330 391 C 316 395 284 395 270 391 Z" fill="${up}"/>
+        <path d="M 277 413 C 287 425 313 425 323 413 C 318 429 282 429 277 413 Z" fill="${lo}"/>
+        ${hl(300, 425, 6)}`;
+      case 'smirk': return `
+        <path d="M 279 401 C 290 403 312 402 324 396 C 318 408 309 413 300 413 C 291 413 284 410 279 401 Z" fill="${lo}"/>
+        <path d="M 277 400 C 285 396 292 393 300 395 C 308 392 318 392 328 391 C 318 398 308 401 300 401 C 292 402 285 402 277 400 Z" fill="${up}"/>
+        <path d="M 277 400 C 292 403 314 401 328 391" fill="none" stroke="${line}" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M 333 387 C 334 391 334 394 332 397" fill="none" stroke="${p.skin[3]}" stroke-width="1.2" opacity=".5" stroke-linecap="round"/>
+        ${hl(302, 407, 6)}`;
+      case 'shy': return `
+        <path d="M 284 401 C 292 403 308 403 316 401 C 312 409 306 412 300 412 C 294 412 288 409 284 401 Z" fill="${lo}"/>
+        <path d="M 282 400 C 289 396 295 394 300 396 C 305 394 311 396 318 400 C 311 402 305 402 300 402 C 295 402 289 402 282 400 Z" fill="${up}"/>
+        <path d="M 282 400 C 292 403 308 403 318 400" fill="none" stroke="${line}" stroke-width="1.5" stroke-linecap="round"/>
+        ${hl(300, 407, 4.5)}`;
+      case 'o': return `
+        <ellipse cx="300" cy="404" rx="11" ry="12.5" fill="${lo}"/>
+        <ellipse cx="300" cy="404" rx="7" ry="8.5" fill="${dark}"/>
+        <path d="M 291 397 C 296 394 304 394 309 397" fill="none" stroke="${p.lip[0]}" stroke-width="2"/>
+        ${hl(300, 414, 4)}`;
+      case 'sad': return `
+        <path d="M 280 403 C 290 401 310 401 320 403 C 316 411 308 414 300 414 C 292 414 284 411 280 403 Z" fill="${lo}"/>
+        <path d="M 277 403 C 285 397 292 395 300 397 C 308 395 315 397 323 403 C 314 401 306 400 300 400 C 294 400 286 401 277 403 Z" fill="${up}"/>
+        <path d="M 277 403 C 288 399 312 399 323 403" fill="none" stroke="${line}" stroke-width="1.5" stroke-linecap="round"/>
+        ${hl(300, 409, 5)}`;
+      case 'flirty': return `
+        <path d="M 279 401 C 290 404 310 404 321 400 C 317 411 308 416 300 416 C 292 416 283 411 279 401 Z" fill="${lo}"/>
+        <path d="M 280 398 C 290 401 310 401 320 397 C 312 403 288 403 280 398 Z" fill="${dark}"/>
+        <path d="M 275 397 C 284 393 292 390 300 393 C 308 390 316 393 325 396 C 314 398 306 399 300 399 C 294 399 285 399 275 397 Z" fill="${up}"/>
+        <path d="M 328 392 C 329 395 329 397 327 400" fill="none" stroke="${p.skin[3]}" stroke-width="1.1" opacity=".45" stroke-linecap="round"/>
+        ${hl(300, 410, 7)}`;
+      default: return `
+        <path d="M 278 400 C 288 402 312 402 322 400 C 318 410 309 414 300 414 C 291 414 282 410 278 400 Z" fill="${lo}"/>
+        <path d="M 276 399 C 284 394 292 391 300 394 C 308 391 316 394 324 399 C 314 401 306 402 300 401 C 294 402 286 401 276 399 Z" fill="${up}"/>
+        <path d="M 276 399 C 288 402 312 402 324 399" fill="none" stroke="${line}" stroke-width="1.6" stroke-linecap="round"/>
+        ${hl(300, 408, 6.5)}`;
+    }
+  }
+
+  /* ---------- rosto completo (feições) ---------- */
+  function faceFeatures(c, p, m, id, opts) {
+    const L = eyeLeft(250, 304, m);
+    const R = { shape: mirror(L.shape), upper: mirror(L.upper), lower: mirror(L.lower), crease: mirror(L.crease),
+      closed: mirror(L.closed), happy: mirror(L.happy), wing: mirror(L.wing), lashes: mirror(L.lashes) };
+    const wingW = c === 'victoria' ? 3.6 : c === 'luna' ? 2.6 : 1.8;
+    const browT = c === 'victoria' ? 4.6 : c === 'luna' ? 3.6 : 4;
+    const bl = browLeft(250, 266, m.bIn, m.bArch, m.bOut, browT);
+    const br = mirror(browLeft(250, 266 + m.bR * .6, m.bIn, m.bArch + m.bR, m.bOut + m.bR * .7, browT));
+    const irisR = 13;
+    const ix = m.gx || 0, iy = m.gy || 0;
+    const irisL = c === 'luna' ? `${id}-irisB` : `${id}-iris`;
+    const eyeOpen = (E, side) => {
+      const cx = side === 'l' ? 250 : 350;
+      const icx = cx + ix + (side === 'l' ? 1 : -1), icy = 303 + iy;
+      const grad = side === 'l' ? irisL : `${id}-iris`;
+      return `
+        <path d="${E.shape}" fill="#fbf4f1"/>
+        <g clip-path="url(#${id}-eye${side})">
+          <path d="${E.shape}" fill="url(#${id}-sclera)"/>
+          <circle cx="${icx}" cy="${icy}" r="${irisR}" fill="url(#${grad})"/>
+          <circle cx="${icx}" cy="${icy}" r="${irisR}" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.2"/>
+          <circle cx="${icx}" cy="${icy + .5}" r="5.2" fill="#0b0508"/>
+          <ellipse cx="${icx}" cy="${icy - 9}" rx="16" ry="8" fill="#000" opacity=".38"/>
+          <ellipse cx="${icx - 4.5}" cy="${icy - 4.5}" rx="3.6" ry="2.9" fill="#fff"/>
+          <circle cx="${icx + 5}" cy="${icy + 5}" r="1.5" fill="#fff" opacity=".85"/>
+        </g>
+        <path d="${E.crease}" fill="none" stroke="${p.skin[3]}" stroke-width="1.5" opacity=".45" stroke-linecap="round"/>
+        <path d="${E.lower}" fill="none" stroke="${p.lash}" stroke-width="1.2" opacity=".45" stroke-linecap="round"/>
+        <path d="${E.upper}" fill="none" stroke="${p.lash}" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${E.wing}" fill="none" stroke="${p.lash}" stroke-width="${wingW}" stroke-linecap="round"/>
+        <path d="${E.lashes}" fill="none" stroke="${p.lash}" stroke-width="1.6" stroke-linecap="round"/>`;
+    };
+    const eyeShut = (E, kind) => `
+        <path d="${E[kind]}" fill="none" stroke="${p.lash}" stroke-width="3.4" stroke-linecap="round"/>
+        <path d="${E.wing}" fill="none" stroke="${p.lash}" stroke-width="${wingW * .8}" stroke-linecap="round" opacity="${kind === 'happy' ? 0 : 1}"/>`;
+    let eyes;
+    if (m.happy) {
+      eyes = `<g>${eyeShut(L, 'happy')}${eyeShut(R, 'happy')}</g>`;
+    } else {
+      const delay = (Math.random() * 5).toFixed(2);
+      eyes = `<g class="vn-open" style="animation-delay:-${delay}s">${eyeOpen(L, 'l')}${eyeOpen(R, 'r')}</g>
+              <g class="vn-shut" style="animation-delay:-${delay}s">${eyeShut(L, 'closed')}${eyeShut(R, 'closed')}</g>`;
+    }
+    const blushO = Math.min(1, m.blush + (c === 'sophie' ? .12 : 0));
+    let freckles = '';
+    if (c === 'sophie') {
+      const pts = [[262, 342], [270, 336], [276, 346], [256, 350], [284, 338], [266, 352], [290, 346], [310, 346], [316, 338], [324, 346], [334, 336], [344, 350], [330, 352], [296, 334], [304, 334]];
+      freckles = `<g fill="${p.skin[3]}" opacity=".5">${pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="${(1 + ((x * y) % 7) / 10).toFixed(2)}"/>`).join('')}</g>`;
+    }
+    let mark = '';
+    if (c === 'victoria') mark = `<circle cx="336" cy="388" r="2" fill="${p.skin[3]}"/>`;
+    if (c === 'luna') mark = `<circle cx="368" cy="330" r="1.9" fill="#5a3442"/>
+      <circle cx="312" cy="362" r="2.2" fill="none" stroke="#e8e8f4" stroke-width="1.4"/>`;
+    return `
+      <g opacity="${blushO}">
+        <ellipse cx="240" cy="352" rx="30" ry="15" fill="url(#${id}-blush)"/>
+        <ellipse cx="360" cy="352" rx="30" ry="15" fill="url(#${id}-blush)"/>
+      </g>
+      ${freckles}
+      <ellipse cx="248" cy="290" rx="34" ry="17" fill="url(#${id}-shadowEye)"/>
+      <ellipse cx="352" cy="290" rx="34" ry="17" fill="url(#${id}-shadowEye)"/>
+      <path d="${bl}" fill="${p.brow}"/>
+      <path d="${br}" fill="${p.brow}"/>
+      ${eyes}
+      <path d="M 306 300 C 310 318 313 336 314 352" fill="none" stroke="${p.skin[2]}" stroke-width="5" opacity=".28" stroke-linecap="round" filter="url(#${id}-soft)"/>
+      <ellipse cx="297" cy="350" rx="4" ry="6" fill="#fff" opacity=".22"/>
+      <path d="M 288 361 C 293 367 307 367 312 361" fill="none" stroke="${p.line}" stroke-width="1.8" opacity=".55" stroke-linecap="round"/>
+      <path d="M 289 359 C 290 362 292 363 294 363 M 311 359 C 310 362 308 363 306 363" fill="none" stroke="${p.line}" stroke-width="1.6" opacity=".45" stroke-linecap="round"/>
+      ${mouth(m.mouth, p, id)}
+      ${mark}`;
+  }
+
+  /* =====================================================================
+     CABELO, ROUPA E ACESSÓRIOS — por personagem
+     Cada função devolve { back, front, shadowFront, body, over, rimHair }
+     ===================================================================== */
+  function victoriaParts(p, id) {
+    const backD = 'M 300 112 C 212 110 156 174 150 268 C 145 350 150 420 136 490 C 124 552 104 604 114 656 C 124 708 170 742 220 756 C 240 708 244 650 240 590 C 236 540 242 506 254 476 L 350 476 C 362 516 372 566 396 606 C 416 638 446 646 470 628 C 476 586 462 544 458 502 C 452 440 454 360 450 292 C 446 186 392 114 300 112 Z';
+    const crown = 'M 300 114 C 226 114 190 166 194 240 C 196 266 202 284 206 300 C 214 252 242 206 300 186 C 318 180 330 176 340 168 C 350 182 370 198 386 218 C 398 236 400 264 396 300 C 404 272 410 240 404 212 C 394 148 356 114 300 114 Z';
+    const swoop = 'M 342 164 C 296 166 250 186 226 224 C 208 252 202 290 204 324 C 206 354 198 380 190 406 C 182 434 186 462 200 484 C 210 458 216 434 222 406 C 228 380 230 352 228 330 C 232 296 246 262 272 238 C 294 218 320 206 342 194 Z';
+    const rightSide = 'M 340 166 C 372 170 398 198 402 244 C 404 270 402 290 398 306 C 394 282 386 258 374 240 C 362 222 352 210 340 198 Z';
+    const frontLock = 'M 212 372 C 194 410 184 452 188 494 C 192 534 178 568 162 602 C 146 638 146 680 168 714 C 176 694 190 680 206 664 C 222 644 228 614 224 586 C 220 556 232 526 240 494 C 246 460 238 424 222 386 Z';
+    const strands = [
+      'M 336 170 C 290 182 248 214 230 262 C 220 292 218 332 214 372',
+      'M 330 182 C 292 200 260 232 246 272 C 238 298 236 324 232 350',
+      'M 320 190 C 284 214 258 250 242 300 C 234 330 232 360 226 392',
+      'M 216 400 C 204 440 198 480 200 520 C 202 560 190 600 172 640',
+      'M 228 430 C 220 470 218 510 214 550 C 210 590 198 630 182 668',
+      'M 160 300 C 156 380 152 450 140 520 C 132 570 128 620 140 670',
+      'M 440 300 C 444 380 444 450 452 520 C 456 560 458 590 452 620',
+      'M 352 176 C 374 196 390 222 396 262'
+    ];
+    const sheen = 'M 224 196 C 252 160 322 146 372 172';
+    const body = `
+      <path d="M 112 552 C 160 530 228 520 254 508 C 268 556 284 620 300 704 C 316 620 332 556 346 508 C 372 520 440 530 488 552 C 528 572 548 616 556 686 L 572 900 L 28 900 L 44 686 C 52 616 72 572 112 552 Z" fill="url(#${id}-cloth)"/>
+      <path d="M 254 508 C 268 556 284 620 300 704 L 286 708 C 268 668 236 628 206 606 L 234 586 C 224 562 220 534 226 518 Z" fill="url(#${id}-satin)"/>
+      <path d="${mirror('M 254 508 C 268 556 284 620 300 704 L 286 708 C 268 668 236 628 206 606 L 234 586 C 224 562 220 534 226 518 Z')}" fill="url(#${id}-satinR)"/>
+      <path d="M 206 606 L 234 586 L 214 620 Z M 394 606 L 366 586 L 386 620 Z" fill="#000" opacity=".5"/>
+      <g fill="none" stroke="#fff" stroke-linecap="round">
+        <path d="M 96 574 C 140 552 196 540 236 530" stroke-width="3" opacity=".18"/>
+        <path d="M 504 574 C 460 552 404 540 364 530" stroke-width="2" opacity=".08"/>
+        <path d="M 150 640 C 166 700 172 780 164 900" stroke-width="2" opacity=".07"/>
+        <path d="M 440 650 C 430 720 428 800 436 900" stroke-width="2" opacity=".05"/>
+      </g>
+      <g fill="none" stroke="#000" stroke-linecap="round" opacity=".55">
+        <path d="M 120 660 C 140 720 150 800 146 900" stroke-width="5"/>
+        <path d="M 470 660 C 456 730 452 810 458 900" stroke-width="5"/>
+        <path d="M 236 760 C 250 800 262 850 266 900" stroke-width="3"/>
+      </g>
+      <path d="M 258 512 C 268 556 286 592 300 606 C 314 592 332 556 342 512" fill="none" stroke="url(#${id}-gold)" stroke-width="2.4"/>
+      <path d="M 300 604 L 309 620 L 300 640 L 291 620 Z" fill="url(#${id}-gold)" stroke="#7a5418" stroke-width="1"/>
+      <path d="M 300 608 L 304 620 L 300 632" fill="none" stroke="#fff6d6" stroke-width="1.4" opacity=".8"/>`;
+    const over = `
+      <g transform="translate(0 0)">
+        <path d="M 396 352 L 396 368" stroke="url(#${id}-gold)" stroke-width="2"/>
+        <circle cx="396" cy="350" r="3.2" fill="url(#${id}-gold)"/>
+        <path d="M 396 366 C 404 378 404 392 396 400 C 388 392 388 378 396 366 Z" fill="url(#${id}-gold)" stroke="#7a5418" stroke-width=".8"/>
+        <path d="M 393 374 C 391 382 392 390 395 394" fill="none" stroke="#fff3c8" stroke-width="1.2" opacity=".9"/>
+      </g>`;
+    return {
+      back: `<path d="${backD}" fill="url(#${id}-hair)"/>
+        <path d="M 168 300 C 160 380 158 450 146 520 C 136 576 124 624 132 676 C 150 640 162 590 168 540 C 176 470 178 390 168 300 Z" fill="${p.hair[2]}" opacity=".55"/>
+        <path d="M 432 300 C 440 380 438 450 446 520 C 450 560 456 596 452 626 C 438 596 430 560 428 520 C 424 450 426 380 432 300 Z" fill="${p.hair[2]}" opacity=".45"/>
+        <path d="M 156 380 C 150 430 146 470 140 510" stroke="${p.hair[4]}" stroke-width="7" opacity=".28" fill="none" stroke-linecap="round" filter="url(#${id}-soft)"/>
+        <path d="M 444 380 C 448 430 450 470 454 510" stroke="${p.hair[4]}" stroke-width="6" opacity=".2" fill="none" stroke-linecap="round" filter="url(#${id}-soft)"/>
+        <g fill="none" stroke="${p.hair[3]}" stroke-width="1.4" opacity=".22" stroke-linecap="round">${strands.slice(5).map(s => `<path d="${s}"/>`).join('')}</g>
+        <g fill="none" stroke="#000" stroke-width="2.5" opacity=".5" stroke-linecap="round">
+          <path d="M 176 330 C 172 420 168 500 156 580"/><path d="M 424 330 C 428 420 432 500 440 580"/>
+        </g>`,
+      front: `
+        <path d="${crown}" fill="url(#${id}-hair)"/>
+        <path d="${rightSide}" fill="url(#${id}-hair)"/>
+        <path d="${swoop}" fill="url(#${id}-hair)"/>
+        <path d="${sheen}" fill="none" stroke="${p.hair[4]}" stroke-width="9" opacity=".35" stroke-linecap="round" filter="url(#${id}-soft)"/>
+        <g fill="none" stroke-linecap="round">
+          ${strands.slice(0, 3).concat(strands[7]).map((s, i) => `<path d="${s}" stroke="${i % 2 ? p.hair[3] : p.hair[4]}" stroke-width="${i % 2 ? 1.2 : 1.6}" opacity="${i % 2 ? .3 : .38}"/>`).join('')}
+        </g>
+        <path d="${swoop}" fill="none" stroke="#000" stroke-width="1.2" opacity=".6"/>`,
+      shadowFront: swoop + ' ' + crown,
+      lock: `<path d="${frontLock}" fill="url(#${id}-hair)"/>
+        <g fill="none" stroke-linecap="round">${strands.slice(3, 5).map((s, i) => `<path d="${s}" stroke="${p.hair[i ? 3 : 4]}" stroke-width="1.4" opacity=".3"/>`).join('')}</g>
+        <path d="M 210 420 C 200 460 196 500 198 530" stroke="${p.hair[4]}" stroke-width="6" opacity=".22" fill="none" filter="url(#${id}-soft)"/>`,
+      body, over,
+      showEarL: false, showEarR: true,
+      rimR: 'M 300 112 C 392 114 446 186 450 292 C 454 360 452 440 458 502 C 462 544 476 586 470 628',
+      rimL: 'M 300 112 C 212 110 156 174 150 268 C 145 350 150 420 136 490 C 124 552 104 604 114 656'
+    };
+  }
+
+  function lunaParts(p, id) {
+    const backD = 'M 300 108 C 204 108 156 176 154 262 C 152 330 160 390 150 440 C 142 480 150 512 170 534 L 184 502 L 196 544 L 214 508 L 230 534 L 246 494 L 354 494 L 370 534 L 386 508 L 404 544 L 416 502 L 430 534 C 450 512 458 480 450 440 C 440 390 448 330 446 262 C 444 176 396 108 300 108 Z';
+    const under = 'M 160 452 C 164 482 166 508 172 530 L 184 502 L 196 544 L 204 516 C 196 492 186 470 160 452 Z M 214 508 L 230 534 L 234 500 C 228 492 220 490 214 508 Z';
+    const crown = 'M 300 110 C 220 110 186 168 190 240 C 192 278 200 300 206 306 C 210 262 228 204 300 188 C 372 204 390 262 394 306 C 400 300 408 278 410 240 C 414 168 380 110 300 110 Z';
+    const bangs = 'M 302 122 C 262 132 234 166 226 214 C 222 236 222 254 224 266 C 232 252 240 238 248 222 C 250 240 254 252 262 262 C 266 240 274 220 286 204 C 288 226 294 242 306 254 C 308 232 314 214 322 198 C 330 220 342 238 358 250 C 356 228 352 212 346 194 C 358 210 370 232 378 254 C 384 214 374 168 344 138 C 332 128 318 122 302 122 Z';
+    const sideL = 'M 236 160 C 206 194 194 246 196 298 C 198 348 202 392 190 434 C 206 418 214 392 220 360 C 226 330 226 296 230 262 C 234 228 240 196 248 172 Z';
+    const sideL2 = 'M 206 330 C 204 360 200 392 190 424 C 200 414 206 400 210 384 C 212 366 212 348 210 330 Z';
+    const sideR = 'M 360 156 C 394 190 406 244 404 298 C 402 350 398 396 412 440 C 396 424 386 396 380 362 C 374 330 374 296 370 262 C 366 226 360 194 352 168 Z';
+    const streak = 'M 336 148 C 352 182 358 214 356 250 C 366 226 370 196 362 166 Z';
+    const strands = [
+      'M 300 128 C 270 150 252 186 246 226', 'M 312 132 C 300 168 292 198 290 206', 'M 326 140 C 336 170 344 196 350 196',
+      'M 238 172 C 220 210 212 260 212 310 C 212 350 206 390 196 420', 'M 362 170 C 380 210 388 260 388 310 C 388 350 394 390 404 424',
+      'M 180 300 C 176 360 176 420 170 480', 'M 420 300 C 424 360 424 420 430 480'
+    ];
+    const body = `
+      <path d="M 232 596 C 262 612 338 612 368 596 L 378 900 L 222 900 Z" fill="url(#${id}-top)"/>
+      <path d="M 232 596 C 262 612 338 612 368 596" fill="none" stroke="#c9a7ff" stroke-width="2" opacity=".6"/>
+      <path d="M 240 598 L 230 520" stroke="#4c2f84" stroke-width="5" stroke-linecap="round"/>
+      <path d="M 262 640 C 280 660 320 660 338 640" fill="none" stroke="#2a1650" stroke-width="2" opacity=".5"/>
+      <path d="M 28 900 L 40 720 C 46 684 66 664 98 662 C 140 662 190 670 226 690 C 240 740 246 820 244 900 Z" fill="url(#${id}-leather)"/>
+      <path d="M 40 716 C 50 684 70 668 100 668 C 140 668 188 676 224 694 L 226 708 C 190 690 140 682 102 682 C 72 682 54 698 46 724 Z" fill="url(#${id}-lining)"/>
+      <path d="M 46 724 C 56 698 74 684 104 684 C 142 684 190 692 226 710" fill="none" stroke="#fff" stroke-width="2.5" opacity=".3" stroke-linecap="round"/>
+      <path d="M 90 740 C 96 790 96 840 90 900 M 160 720 C 170 780 172 840 168 900" fill="none" stroke="#000" stroke-width="4" opacity=".45"/>
+      <path d="M 120 730 C 126 780 128 830 124 880" fill="none" stroke="#fff" stroke-width="2" opacity=".12"/>
+      <path d="M 352 504 C 392 516 452 530 492 552 C 532 574 550 620 558 690 L 574 900 L 362 900 C 358 800 352 700 344 640 C 338 590 340 540 352 504 Z" fill="url(#${id}-leather)"/>
+      <path d="M 352 504 C 374 540 392 586 398 644 C 386 664 372 690 364 720 C 352 660 344 600 346 556 Z" fill="#26222f"/>
+      <path d="M 352 504 C 374 540 392 586 398 644" fill="none" stroke="#fff" stroke-width="2" opacity=".3"/>
+      <path d="M 470 560 C 510 590 528 640 534 700" fill="none" stroke="#fff" stroke-width="4" opacity=".16" stroke-linecap="round"/>
+      <path d="M 420 620 C 430 700 432 780 428 900" fill="none" stroke="#000" stroke-width="4" opacity=".4"/>
+      <path d="M 372 700 L 376 900" stroke="#9aa0b4" stroke-width="2.5" stroke-dasharray="3 3" opacity=".7"/>
+      <g filter="url(#${id}-glow)">
+        <path d="M 460 640 C 466 632 476 634 474 644 C 472 652 462 650 460 640 Z" fill="${p.under[0]}"/>
+        <circle cx="482" cy="660" r="3" fill="${p.under[0]}"/><circle cx="450" cy="664" r="2" fill="#ff4fa0"/>
+        <path d="M 100 760 C 108 750 122 754 118 766 C 114 776 98 772 100 760 Z" fill="#ff4fa0"/>
+        <circle cx="128" cy="748" r="2.6" fill="${p.under[0]}"/><circle cx="90" cy="782" r="2" fill="#b896ff"/>
+        <path d="M 508 760 L 520 790" stroke="#ff4fa0" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <path d="M 262 462 C 280 472 320 472 338 462 L 338 478 C 320 488 280 488 262 478 Z" fill="#141018"/>
+      <path d="M 264 466 C 282 474 318 474 336 466" fill="none" stroke="#fff" stroke-width="1" opacity=".25"/>
+      <circle cx="300" cy="490" r="7" fill="none" stroke="#dcdcec" stroke-width="2.4"/>`;
+    return {
+      back: `<path d="${backD}" fill="url(#${id}-hair)"/>
+        <path d="${backD}" fill="url(#${id}-tips)"/>
+        <g fill="none" stroke="${p.hair[4]}" stroke-width="1.3" opacity=".25" stroke-linecap="round">${strands.slice(5).map(s => `<path d="${s}"/>`).join('')}</g>`,
+      front: `
+        <path d="${crown}" fill="url(#${id}-hair)"/>
+        <path d="${sideL}" fill="url(#${id}-hair)"/>
+        <path d="${sideL2}" fill="url(#${id}-under)"/>
+        <path d="${sideR}" fill="url(#${id}-hair)"/>
+        <path d="${bangs}" fill="url(#${id}-hair)"/>
+        <path d="${streak}" fill="url(#${id}-under)"/>
+        <path d="M 236 176 C 262 140 320 128 366 152" fill="none" stroke="#fff" stroke-width="8" opacity=".45" stroke-linecap="round" filter="url(#${id}-soft)"/>
+        <g fill="none" stroke-linecap="round">${strands.slice(0, 5).map((s, i) => `<path d="${s}" stroke="${i % 2 ? p.hair[0] : p.hair[4]}" stroke-width="1.3" opacity="${i % 2 ? .22 : .4}"/>`).join('')}</g>
+        <path d="${bangs}" fill="none" stroke="${p.hairLine}" stroke-width="1" opacity=".32"/>
+        <path d="${sideL}" fill="none" stroke="${p.hairLine}" stroke-width="1" opacity=".28"/>
+        <path d="${sideR}" fill="none" stroke="${p.hairLine}" stroke-width="1" opacity=".28"/>`,
+      shadowFront: bangs + ' ' + sideL + ' ' + sideR,
+      lock: '',
+      body,
+      over: `<circle cx="203" cy="345" r="5" fill="none" stroke="#dcdcec" stroke-width="1.6"/>
+             <circle cx="398" cy="340" r="5" fill="none" stroke="#dcdcec" stroke-width="1.6"/>
+             <path d="M 404 312 C 410 316 410 324 404 328" fill="none" stroke="#dcdcec" stroke-width="2"/>`,
+      showEarL: true, showEarR: true,
+      rimR: 'M 300 108 C 396 108 444 176 446 262 C 448 330 440 390 450 440 C 458 480 450 512 430 534',
+      rimL: 'M 300 108 C 204 108 156 176 154 262 C 152 330 160 390 150 440 C 142 480 150 512 170 534'
+    };
+  }
+
+  function sophieParts(p, id, opts) {
+    const backD = 'M 300 114 C 212 114 168 180 168 262 C 168 330 176 384 200 420 C 220 446 250 452 270 446 L 330 446 C 350 452 380 446 400 420 C 424 384 432 330 432 262 C 432 180 388 114 300 114 Z';
+    const bun = 'M 360 446 C 360 416 392 404 420 414 C 450 424 458 456 446 480 C 434 504 400 510 378 496 C 364 486 360 466 360 446 Z';
+    const crown = 'M 300 116 C 224 116 190 172 194 246 C 196 274 202 292 206 302 C 214 262 236 216 270 196 C 286 188 296 186 300 192 C 304 186 314 188 330 196 C 364 216 386 262 394 302 C 398 292 404 274 406 246 C 410 172 376 116 300 116 Z';
+    const curtainL = 'M 300 150 C 278 168 250 196 234 232 C 222 258 218 286 220 312 C 228 292 238 272 252 256 C 268 238 288 216 300 198 Z';
+    const curtainR = 'M 300 150 C 322 168 350 196 366 232 C 378 258 382 286 380 312 C 372 292 362 272 348 256 C 332 238 312 216 300 198 Z';
+    const tendrilL = 'M 216 286 C 206 326 208 366 218 398 C 224 420 222 442 212 462 C 228 450 236 426 234 402 C 232 372 222 336 226 300 Z';
+    const tendrilR = 'M 384 290 C 394 328 394 360 386 390 C 380 414 384 436 394 452 C 380 444 370 422 372 398 C 374 368 382 334 378 302 Z';
+    const strands = [
+      'M 296 156 C 274 180 252 206 238 240', 'M 290 170 C 268 194 250 222 240 262', 'M 304 156 C 326 180 348 206 362 240',
+      'M 310 170 C 332 194 350 222 360 262', 'M 236 140 C 210 170 200 210 200 250', 'M 364 140 C 390 170 400 210 400 250',
+      'M 376 432 C 398 420 428 426 440 446', 'M 372 460 C 392 446 424 450 436 470'
+    ];
+    const glasses = (opts.glasses === false || opts.outfit === 'rouge') ? '' : `
+      <g fill="none">
+        <circle cx="250" cy="304" r="37" stroke="#caa660" stroke-width="3"/>
+        <circle cx="350" cy="304" r="37" stroke="#caa660" stroke-width="3"/>
+        <circle cx="250" cy="304" r="37" stroke="#fff3cf" stroke-width="1" opacity=".6" stroke-dasharray="30 200"/>
+        <circle cx="350" cy="304" r="37" stroke="#fff3cf" stroke-width="1" opacity=".6" stroke-dasharray="30 200"/>
+        <path d="M 286 296 C 292 288 308 288 314 296" stroke="#caa660" stroke-width="3"/>
+        <path d="M 213 300 L 200 296 M 387 300 L 400 296" stroke="#caa660" stroke-width="2.5"/>
+      </g>
+      <path d="M 226 288 L 240 276 L 268 330 L 254 338 Z" fill="#fff" opacity=".1"/>
+      <path d="M 326 288 L 336 279 L 366 330 L 356 338 Z" fill="#fff" opacity=".1"/>`;
+    const uniformBody = `
+      <path d="M 112 552 C 160 530 228 520 254 508 L 300 560 L 346 508 C 372 520 440 530 488 552 C 528 572 548 616 556 686 L 572 900 L 28 900 L 44 686 C 52 616 72 572 112 552 Z" fill="url(#${id}-blouse)"/>
+      <path d="M 112 552 C 150 534 200 526 232 520 C 250 600 270 680 292 760 L 292 900 L 28 900 L 44 686 C 52 616 72 572 112 552 Z" fill="url(#${id}-vest)"/>
+      <path d="${mirror('M 112 552 C 150 534 200 526 232 520 C 250 600 270 680 292 760 L 292 900 L 28 900 L 44 686 C 52 616 72 572 112 552 Z')}" fill="url(#${id}-vestR)"/>
+      <path d="M 232 520 C 250 600 270 680 292 760" fill="none" stroke="#2c0711" stroke-width="2"/>
+      <path d="M 368 520 C 350 600 330 680 308 760" fill="none" stroke="#2c0711" stroke-width="2"/>
+      <path d="M 300 560 L 300 900" stroke="#c9b9b0" stroke-width="1.5"/>
+      <g fill="url(#${id}-gold)" stroke="#6a4a14" stroke-width=".8">
+        <circle cx="300" cy="790" r="5"/><circle cx="300" cy="840" r="5"/><circle cx="300" cy="888" r="5"/>
+      </g>
+      <path d="M 254 508 C 248 528 246 548 252 566 L 300 560 Z" fill="#fbf7f2"/>
+      <path d="M 346 508 C 352 528 354 548 348 566 L 300 560 Z" fill="#ece4dc"/>
+      <path d="M 254 508 C 248 528 246 548 252 566 L 300 560" fill="none" stroke="#b8a8a0" stroke-width="1.2"/>
+      <path d="M 346 508 C 352 528 354 548 348 566 L 300 560" fill="none" stroke="#b8a8a0" stroke-width="1.2"/>
+      <path d="M 300 548 C 286 534 266 536 268 552 C 270 566 290 562 300 554 C 310 562 330 566 332 552 C 334 536 314 534 300 548 Z" fill="url(#${id}-ribbon)"/>
+      <path d="M 296 556 L 284 590 L 292 588 L 300 562 L 308 588 L 316 590 L 304 556 Z" fill="#7a1b30"/>
+      <ellipse cx="300" cy="552" rx="6" ry="5" fill="#9e2a44"/>
+      <g fill="none" stroke="#000" stroke-linecap="round" opacity=".35">
+        <path d="M 150 640 C 166 700 170 790 162 900" stroke-width="4"/>
+        <path d="M 452 640 C 438 710 434 800 442 900" stroke-width="4"/>
+      </g>
+      <path d="M 92 576 C 136 552 196 540 230 532" fill="none" stroke="#fff" stroke-width="3" opacity=".16" stroke-linecap="round"/>
+      <rect x="384" y="640" width="74" height="22" rx="3" fill="url(#${id}-gold)" stroke="#6a4a14" stroke-width="1"/>
+      <text x="421" y="656" text-anchor="middle" font-family="Georgia,serif" font-size="12" letter-spacing="2" fill="#3a2008">SOPHIE</text>
+      <rect x="150" y="650" width="4" height="40" rx="2" fill="#1a1a22"/><rect x="149" y="648" width="6" height="8" rx="1" fill="url(#${id}-gold)"/>`;
+    const blouseBody = `
+      <path d="M 112 552 C 160 530 228 520 254 508 L 300 600 L 346 508 C 372 520 440 530 488 552 C 528 572 548 616 556 686 L 572 900 L 28 900 L 44 686 C 52 616 72 572 112 552 Z" fill="url(#${id}-blouse)"/>
+      <path d="M 254 508 C 244 532 240 556 246 578 L 300 600 Z" fill="#fbf7f2" stroke="#b8a8a0" stroke-width="1.2"/>
+      <path d="M 346 508 C 356 532 360 556 354 578 L 300 600 Z" fill="#ece4dc" stroke="#b8a8a0" stroke-width="1.2"/>
+      <path d="M 300 600 L 300 900" stroke="#c9b9b0" stroke-width="1.5"/>
+      <g fill="#efe6df" stroke="#b8a8a0" stroke-width=".8"><circle cx="300" cy="660" r="4"/><circle cx="300" cy="740" r="4"/><circle cx="300" cy="820" r="4"/></g>
+      <g fill="none" stroke="#9c8a84" stroke-linecap="round" opacity=".55">
+        <path d="M 150 620 C 170 690 176 780 168 900" stroke-width="3"/><path d="M 452 620 C 436 700 430 790 438 900" stroke-width="3"/>
+        <path d="M 230 640 C 250 680 262 720 268 780" stroke-width="2"/><path d="M 370 640 C 352 690 340 740 336 800" stroke-width="2"/>
+      </g>`;
+    const rougeBody = `
+      <path d="M 150 640 C 196 606 252 628 300 652 C 348 628 404 606 450 640 C 474 700 488 800 496 900 L 104 900 C 112 800 126 700 150 640 Z" fill="url(#${id}-velvet)"/>
+      <path d="M 150 640 C 196 606 252 628 300 652 C 348 628 404 606 450 640" fill="none" stroke="#ff7a8e" stroke-width="2.4" opacity=".55"/>
+      <path d="M 300 652 C 296 700 300 760 296 900" fill="none" stroke="#2a0008" stroke-width="3" opacity=".6"/>
+      <g fill="none" stroke-linecap="round">
+        <path d="M 200 660 C 214 730 220 800 214 900" stroke="#ff8fa0" stroke-width="5" opacity=".2"/>
+        <path d="M 400 660 C 388 730 384 800 392 900" stroke="#000" stroke-width="6" opacity=".35"/>
+      </g>
+      <path d="M 190 626 L 214 524 M 410 626 L 386 524" stroke="#7a0a1e" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M 268 470 C 284 478 316 478 332 470" fill="none" stroke="#f4ecdf" stroke-width="3.5" stroke-dasharray="0.1 7" stroke-linecap="round"/>`;
+    const mask = `
+      <path fill-rule="evenodd" fill="#0c0508" opacity=".88" d="M 194 284 C 228 260 280 266 300 282 C 320 266 372 260 406 284 C 414 306 400 332 372 336 C 340 340 316 328 300 320 C 284 328 260 340 228 336 C 200 332 186 306 194 284 Z M 218 304 C 218 292 234 286 250 286 C 266 286 282 293 282 304 C 282 315 266 322 250 322 C 234 322 218 316 218 304 Z M 318 304 C 318 293 334 286 350 286 C 366 286 382 292 382 304 C 382 316 366 322 350 322 C 334 322 318 315 318 304 Z"/>
+      <path d="M 194 284 C 228 260 280 266 300 282 C 320 266 372 260 406 284" fill="none" stroke="#0c0508" stroke-width="5" stroke-dasharray="1 6" stroke-linecap="round"/>
+      <path d="M 228 336 C 260 340 284 328 300 320 C 316 328 340 340 372 336" fill="none" stroke="#0c0508" stroke-width="4" stroke-dasharray="1 5" stroke-linecap="round"/>
+      <path d="M 208 280 C 232 270 264 272 286 284 M 314 284 C 336 272 368 270 392 280" fill="none" stroke="#fff" stroke-width="1" opacity=".18"/>
+      <path d="M 196 296 C 186 300 180 310 178 322 M 404 296 C 414 300 420 310 422 322" fill="none" stroke="#0c0508" stroke-width="3" stroke-linecap="round"/>`;
+    const outfit = opts.outfit;
+    const body = outfit === 'rouge' ? rougeBody : outfit === 'blouse' ? blouseBody : uniformBody;
+    return {
+      back: `<path d="${backD}" fill="url(#${id}-hair)"/>
+        <path d="${bun}" fill="url(#${id}-hair)"/>
+        <g fill="none" stroke="${p.hair[4]}" stroke-width="1.6" opacity=".35" stroke-linecap="round">${strands.slice(6).map(s => `<path d="${s}"/>`).join('')}</g>`,
+      front: `
+        <path d="${crown}" fill="url(#${id}-hair)"/>
+        <path d="${tendrilL}" fill="url(#${id}-hair)"/>
+        <path d="${tendrilR}" fill="url(#${id}-hair)"/>
+        <path d="${curtainL}" fill="url(#${id}-hair)"/>
+        <path d="${curtainR}" fill="url(#${id}-hair)"/>
+        <path d="M 232 178 C 262 146 338 142 370 176" fill="none" stroke="${p.hair[4]}" stroke-width="9" opacity=".4" stroke-linecap="round" filter="url(#${id}-soft)"/>
+        <g fill="none" stroke-linecap="round">${strands.slice(0, 6).map((s, i) => `<path d="${s}" stroke="${i % 3 === 2 ? p.hair[0] : p.hair[4]}" stroke-width="1.3" opacity="${i % 3 === 2 ? .35 : .4}"/>`).join('')}</g>
+        <path d="M 300 152 L 300 196" stroke="${p.hair[0]}" stroke-width="1.6" opacity=".6"/>
+        <path d="${curtainL}" fill="none" stroke="${p.hairLine}" stroke-width="1" opacity=".45"/>
+        <path d="${curtainR}" fill="none" stroke="${p.hairLine}" stroke-width="1" opacity=".45"/>
+        <path d="M 214 302 C 206 310 204 322 210 330" fill="none" stroke="${p.hair[3]}" stroke-width="1.2" opacity=".6"/>`,
+      shadowFront: curtainL + ' ' + curtainR + ' ' + tendrilL + ' ' + tendrilR,
+      lock: '',
+      body, over: opts.outfit === 'rouge' ? mask : glasses,
+      showEarL: true, showEarR: true,
+      rimR: 'M 300 114 C 388 114 432 180 432 262 C 432 330 424 384 400 420 M 440 430 C 456 456 452 486 430 504',
+      rimL: 'M 300 114 C 212 114 168 180 168 262 C 168 330 176 384 200 420'
+    };
+  }
+
+  /* ---------- definições (gradientes, filtros, recortes) ---------- */
+  function defs(c, p, id, m, opts) {
+    const L = eyeLeft(250, 304, m);
+    const lin = (gid, x1, y1, x2, y2, stops, units) => `<linearGradient id="${id}-${gid}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"${units ? ' gradientUnits="userSpaceOnUse"' : ''}>${stops.map(([o, col, op]) => `<stop offset="${o}" stop-color="${col}"${op != null ? ` stop-opacity="${op}"` : ''}/>`).join('')}</linearGradient>`;
+    const rad = (gid, cx, cy, r, stops, extra) => `<radialGradient id="${id}-${gid}" cx="${cx}" cy="${cy}" r="${r}"${extra || ''}>${stops.map(([o, col, op]) => `<stop offset="${o}" stop-color="${col}"${op != null ? ` stop-opacity="${op}"` : ''}/>`).join('')}</radialGradient>`;
+    const iris = (gid, cols) => rad(gid, '.5', '.58', '.55', [[0, cols[0]], [.45, cols[1]], [.85, cols[2]], [1, '#000']]);
+    const h = p.hair;
+    let extra = '';
+    if (c === 'victoria' && opts.outfit === 'silk') {
+      extra = lin('cloth', 0, 0, 1, 1, [[0, '#a3243f'], [.35, '#6a0f24'], [1, '#2a0410']])
+        + lin('satin', 0, 0, 1, 1, [[0, '#ff9aa8'], [.25, '#b8304c'], [.6, '#7a1229'], [1, '#3a0614']])
+        + lin('satinR', 1, 0, 0, 1, [[0, '#8a1a32'], [.5, '#5a0a1e'], [1, '#2a0410']])
+        + lin('gold', 0, 0, 1, 1, [[0, '#fff1b8'], [.4, '#e0b04e'], [.75, '#9a6a1c'], [1, '#f5d47a']]);
+    } else if (c === 'victoria') {
+      extra = lin('cloth', 0, 0, 1, 1, [[0, '#2a2530'], [.35, '#121016'], [1, '#050407']])
+        + lin('satin', 0, 0, 1, 1, [[0, '#5b5468'], [.4, '#1f1b26'], [.7, '#3a3446'], [1, '#0e0c12']])
+        + lin('satinR', 1, 0, 0, 1, [[0, '#2a2532'], [.5, '#111015'], [1, '#08070a']])
+        + lin('gold', 0, 0, 1, 1, [[0, '#fff1b8'], [.4, '#e0b04e'], [.75, '#9a6a1c'], [1, '#f5d47a']]);
+    } else if (c === 'luna') {
+      extra = lin('leather', 0, 0, 1, 1, [[0, '#3b3647'], [.3, '#1a1722'], [.6, '#0c0b10'], [1, '#22202c']])
+        + lin('top', 0, 0, 0, 1, [[0, '#8e5cf0'], [1, '#3a1d7a']])
+        + lin('under', 0, 0, 0, 1, [[0, p.under[0]], [1, p.under[1]]])
+        + lin('tips', 0, 420, 0, 545, [[0, p.under[0], 0], [.45, p.under[0], .55], [1, p.under[1], .95]], true)
+        + lin('lining', 0, 0, 1, 0, [[0, '#5a2fa0'], [1, '#2a1250']]);
+    } else {
+      extra = lin('blouse', 0, 0, 1, 1, [[0, '#ffffff'], [1, '#d9cdc6']])
+        + lin('vest', 0, 0, 1, 1, [[0, '#a3324c'], [.45, '#7a1c32'], [1, '#3e0a18']])
+        + lin('vestR', 1, 0, 0, 1, [[0, '#6a1628'], [1, '#2e0711']])
+        + lin('ribbon', 0, 0, 1, 1, [[0, '#c4405e'], [1, '#6e1428']])
+        + lin('velvet', 0, 0, 1, 1, [[0, '#e0304e'], [.3, '#a3102c'], [.7, '#5c0414'], [1, '#2a0008']])
+        + lin('gold', 0, 0, 1, 1, [[0, '#fff1b8'], [.4, '#e0b04e'], [.75, '#9a6a1c'], [1, '#f5d47a']]);
+    }
+    return `<defs>
+      ${lin('skin', 190, 160, 420, 470, [[0, p.skin[0]], [.5, p.skin[1]], [1, p.skin[2]]], true)}
+      ${lin('skinBody', 150, 420, 460, 760, [[0, p.skin[0]], [.5, p.skin[1]], [1, p.skin[3]]], true)}
+      ${lin('hair', 0, 110, 0, 760, [[0, h[2]], [.07, h[3]], [.13, h[2]], [.32, h[1]], [.7, h[0]], [1, h[0]]], true)}
+      ${lin('lipU', 0, 0, 0, 1, [[0, p.lip[1]], [1, p.lip[0]]])}
+      ${lin('lipL', 0, 0, 0, 1, [[0, p.lip[0]], [.6, p.lip[1]], [1, p.lip[2]]])}
+      ${lin('sclera', 0, 0, 0, 1, [[0, '#b8a8b0'], [.45, '#f6eff0'], [1, '#ffffff']])}
+      ${iris('iris', p.iris)}
+      ${c === 'luna' ? iris('irisB', p.iris2) : ''}
+      ${rad('blush', '.5', '.5', '.5', [[0, p.blush, .75], [1, p.blush, 0]])}
+      ${rad('shadowEye', '.5', '.62', '.5', [[0, p.eyeshadow, .4], [1, p.eyeshadow, 0]])}
+      ${rad('aura', '.5', '.42', '.5', [[0, p.rim, .28], [.6, p.rim, .06], [1, p.rim, 0]])}
+      ${lin('rimR', 250, 0, 430, 0, [[0, p.rim, 0], [.55, p.rim, .25], [1, p.rim, 1]], true)}
+      ${lin('rimL', 160, 0, 330, 0, [[0, p.rim2, .9], [1, p.rim2, 0]], true)}
+      ${lin('edge', 28, 0, 572, 0, [[0, '#000', .55], [.2, '#000', 0], [.8, '#000', 0], [1, '#000', .6]], true)}
+      ${lin('fade', 0, 0, 0, 1, [[0, '#000', 0], [.72, '#000', 0], [1, '#000', .55]])}
+      ${extra}
+      <filter id="${id}-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter>
+      <filter id="${id}-blur8" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8"/></filter>
+      <filter id="${id}-glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <clipPath id="${id}-face"><path d="${FACE}"/></clipPath>
+      <clipPath id="${id}-eyel"><path d="${L.shape}"/></clipPath>
+      <clipPath id="${id}-eyer"><path d="${mirror(L.shape)}"/></clipPath>
+      <clipPath id="${id}-neck"><path d="${NECK}"/></clipPath>
+    </defs>`;
+  }
+
+  /* ---------- montagem ---------- */
+  const TILT = { victoria: -2.5, luna: 3, sophie: -1.5 };
+  function portrait(c, mood, opts) {
+    opts = opts || {};
+    let p = PAL[c];
+    if (c === 'sophie' && opts.outfit === 'rouge') p = Object.assign({}, p, { lip: ['#d4203f', '#8c0b24', '#5c0616'], eyeshadow: '#8a1a3a', rim: '#ff4f6e' });
+    const m = MOOD[mood] || MOOD.neutral;
+    const id = 'vp' + (++uidCounter);
+    const parts = c === 'victoria' ? victoriaParts(p, id) : c === 'luna' ? lunaParts(p, id) : sophieParts(p, id, opts);
+    const ear = (d, din) => `<path d="${d}" fill="url(#${id}-skin)"/><path d="${din}" fill="none" stroke="${p.skin[3]}" stroke-width="1.4" opacity=".5"/>`;
+    const tilt = TILT[c];
+    return `<svg class="vn-svg" viewBox="${opts.viewBox || '0 0 600 900'}" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+      ${defs(c, p, id, m, opts)}
+      <ellipse cx="300" cy="420" rx="300" ry="420" fill="url(#${id}-aura)"/>
+      <g class="vn-breathe">
+        <g transform="rotate(${tilt} 300 480)">
+          ${parts.back}
+          <path d="${parts.rimR}" fill="none" stroke="url(#${id}-rimR)" stroke-width="7" stroke-linecap="round" filter="url(#${id}-soft)" opacity=".85"/>
+          <path d="${parts.rimL}" fill="none" stroke="url(#${id}-rimL)" stroke-width="4" stroke-linecap="round" filter="url(#${id}-soft)" opacity=".45"/>
+        </g>
+        <g transform="translate(300 0) scale(.86 1) translate(-300 0)"><path d="${TORSO}" fill="url(#${id}-skinBody)"/></g>
+        <path d="${NECK}" fill="url(#${id}-skinBody)"/>
+        <g clip-path="url(#${id}-neck)">
+          <ellipse cx="300" cy="446" rx="54" ry="30" fill="${p.skin[3]}" opacity=".6" filter="url(#${id}-blur8)"/>
+          <path d="M 334 400 C 336 450 338 480 346 510" fill="none" stroke="${p.skin[3]}" stroke-width="14" opacity=".4" filter="url(#${id}-soft)"/>
+        </g>
+        <g fill="none" stroke="${p.skin[3]}" stroke-width="2.4" opacity=".35" stroke-linecap="round">${CLAV.map(d => `<path d="${d}"/>`).join('')}</g>
+        <g transform="translate(300 0) scale(.86 1) translate(-300 0)">
+          ${parts.body}
+          <path d="${TORSO}" fill="url(#${id}-edge)"/>
+          <path d="M 128 600 C 132 680 128 780 118 900 M 472 600 C 468 680 472 780 482 900" fill="none" stroke="#2a0a12" stroke-width="3" opacity=".22" filter="url(#${id}-soft)"/>
+          <path d="${TORSO}" fill="url(#${id}-fade)"/>
+          <path d="M 488 552 C 528 572 548 616 556 686 L 568 820" fill="none" stroke="${p.rim}" stroke-width="7" opacity=".6" filter="url(#${id}-soft)"/>
+        </g>
+        <g transform="rotate(${tilt} 300 480)">
+          ${parts.showEarL ? ear(EAR_L, EAR_L_IN) : ''}
+          ${parts.showEarR ? ear(mirror(EAR_L), mirror(EAR_L_IN)) : ''}
+          <path d="${FACE}" fill="url(#${id}-skin)"/>
+          <g clip-path="url(#${id}-face)">
+            <path d="M 362 290 C 386 340 376 400 342 434 C 372 418 396 372 396 318 Z" fill="${p.skin[2]}" opacity=".45" filter="url(#${id}-soft)"/>
+            <path d="${parts.shadowFront}" transform="translate(4 9)" fill="${p.skin[3]}" opacity=".45" filter="url(#${id}-soft)"/>
+          </g>
+          <path d="${FACE}" fill="none" stroke="${p.line}" stroke-width="1.6" opacity=".55"/>
+          ${faceFeatures(c, p, m, id, opts)}
+          ${parts.front}
+          ${parts.over}
+          <g clip-path="url(#${id}-face)">
+            <path d="${FACE}" fill="none" stroke="url(#${id}-rimR)" stroke-width="9" filter="url(#${id}-soft)" opacity=".75"/>
+          </g>
+          ${parts.lock}
+        </g>
+      </g>
+    </svg>`;
+  }
+
+  /* ---------- ícones de presentes (traço dourado) ---------- */
+  const ICON_PATHS = {
+    rosa: '<path d="M16 13c-3-1-5-4-3-7 2 1 3 2 3 4 0-2 1-3 3-4 2 3 0 6-3 7z"/><path d="M16 13v15M16 20c-3-2-6-1-7 1 3 1 5 1 7-1zM16 23c2-2 5-2 6 0-2 1-4 1-6 0z"/>',
+    chocolate: '<rect x="5" y="9" width="22" height="16" rx="2"/><path d="M5 15h22M5 20h22M12 9v16M20 9v16"/><path d="M11 9c2-4 8-4 10 0"/>',
+    poesia: '<path d="M16 8c-3-2-7-2-11-1v18c4-1 8-1 11 1 3-2 7-2 11-1V7c-4-1-8-1-11 1z"/><path d="M16 8v18M8 12h5M8 16h5M19 12h5M19 16h5"/>',
+    pinceis: '<path d="M7 25l9-9M10 28l9-9"/><path d="M16 16l7-9 3 2-7 10zM19 19l7-6 2 3-8 5z"/><path d="M5 27c1-2 2-3 3-3M8 30c1-2 2-3 3-3"/>',
+    vinil: '<circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="3.5"/><path d="M16 8a8 8 0 0 1 8 8M10 21a8 8 0 0 1-2-5"/>',
+    caixa: '<rect x="6" y="15" width="20" height="11" rx="1.5"/><path d="M6 15l3-6h14l3 6M16 9v-3M13 6h6"/><circle cx="16" cy="20.5" r="2"/>',
+    vinho: '<path d="M13 4h6v6c3 2 4 5 4 8v10H9V18c0-3 1-6 4-8z"/><path d="M9 19h14M13 4h6"/><path d="M12 22h8v4h-8z"/>',
+    perfume: '<rect x="8" y="13" width="16" height="15" rx="4"/><path d="M13 13V9h6v4M12 6h8v3h-8z"/><path d="M12 18c2 2 6 2 8 0"/>'
+  };
+  function icon(item, size) {
+    const s = size || 32;
+    return `<svg class="vn-icon" width="${s}" height="${s}" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATHS[item] || ''}</svg>`;
+  }
+  const UI_ICONS = {
+    heart: '<path d="M16 27S5 20 5 12a5.5 5.5 0 0 1 11-2 5.5 5.5 0 0 1 11 2c0 8-11 15-11 15z"/>',
+    bag: '<path d="M7 11h18l-1.5 16h-15z"/><path d="M12 11V9a4 4 0 0 1 8 0v2"/>',
+    menu: '<path d="M6 10h20M6 16h20M6 22h20"/>',
+    moon: '<path d="M21 5a11 11 0 1 0 6 16A9 9 0 0 1 21 5z"/>',
+    sun: '<circle cx="16" cy="16" r="6"/><path d="M16 3v4M16 25v4M3 16h4M25 16h4M6.8 6.8l2.8 2.8M22.4 22.4l2.8 2.8M6.8 25.2l2.8-2.8M22.4 9.6l2.8-2.8"/>'
+  };
+  function uiIcon(name, size) {
+    const s = size || 16;
+    return `<svg class="vn-icon" width="${s}" height="${s}" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${UI_ICONS[name] || ''}</svg>`;
+  }
+
+  return { portrait, icon, uiIcon, MOODS: Object.keys(MOOD) };
+})();
 /* =====================================================================
    VELVET NIGHTS — narrativa
    ===================================================================== */
@@ -1353,7 +1717,7 @@ SOPHIE[3] = [
   N('Demoras três versos a perceber. Os óculos desapareceram, o coque desfez-se em ondas sobre os ombros e os lábios estão pintados de carmim. Mas aquele jeito de fechar os olhos nas notas altas...'),
   P('(...Sophie?)'),
   N('Quando a canção acaba, ela desce do palco, atravessa a sala sem pressa e senta-se à tua mesa, cruzando as pernas.'),
-  FX(() => UI.setUnmasked(true)),
+  FX(() => UI.setOutfit('sophie', 'rouge')),
   S('smirk', 'Surpreendido? Aqui em baixo chamam-me Mademoiselle Rouge.'),
   S('flirty', 'Lá em cima peço desculpa por tudo. Cá em baixo digo o que penso.'),
   P('E o que é que pensas?'),
@@ -1380,7 +1744,7 @@ SOPHIE[3] = [
   S('flirty', 'Ou talvez tenhas sido tu o salvo. Ainda não decidi.'),
   S('smile', 'Isto fica entre nós, sim? O Sr. Vidal sabe e finge que não sabe. É a nossa forma de amor neste hotel: fingir bem.'),
   N('A partir de hoje, a Sala Escarlate abre-te as portas entre a meia-noite e as três.'),
-  FX(() => UI.setUnmasked(false))
+  FX(() => UI.setOutfit('sophie', null))
 ];
 SOPHIE[4] = [
   N('A Sophie tem um envelope dourado nas mãos e olha para ele como quem olha para uma bomba.'),
@@ -1447,7 +1811,7 @@ SOPHIE.inv5 = [
   N('Convite: Jardim de Inverno, entre as 04:30 e as 05:50.')
 ];
 SOPHIE[5] = [
-  BG('jardim'), HIDE,
+  BG('jardim'), HIDE, FX(() => UI.setOutfit('sophie', 'blouse')),
   N('A estufa é uma catedral de vidro e ferro verde. Orquídeas esquecidas florescem por teimosia, e o céu, lá em cima, começa a passar do negro para um violeta cansado.'),
   N('A Sophie está sentada num banco de ferro, descalça, com o caderno vermelho no colo. Já não traz o colete, e a camisa branca tem os dois primeiros botões abertos.'),
   S('shy', 'Vieste.'),
@@ -1470,7 +1834,7 @@ SOPHIE[5] = [
   FADE,
   N('O que acontece a seguir fica entre vocês, as orquídeas e o primeiro raio de sol que atravessa o vidro.'),
   N('Quando o turno da manhã chega, encontra apenas um caderno vermelho esquecido num banco, aberto numa página nova. A primeira frase diz: «E foi assim que ela deixou de ter medo.»'),
-  FX(() => UI.setUnmasked(false))
+  FX(() => { UI.setUnmasked(false); UI.setOutfit('sophie', null); })
 ];
 const SOPHIE_SMALL = [
   [S('smile', 'Sabias que o quarto 404 não existe? O arquiteto era supersticioso. Os hóspedes perdidos passam meia hora à procura.'), P('E tu deixas?'), S('smirk', 'Às vezes. É o meu pequeno poder.')],
@@ -1567,7 +1931,7 @@ VICTORIA.inv3 = [
   N('Convite: Suite Presidencial, entre a 01:30 e as 03:30.')
 ];
 VICTORIA[3] = [
-  BG('suite'), HIDE,
+  BG('suite'), HIDE, FX(() => UI.setOutfit('victoria', 'silk')),
   N('A Suite Presidencial ocupa metade do último piso. Uma janela do chão ao teto engole a cidade inteira — pontes, néons, o rio negro a brilhar como seda.'),
   N('A Victoria trocou o vestido preto por seda cor de vinho e está descalça, de copo vazio na mão, à tua espera.'),
   V('smile', 'Pontual. Abre a garrafa. Quero ver se tens mãos firmes.'),
@@ -1594,7 +1958,8 @@ VICTORIA[3] = [
   N('Ela aproxima-se. Pega-te na gravata e enrola-a devagar à volta dos dedos, puxando-te até sentires o calor dela.'),
   V('flirty', 'És perigoso, {nome}. Fazes-me falar. Eu pago a pessoas para não me fazerem falar.'),
   N('Os lábios dela passam a milímetros dos teus... e desviam-se para a tua orelha.'),
-  V('smirk', 'Ainda não. Gosto de saborear as coisas. Boa noite, concierge.')
+  V('smirk', 'Ainda não. Gosto de saborear as coisas. Boa noite, concierge.'),
+  FX(() => UI.setOutfit('victoria', null))
 ];
 VICTORIA[4] = [
   N('A Victoria tem três telemóveis em cima do balcão e nenhum sorriso.'),
@@ -1675,7 +2040,7 @@ VICTORIA.inv5 = [
   N('Convite: Suite Presidencial, entre as 02:30 e as 04:30.')
 ];
 VICTORIA[5] = [
-  BG('suite'), HIDE,
+  BG('suite'), HIDE, FX(() => UI.setOutfit('victoria', 'silk')),
   N('A suite está às escuras. Só a cidade ilumina o quarto, a desenhar-lhe o contorno contra a janela.'),
   V('neutral', 'Assinei esta tarde a versão final da proposta.'),
   IF(has('victoria_soul'), [
@@ -1699,7 +2064,8 @@ VICTORIA[5] = [
   N('Desaperta-te a gravata com a mesma calma com que assina milhões. A seda cor de vinho escorrega-lhe por um ombro.'),
   FADE,
   N('O resto da noite é uma língua que nenhum dos dois precisa de traduzir.'),
-  N('Lá fora, a cidade continua acordada. Cá dentro, pela primeira vez em vinte anos, Victoria Ravel deixa o telemóvel tocar até desistir.')
+  N('Lá fora, a cidade continua acordada. Cá dentro, pela primeira vez em vinte anos, Victoria Ravel deixa o telemóvel tocar até desistir.'),
+  FX(() => UI.setOutfit('victoria', null))
 ];
 const VICTORIA_SMALL = [
   [V('smirk', 'Sabes qual é a diferença entre um negócio e uma sedução? Nenhuma. Em ambos, quem mostra pressa perde.')],
@@ -1965,7 +2331,7 @@ function giftScene(c, item) {
   return {
     reaction: r,
     nodes: [
-      N(`Entregas-lhe o presente: ${ITEMS[item].icon} ${itemName}.`),
+      N(`Entregas-lhe o presente: ${itemName}.`),
       SAY[c](mood, line.replace('{item}', itemName))
     ]
   };
@@ -2184,14 +2550,28 @@ function endingText(id, s) {
    VELVET NIGHTS — interface e fluxo de jogo
    ===================================================================== */
 
-const PORTRAIT_HTML = '<div class="p-aura"></div><div class="p-hairback"><i></i></div><div class="p-body"><div class="p-chest"></div><div class="p-cloth"></div></div><div class="p-neck"></div><div class="p-front"><div class="p-lock l"></div><div class="p-lock r"></div><div class="p-necklace"></div></div><div class="p-headwrap"><div class="p-ear l"></div><div class="p-ear r"></div><div class="p-skin"></div><div class="p-blush l"></div><div class="p-blush r"></div><div class="p-freckles"></div><div class="p-brow l"></div><div class="p-brow r"></div><div class="p-eye l"><div class="p-ball"><div class="p-iris"></div><div class="p-lid"></div></div></div><div class="p-eye r"><div class="p-ball"><div class="p-iris"></div><div class="p-lid"></div></div></div><div class="p-nose"></div><div class="p-mouth"></div><div class="p-mark"></div><div class="p-hairside"></div><div class="p-hairfront"></div><div class="p-extra"></div></div>';
-const MOODS = ['neutral', 'smile', 'laugh', 'smirk', 'shy', 'surprised', 'sad', 'flirty'];
-function makePortrait(c, mood, animated) {
-  const p = el('div', 'portrait char-' + c + ' mood-' + (MOODS.includes(mood) ? mood : 'neutral'));
-  if (animated) p.classList.add('blink', 'breathe');
-  p.innerHTML = PORTRAIT_HTML;
+const MOODS = Art.MOODS;
+/* Retrato SVG dentro de um invólucro; o humor e os óculos voltam a gerar o SVG. */
+function renderPortrait(p) {
+  p.innerHTML = Art.portrait(p.dataset.char, p.dataset.mood, { glasses: p.dataset.glasses !== '0', outfit: p.dataset.outfit || undefined, viewBox: p.dataset.vb || undefined });
+}
+function makePortrait(c, mood, animated, opts) {
+  opts = opts || {};
+  const p = el('div', 'portrait char-' + c + (animated ? ' animated' : ''));
   p.dataset.char = c;
+  p.dataset.mood = MOODS.includes(mood) ? mood : 'neutral';
+  p.dataset.glasses = opts.glasses === false ? '0' : '1';
+  if (opts.viewBox) p.dataset.vb = opts.viewBox;
+  if (opts.outfit) p.dataset.outfit = opts.outfit;
+  p.setAttribute('role', 'img');
+  p.setAttribute('aria-label', CHARS[c].full);
+  renderPortrait(p);
   return p;
+}
+function avatar(c) {
+  const a = makePortrait(c, 'smile', false, { viewBox: '190 140 220 220' });
+  a.classList.add('avatar');
+  return a;
 }
 
 const SKYPART = '<div class="sky"></div><div class="stars"></div><div class="city"></div>';
@@ -2273,13 +2653,13 @@ const UI = {
   showChar(c, mood) {
     const layer = $('#charLayer');
     const cur = layer.querySelector('.portrait:not(.leaving)');
+    const m = MOODS.includes(mood) ? mood : 'neutral';
     if (cur && cur.dataset.char === c) {
-      MOODS.forEach(m => cur.classList.remove('mood-' + m));
-      cur.classList.add('mood-' + (MOODS.includes(mood) ? mood : 'neutral'));
+      if (cur.dataset.mood !== m) { cur.dataset.mood = m; renderPortrait(cur); }
       return;
     }
     this.hideChar();
-    const p = makePortrait(c, mood, true);
+    const p = makePortrait(c, m, true, { glasses: !(c === 'sophie' && this.sophieUnmasked), outfit: (this.outfits || {})[c] });
     p.classList.add('entering');
     layer.appendChild(p);
     this.charId = c;
@@ -2292,10 +2672,22 @@ const UI = {
     }
     this.charId = null;
   },
+  setOutfit(c, outfit) {
+    this.outfits = this.outfits || {};
+    this.outfits[c] = outfit || null;
+    const p = $('#charLayer .portrait.char-' + c + ':not(.leaving)');
+    const want = outfit || '';
+    if (p && (p.dataset.outfit || '') !== want) { if (want) p.dataset.outfit = want; else delete p.dataset.outfit; renderPortrait(p); }
+  },
+  resetLooks() {
+    this.outfits = {};
+    this.sophieUnmasked = false;
+  },
   setUnmasked(on) {
-    const p = $('#charLayer .portrait.char-sophie:not(.leaving)');
-    if (p) p.classList.toggle('unmasked', on);
     this.sophieUnmasked = on;
+    const p = $('#charLayer .portrait.char-sophie:not(.leaving)');
+    const want = on ? '0' : '1';
+    if (p && p.dataset.glasses !== want) { p.dataset.glasses = want; renderPortrait(p); }
   },
 
   /* ---------- HUD ---------- */
@@ -2304,7 +2696,9 @@ const UI = {
     const day = state.phase === 'day';
     $('#clockTime').textContent = day ? 'Manhã' : fmtTime(state.time);
     $('#clockDay').textContent = day ? 'Dia ' + state.day : (state.day === GALA_NIGHT ? 'Noite 7 · Gala' : 'Noite ' + state.day + ' de 7');
-    $('#clockOrb').classList.toggle('sun', day);
+    const orb = $('#clockOrb');
+    if (orb.dataset.kind !== (day ? 'sun' : 'moon')) { orb.dataset.kind = day ? 'sun' : 'moon'; orb.innerHTML = Art.uiIcon(day ? 'sun' : 'moon', 18); }
+    orb.classList.toggle('sun', day);
     $('#money').textContent = state.money + ' €';
     this.updateSky();
   },
@@ -2331,7 +2725,6 @@ const UI = {
     if (node.who && CHARS[node.who]) {
       name = CHARS[node.who].name; color = CHARS[node.who].color;
       this.showChar(node.who, node.m || 'neutral');
-      if (node.who === 'sophie' && this.sophieUnmasked) this.setUnmasked(true);
     } else if (node.who === 'marcel') { name = MARCEL.name; color = MARCEL.color; }
     else if (node.who === 'player') {
       name = state.name; color = 'var(--c-player)';
@@ -2454,7 +2847,7 @@ const UI = {
   modalHead(box, title) {
     const h = el('div', 'modal-head');
     h.appendChild(el('h2', null, title));
-    const x = el('button', 'icon-btn', 'Fechar ✕');
+    const x = el('button', 'icon-btn', 'Fechar');
     x.addEventListener('click', () => this.closeModal());
     h.appendChild(x);
     box.appendChild(h);
@@ -2483,7 +2876,7 @@ const Game = {
     Engine.abort();
     state = newState(name);
     UI.logLines = [];
-    UI.sophieUnmasked = false;
+    UI.resetLooks();
     UI.bgId = null;
     UI.screen('game');
     this.resume();
@@ -2493,7 +2886,7 @@ const Game = {
     UI.closeModal();
     state = st;
     UI.logLines = [];
-    UI.sophieUnmasked = false;
+    UI.resetLooks();
     UI.bgId = null;
     $('#charLayer').innerHTML = '';
     UI.screen('game');
@@ -2564,8 +2957,10 @@ const Game = {
     if (here.length) {
       const c = here[0];
       const mood = (c === 'luna' && state.flags.luna_closed) ? 'sad' : state.aff[c] >= 60 ? 'flirty' : state.aff[c] >= 25 ? 'smile' : 'neutral';
+      UI.resetLooks();
       UI.showChar(c, mood);
       UI.setUnmasked(false);
+      for (const cc of CHAR_IDS) UI.setOutfit(cc, null);
     } else UI.hideChar();
 
     // Painel do local
@@ -2577,8 +2972,8 @@ const Game = {
     if (here.length) {
       for (const c of here) {
         const t = el('span', 'tag');
-        const d = el('span', 'dot'); d.style.background = CHARS[c].color;
-        t.append(d, document.createTextNode(CHARS[c].name + ' · ' + affLevel(state.aff[c])));
+        t.style.borderColor = CHARS[c].color;
+        t.append(avatar(c), document.createTextNode(CHARS[c].name + ' · ' + affLevel(state.aff[c])));
         pres.appendChild(t);
       }
     } else {
@@ -2779,7 +3174,7 @@ const Game = {
     const cell = (label, val) => { const d = el('div', 'cell'); d.appendChild(el('b', null, val)); d.appendChild(document.createTextNode(label)); return d; };
     const ln = state.lastNight || { salary: SALARY, tips: 0 };
     sum.append(cell('Salário', '+' + ln.salary + ' €'), cell('Gorjetas da noite', ln.tips + ' €'), cell('Dinheiro total', state.money + ' €'));
-    for (const c of CHAR_IDS) sum.appendChild(cell(CHARS[c].name + ' · ' + affLevel(state.aff[c]), '♥ ' + state.aff[c]));
+    for (const c of CHAR_IDS) sum.appendChild(cell(CHARS[c].name + ' · ' + affLevel(state.aff[c]), state.aff[c] + '/100'));
     p.appendChild(sum);
 
     const acts = el('div', 'actions');
@@ -2815,7 +3210,7 @@ const Game = {
     } else if (opt === 'city') {
       state.nextStart = 1200;
       const found = pick(['rosa', 'chocolate', 'poesia', 'pinceis', 'vinil']);
-      if (addItem(found)) UI.toast(`Encontraste: ${ITEMS[found].icon} ${ITEMS[found].name}`, 'good');
+      if (addItem(found)) UI.toast(`Encontraste: ${ITEMS[found].name}`, 'good');
       else { addMoney(10); UI.toast('Já não cabia mais nada na mochila.', 'info'); }
     }
     state.day += 1;
@@ -2843,6 +3238,7 @@ const Game = {
     bg.className = 'end-bg';
     bg.innerHTML = '';
     bg.appendChild(makeBg(bgMap[id]));
+    if (CHARS[id]) { const ep = makePortrait(id, id === 'victoria' ? 'smirk' : 'smile', true, { glasses: id !== 'sophie' }); ep.classList.add('end-portrait'); bg.appendChild(ep); }
     document.documentElement.style.setProperty('--sky1', '#2a2a5a');
     document.documentElement.style.setProperty('--sky2', '#d98a8a');
     document.documentElement.style.setProperty('--stars', '.3');
@@ -3049,7 +3445,7 @@ const Menus = {
         const card = el('div', 'rel-card');
         const mini = el('div', 'mini');
         const mood = (c === 'luna' && state.flags.luna_closed) ? 'sad' : state.aff[c] >= 60 ? 'flirty' : state.aff[c] >= 25 ? 'smile' : 'neutral';
-        mini.appendChild(makePortrait(c, mood, false));
+        mini.appendChild(makePortrait(c, mood, false, { viewBox: '120 90 360 460' }));
         card.appendChild(mini);
         const info = el('div');
         info.appendChild(el('h4', null, ch.full + ', ' + ch.age));
@@ -3062,6 +3458,7 @@ const Menus = {
         const dots = el('div', 'chap-dots');
         dots.title = 'Capítulos da história';
         for (let i = 1; i <= 5; i++) { const d = el('i', i <= state.chap[c] ? 'on' : ''); if (i <= state.chap[c]) d.style.background = ch.color; dots.appendChild(d); }
+        dots.appendChild(el('span', null, `Capítulo ${state.chap[c]} de 5`));
         info.appendChild(dots);
         info.appendChild(el('p', 'bio', ch.bio.slice(0, state.chap[c] + 1).join(' ')));
         const status = [];
@@ -3071,7 +3468,7 @@ const Menus = {
         else if (c === 'luna' && state.flags.luna_betrayed && !state.flags.luna_forgiven) status.push('Contaste o segredo dela à Victoria.');
         if (status.length) info.appendChild(el('div', 'invite', status.join(' ')));
         const inv = state.invites[c];
-        if (inv) info.appendChild(el('div', 'invite', `✦ Encontro: ${LOCS[inv.loc].name}, ${fmtTime(inv.from)}–${fmtTime(inv.to)} (Noite ${inv.day}).`));
+        if (inv) info.appendChild(el('div', 'invite', `Encontro marcado: ${LOCS[inv.loc].name}, ${fmtTime(inv.from)}–${fmtTime(inv.to)} (Noite ${inv.day}).`));
         const known = Object.keys(state.known[c]);
         info.appendChild(el('div', 'likes', known.length ? 'Gostos descobertos: ' + known.map(i => ITEMS[i].name + ' (' + REACTION_LABEL[state.known[c][i]] + ')').join(', ') + '.' : 'Ainda não sabes do que gosta. Experimenta oferecer-lhe algo.'));
         info.appendChild(el('div', 'likes', ch.where));
@@ -3091,7 +3488,7 @@ const Menus = {
       for (const i of owned) {
         const it = ITEMS[i];
         const row = el('div', 'row');
-        row.appendChild(el('div', 'ico', it.icon));
+        { const ic = el('div', 'ico'); ic.innerHTML = Art.icon(i, 30); row.appendChild(ic); }
         const g = el('div', 'grow');
         g.appendChild(el('div', 'title', it.name + ' × ' + state.inv[i]));
         let d = it.desc;
@@ -3116,7 +3513,7 @@ const Menus = {
       for (const i of ITEM_IDS) {
         const it = ITEMS[i];
         const row = el('div', 'row');
-        row.appendChild(el('div', 'ico', it.icon));
+        { const ic = el('div', 'ico'); ic.innerHTML = Art.icon(i, 30); row.appendChild(ic); }
         const g = el('div', 'grow');
         g.appendChild(el('div', 'title', it.name + ' · ' + it.price + ' €'));
         g.appendChild(el('div', 'desc', it.desc + (state.inv[i] ? ` (Tens ${state.inv[i]}.)` : '')));
@@ -3129,7 +3526,7 @@ const Menus = {
           if (state.money < it.price || (state.inv[i] || 0) >= 9) return;
           state.money -= it.price;
           addItem(i);
-          UI.toast(`Compraste: ${it.icon} ${it.name} (−${it.price} €)`, 'good');
+          UI.toast(`Compraste: ${it.name} (−${it.price} €)`, 'good');
           UI.refreshHud();
           UI.openModal(build);
         });
@@ -3190,7 +3587,10 @@ function init() {
   // fundo e retratos do menu
   $('#menuBg').innerHTML = BG_HTML.rua;
   const mp = $('#menuPortraits');
-  ['victoria', 'luna', 'sophie'].forEach((c, i) => mp.appendChild(makePortrait(c, ['smirk', 'flirty', 'shy'][i], true)));
+  ['victoria', 'luna', 'sophie'].forEach((c, i) => mp.appendChild(makePortrait(c, ['smirk', 'flirty', 'smile'][i], true)));
+  $('#btnRel').insertAdjacentHTML('afterbegin', Art.uiIcon('heart'));
+  $('#btnInv').insertAdjacentHTML('afterbegin', Art.uiIcon('bag'));
+  $('#btnPause').insertAdjacentHTML('afterbegin', Art.uiIcon('menu'));
   refreshMenu();
   if (!Store.ok) setTimeout(() => UI.toast('Aviso: o armazenamento local está indisponível — não será possível gravar.', 'bad'), 400);
 
