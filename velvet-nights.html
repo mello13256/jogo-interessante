@@ -1,0 +1,3242 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07050b">
+<meta name="description" content="Velvet Nights — um romance interativo noturno no Hotel Velvet.">
+<title>Velvet Nights</title>
+<style>
+/* ================= BASE ================= */
+:root{
+  --bg:#07050b; --panel:rgba(17,10,24,.80); --panel-2:rgba(32,17,42,.88); --line:rgba(255,255,255,.09);
+  --text:#f4ebf2; --muted:#b9a7ba; --gold:#d9b56c; --gold-2:#f3dca0; --rose:#ff4f93; --violet:#9b6bff; --cyan:#44e6d8;
+  --c-victoria:#e8b04a; --c-luna:#b896ff; --c-sophie:#ff7fae; --c-marcel:#a9bdd2; --c-player:#e7d9cc;
+  --serif:'Didot','Bodoni 72','Bodoni MT','Playfair Display','Cormorant Garamond','Garamond','Baskerville','Georgia',serif;
+  --sans:'Avenir Next','Avenir','Segoe UI','Helvetica Neue','Helvetica',Arial,sans-serif;
+  --fs:1;
+  --sky1:#07061a; --sky2:#1d0e33; --stars:1; --sun:0;
+  --pscale:min(1.75vh, 2.6vw);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);overflow:hidden;
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;}
+body.large-text{--fs:1.18;}
+button{font:inherit;color:inherit;cursor:pointer;touch-action:manipulation;}
+button:disabled{cursor:not-allowed;}
+.hidden{display:none !important;}
+.screen{position:fixed;inset:0;display:none;}
+.screen.active{display:block;}
+.fade-in{animation:fadeIn .6s ease both;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes flicker{0%,18%,22%,25%,53%,57%,100%{opacity:1;text-shadow:0 0 6px #fff,0 0 18px var(--rose),0 0 42px var(--rose),0 0 80px var(--violet);}
+  20%,24%,55%{opacity:.55;text-shadow:none;}}
+@keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
+@keyframes drift{from{transform:translateY(0)}to{transform:translateY(-100vh)}}
+@keyframes rain{from{background-position:0 0}to{background-position:-60px 600px}}
+body.reduce-motion *,body.reduce-motion *::before,body.reduce-motion *::after{animation:none !important;transition:none !important;}
+
+/* ================= BOTÕES ================= */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.5em;
+  padding:.8em 1.4em;border-radius:999px;border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.01));
+  color:var(--text);letter-spacing:.04em;transition:all .25s ease;font-size:calc(.95rem * var(--fs));}
+.btn:hover:not(:disabled),.btn:focus-visible{border-color:var(--rose);box-shadow:0 0 0 1px rgba(255,79,147,.35),0 0 22px rgba(255,79,147,.25);outline:none;}
+.btn:disabled{opacity:.42;}
+.btn.primary{background:linear-gradient(135deg,rgba(255,79,147,.35),rgba(155,107,255,.3));border-color:rgba(255,79,147,.55);}
+.btn.gold{border-color:rgba(217,181,108,.6);color:var(--gold-2);}
+.btn.small{padding:.45em .9em;font-size:calc(.8rem * var(--fs));}
+.btn.danger{border-color:rgba(255,90,90,.5);color:#ffb3b3;}
+.icon-btn{display:inline-flex;align-items:center;gap:.35em;padding:.45em .8em;border-radius:999px;border:1px solid var(--line);
+  background:rgba(10,6,14,.55);color:var(--text);font-size:calc(.8rem * var(--fs));letter-spacing:.05em;transition:all .2s;}
+.icon-btn:hover,.icon-btn:focus-visible{border-color:var(--rose);outline:none;}
+.icon-btn.on{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 12px rgba(68,230,216,.3);}
+
+/* ================= MENU INICIAL ================= */
+#menu{background:#07040b;overflow:hidden;}
+#menu .menu-bg{position:absolute;inset:0;}
+#menu .menu-bg .sign,#menu .menu-bg .facade::before{display:none;}
+#menu .menu-portraits{position:absolute;left:0;right:0;bottom:-16vh;display:flex;justify-content:center;align-items:flex-end;gap:0;opacity:.26;
+  filter:saturate(.9) blur(.6px);pointer-events:none;--pscale:min(1.6vh,2.2vw);}
+#menu .menu-portraits .portrait{margin:0 -3em;}
+#menu .menu-portraits .portrait:nth-child(2){transform:translateY(-3vh) scale(1.08);z-index:2;}
+#menu .menu-portraits::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,#07040b 92%);}
+.menu-inner{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4vh 16px;text-align:center;}
+.logo{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(3rem,10vw,7.5rem);line-height:.95;margin:0;color:#fff4fa;
+  animation:flicker 7s infinite;letter-spacing:.02em;}
+.logo small{display:block;font-style:normal;font-family:var(--sans);font-size:.14em;letter-spacing:.7em;color:var(--gold);margin-top:1.1em;text-shadow:none;animation:none;}
+.tagline{color:var(--muted);font-family:var(--serif);font-style:italic;font-size:calc(1.05rem * var(--fs));margin:1.4em 0 2em;max-width:34em;}
+.menu-buttons{display:flex;flex-direction:column;gap:.7em;width:min(320px,90vw);}
+.menu-buttons .btn{width:100%;}
+.menu-note{margin-top:2em;font-size:.75rem;color:rgba(255,255,255,.45);max-width:36em;line-height:1.5;}
+.btn .sub{font-size:.75em;color:var(--muted);}
+
+/* ================= CENÁRIO ================= */
+#stage{position:absolute;inset:0;overflow:hidden;background:#000;}
+.loc{position:absolute;inset:0;transition:opacity .8s ease;}
+.loc > div{position:absolute;}
+.sky{inset:0;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 100%);}
+.stars{inset:0;opacity:var(--stars);background:
+  radial-gradient(1px 1px at 10% 20%,#fff,transparent),radial-gradient(1px 1px at 30% 8%,#fff,transparent),
+  radial-gradient(1.5px 1.5px at 55% 15%,#fff,transparent),radial-gradient(1px 1px at 72% 28%,#fff,transparent),
+  radial-gradient(1px 1px at 88% 10%,#fff,transparent),radial-gradient(1.5px 1.5px at 18% 38%,#fff,transparent),
+  radial-gradient(1px 1px at 44% 30%,#fff,transparent),radial-gradient(1px 1px at 63% 42%,#fff,transparent),
+  radial-gradient(1px 1px at 93% 36%,#fff,transparent),radial-gradient(1.5px 1.5px at 4% 6%,#fff,transparent);}
+.city{left:0;right:0;bottom:0;height:46%;background:
+  linear-gradient(180deg,transparent 0 0),
+  repeating-linear-gradient(90deg,rgba(255,214,140,.55) 0 2px,transparent 2px 9px),#0b0814;
+  -webkit-mask:linear-gradient(#000,#000);
+  clip-path:polygon(0 40%,6% 40%,6% 22%,11% 22%,11% 48%,16% 48%,16% 12%,19% 8%,22% 12%,22% 44%,28% 44%,28% 30%,34% 30%,34% 52%,39% 52%,39% 18%,45% 18%,45% 36%,50% 36%,50% 6%,53% 0,56% 6%,56% 40%,62% 40%,62% 24%,68% 24%,68% 50%,73% 50%,73% 14%,79% 14%,79% 38%,85% 38%,85% 26%,90% 26%,90% 46%,95% 46%,95% 20%,100% 20%,100% 100%,0 100%);}
+.city::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 6px,rgba(11,8,20,.9) 6px 14px);}
+.city.far{height:54%;opacity:.45;filter:blur(1px);transform:scaleX(1.3);}
+.moon{width:9vmin;height:9vmin;border-radius:50%;right:14%;top:12%;opacity:calc(var(--stars) * .95);
+  background:radial-gradient(circle at 38% 38%,#fffbea,#e9dfc8 55%,#cfc3a8);box-shadow:0 0 40px 10px rgba(255,240,210,.25),0 0 120px 40px rgba(155,107,255,.12);}
+.vignette{inset:0;background:radial-gradient(ellipse at 50% 45%,transparent 45%,rgba(0,0,0,.75) 100%);pointer-events:none;}
+.neon-text{font-family:var(--serif);font-style:italic;color:#fff;white-space:nowrap;}
+
+/* Rua */
+.loc-rua{background:linear-gradient(180deg,#0b0716,#1a0d22 60%,#09060c);}
+.loc-rua .facade{left:18%;right:18%;top:10%;bottom:22%;background:
+  repeating-linear-gradient(90deg,#140c18 0 46px,#1c1220 46px 50px),#140c18;box-shadow:0 0 80px rgba(255,79,147,.15);}
+.loc-rua .facade::before{content:'';position:absolute;left:35%;right:35%;bottom:0;height:42%;border-radius:999px 999px 0 0;
+  background:linear-gradient(180deg,rgba(255,200,120,.6),rgba(255,140,90,.25));box-shadow:0 0 60px rgba(255,190,120,.5);}
+.loc-rua .sign{left:50%;top:15%;transform:translateX(-50%);font-size:clamp(2rem,6vw,4.4rem);animation:flicker 6s infinite;letter-spacing:.12em;}
+.loc-rua .street{left:0;right:0;bottom:0;height:24%;background:linear-gradient(180deg,#120a18,#050307);}
+.loc-rua .street::after{content:'';position:absolute;left:30%;right:30%;top:0;height:100%;background:radial-gradient(ellipse at 50% 0,rgba(255,79,147,.35),transparent 70%);}
+.loc-rua .rain{inset:0;opacity:.35;background-image:repeating-linear-gradient(105deg,transparent 0 22px,rgba(200,210,255,.35) 22px 23px,transparent 23px 60px);
+  background-size:120px 120px;animation:rain .6s linear infinite;}
+
+/* Receção */
+.loc-rececao{background:linear-gradient(180deg,#1a0f13 0%,#24131a 55%,#120a0d 100%);}
+.loc-rececao .win{top:8%;width:15%;height:48%;border-radius:999px 999px 0 0;overflow:hidden;
+  border:3px solid rgba(217,181,108,.55);box-shadow:0 0 30px rgba(0,0,0,.6) inset;}
+.loc-rececao .win .sky,.loc-rececao .win .stars,.loc-rececao .win .city{position:absolute;}
+.loc-rececao .win::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 48%,rgba(217,181,108,.5) 48% 52%,transparent 52%),linear-gradient(180deg,transparent 58%,rgba(217,181,108,.5) 58% 60%,transparent 60%);}
+.loc-rececao .w1{left:6%;} .loc-rececao .w2{left:42.5%;} .loc-rececao .w3{right:6%;}
+.loc-rececao .col{top:0;bottom:24%;width:4%;background:linear-gradient(90deg,#3a2128,#6b4048 40%,#2a161c);}
+.loc-rececao .c1{left:27%;} .loc-rececao .c2{right:27%;}
+.loc-rececao .chand{left:50%;top:-2%;width:30vmin;height:22vmin;transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 60%,rgba(255,220,150,.75) 0%,rgba(255,200,120,.25) 30%,transparent 65%);}
+.loc-rececao .chand::after{content:'';position:absolute;left:20%;right:20%;top:50%;height:22%;border-radius:0 0 50% 50%;
+  border-bottom:2px dotted rgba(255,236,190,.9);border-left:1px solid rgba(255,236,190,.3);border-right:1px solid rgba(255,236,190,.3);}
+.loc-rececao .desk{left:8%;right:8%;bottom:0;height:24%;background:linear-gradient(180deg,#3b1d22,#1e0d11);
+  border-top:3px solid var(--gold);box-shadow:0 -10px 40px rgba(0,0,0,.6);}
+.loc-rececao .desk::after{content:'VELVET';position:absolute;left:50%;top:22%;transform:translateX(-50%);font-family:var(--serif);letter-spacing:.6em;
+  color:var(--gold);font-size:clamp(.9rem,2.4vw,1.6rem);text-shadow:0 0 12px rgba(217,181,108,.5);}
+.loc-rececao .glow{inset:0;background:radial-gradient(ellipse at 50% 15%,rgba(255,200,120,.18),transparent 55%);}
+
+/* Bar */
+.loc-bar{background:linear-gradient(180deg,#1b0612 0%,#2a0a1c 50%,#0d0309 100%);}
+.loc-bar .shelf{left:10%;right:10%;top:22%;height:38%;
+  background:
+    repeating-linear-gradient(180deg,transparent 0 31%,rgba(217,181,108,.55) 31% 32.5%),
+    repeating-linear-gradient(90deg,rgba(255,120,170,.0) 0 14px,rgba(255,170,200,.18) 14px 22px,rgba(140,255,230,.12) 22px 28px,transparent 28px 40px);
+  box-shadow:inset 0 0 60px rgba(0,0,0,.7);}
+.loc-bar .sign{left:50%;top:6%;transform:translateX(-50%);font-size:clamp(1.8rem,5.4vw,4rem);animation:flicker 9s infinite;}
+.loc-bar .counter{left:0;right:0;bottom:0;height:26%;background:linear-gradient(180deg,#2c0c17,#0e0307);border-top:2px solid rgba(255,79,147,.6);
+  box-shadow:0 -4px 30px rgba(255,79,147,.35);}
+.loc-bar .bokeh{inset:0;background:
+  radial-gradient(circle at 12% 70%,rgba(255,79,147,.25) 0 2.5vmin,transparent 3vmin),
+  radial-gradient(circle at 85% 30%,rgba(155,107,255,.25) 0 3vmin,transparent 3.5vmin),
+  radial-gradient(circle at 70% 75%,rgba(217,181,108,.2) 0 2vmin,transparent 2.5vmin),
+  radial-gradient(circle at 25% 20%,rgba(68,230,216,.15) 0 2vmin,transparent 2.6vmin);}
+
+/* Terraço */
+.loc-terraco .rail{left:0;right:0;bottom:0;height:18%;background:linear-gradient(180deg,#0e0a14,#050307);border-top:3px solid rgba(155,107,255,.8);
+  box-shadow:0 -6px 30px rgba(155,107,255,.45);}
+.loc-terraco .rail::before{content:'';position:absolute;left:0;right:0;top:-12vh;height:12vh;
+  background:repeating-linear-gradient(90deg,transparent 0 60px,rgba(30,22,40,.9) 60px 64px);}
+.loc-terraco .pool{left:8%;width:34%;bottom:4%;height:9%;border-radius:8px;background:linear-gradient(180deg,rgba(68,230,216,.25),rgba(155,107,255,.2));
+  box-shadow:0 0 30px rgba(68,230,216,.25);}
+
+/* Boutique */
+.loc-boutique{background:radial-gradient(ellipse at 50% 20%,#2c1a26,#120a10 70%);}
+.loc-boutique .shelves{left:6%;right:6%;top:14%;height:56%;background:
+  repeating-linear-gradient(180deg,transparent 0 30%,rgba(217,181,108,.6) 30% 31%),
+  radial-gradient(circle at 15% 22%,rgba(255,79,147,.6) 0 1.6vmin,transparent 1.8vmin),
+  radial-gradient(circle at 38% 22%,rgba(217,181,108,.7) 0 1.4vmin,transparent 1.6vmin),
+  radial-gradient(circle at 62% 55%,rgba(155,107,255,.6) 0 1.6vmin,transparent 1.8vmin),
+  radial-gradient(circle at 84% 55%,rgba(68,230,216,.5) 0 1.4vmin,transparent 1.6vmin),
+  radial-gradient(circle at 28% 86%,rgba(255,200,140,.6) 0 1.5vmin,transparent 1.7vmin),
+  radial-gradient(circle at 74% 86%,rgba(255,79,147,.5) 0 1.4vmin,transparent 1.6vmin);}
+.loc-boutique .sign{left:50%;top:4%;transform:translateX(-50%);font-size:clamp(1.4rem,4vw,2.8rem);color:var(--gold-2);text-shadow:0 0 18px rgba(217,181,108,.6);}
+.loc-boutique .floor{left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,#1a0f15,#060305);}
+
+/* Sala dos funcionários */
+.loc-funcionarios{background:linear-gradient(180deg,#141216,#0b0a0d);}
+.loc-funcionarios .lockers{left:4%;right:40%;top:14%;bottom:16%;background:
+  repeating-linear-gradient(90deg,#2b2a33 0 11%,#1a1920 11% 12%),#2b2a33;}
+.loc-funcionarios .lockers::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 3%,rgba(0,0,0,.4) 3% 3.4%,transparent 3.4% 12%),
+  repeating-linear-gradient(180deg,transparent 0 8%,rgba(0,0,0,.35) 8% 9%,transparent 9% 100%);}
+.loc-funcionarios .lamp{left:70%;top:0;width:30vmin;height:80%;transform:translateX(-50%);
+  background:radial-gradient(ellipse at 50% 0,rgba(255,210,140,.45),transparent 65%);}
+.loc-funcionarios .table{left:52%;right:6%;bottom:12%;height:6%;background:#3a2a20;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.6);}
+
+/* Suite */
+.loc-suite{background:#0b0610;}
+.loc-suite .bigwin{left:12%;right:12%;top:6%;bottom:20%;overflow:hidden;border:2px solid rgba(217,181,108,.35);}
+.loc-suite .bigwin .sky,.loc-suite .bigwin .stars,.loc-suite .bigwin .city,.loc-suite .bigwin .moon{position:absolute;}
+.loc-suite .curtain{top:0;bottom:0;width:20%;background:repeating-linear-gradient(90deg,#3a0716 0 18px,#5a0e24 18px 30px,#2a0410 30px 40px);
+  box-shadow:inset 0 0 50px rgba(0,0,0,.7);}
+.loc-suite .cl{left:0;} .loc-suite .cr{right:0;}
+.loc-suite .floor{left:0;right:0;bottom:0;height:20%;background:linear-gradient(180deg,#1a0a12,#050205);}
+
+/* Estúdio 707 */
+.loc-estudio{background:radial-gradient(ellipse at 40% 30%,#1a1030,#07040c 75%);}
+.loc-estudio .tube{height:.8vmin;border-radius:999px;}
+.loc-estudio .t1{left:8%;top:14%;width:34%;background:var(--cyan);box-shadow:0 0 14px var(--cyan),0 0 40px var(--cyan);transform:rotate(-8deg);}
+.loc-estudio .t2{right:6%;top:24%;width:28%;background:var(--rose);box-shadow:0 0 14px var(--rose),0 0 40px var(--rose);transform:rotate(12deg);}
+.loc-estudio .t3{left:40%;top:6%;width:22%;background:var(--violet);box-shadow:0 0 14px var(--violet),0 0 40px var(--violet);transform:rotate(3deg);}
+.loc-estudio .canvas{border:4px solid #e9e2d8;box-shadow:0 10px 30px rgba(0,0,0,.6);}
+.loc-estudio .cv1{left:6%;top:34%;width:18%;height:30%;background:linear-gradient(135deg,#ff4f93,#9b6bff 50%,#44e6d8);transform:rotate(-4deg);}
+.loc-estudio .cv2{right:8%;top:40%;width:16%;height:26%;background:radial-gradient(circle at 50% 40%,#f3dca0 0 20%,#1b1430 22%),#1b1430;transform:rotate(5deg);}
+.loc-estudio .cv3{left:28%;top:52%;width:12%;height:18%;background:linear-gradient(200deg,#0c6d66,#44e6d8 40%,#120b20);transform:rotate(2deg);}
+.loc-estudio .splat{inset:0;background:
+  radial-gradient(circle at 20% 85%,rgba(68,230,216,.5) 0 1vmin,transparent 1.3vmin),
+  radial-gradient(circle at 26% 90%,rgba(255,79,147,.5) 0 .7vmin,transparent .9vmin),
+  radial-gradient(circle at 72% 88%,rgba(155,107,255,.55) 0 1.2vmin,transparent 1.5vmin),
+  radial-gradient(circle at 80% 80%,rgba(68,230,216,.4) 0 .6vmin,transparent .8vmin);}
+
+/* Sala Escarlate */
+.loc-escarlate{background:radial-gradient(ellipse at 50% 30%,#3a0612,#120206 70%);}
+.loc-escarlate .curtains{left:0;right:0;top:0;height:70%;background:repeating-linear-gradient(90deg,#5c0a1d 0 3%,#7e1229 3% 5%,#3e0613 5% 7%);
+  -webkit-mask:radial-gradient(ellipse at 50% 100%,transparent 30%,#000 31%);mask:radial-gradient(ellipse at 50% 100%,transparent 30%,#000 31%);}
+.loc-escarlate .spot{left:50%;top:0;width:60vmin;height:100%;transform:translateX(-50%);
+  background:conic-gradient(from 165deg at 50% 0,transparent 0deg,rgba(255,230,200,.18) 8deg,rgba(255,230,200,.18) 22deg,transparent 30deg);}
+.loc-escarlate .stage{left:20%;right:20%;bottom:16%;height:8%;background:linear-gradient(180deg,#2a0b10,#0a0204);border-top:2px solid var(--gold);border-radius:50%/0 0 100% 100%;}
+.loc-escarlate .candles{left:0;right:0;bottom:0;height:16%;background:
+  radial-gradient(circle at 12% 40%,rgba(255,190,110,.8) 0 .5vmin,rgba(255,150,80,.25) 1vmin,transparent 4vmin),
+  radial-gradient(circle at 34% 60%,rgba(255,190,110,.8) 0 .5vmin,rgba(255,150,80,.25) 1vmin,transparent 4vmin),
+  radial-gradient(circle at 66% 50%,rgba(255,190,110,.8) 0 .5vmin,rgba(255,150,80,.25) 1vmin,transparent 4vmin),
+  radial-gradient(circle at 88% 45%,rgba(255,190,110,.8) 0 .5vmin,rgba(255,150,80,.25) 1vmin,transparent 4vmin),#0a0204;}
+
+/* Jardim de inverno */
+.loc-jardim .glass{inset:0;background:
+  repeating-linear-gradient(90deg,transparent 0 12.5%,rgba(40,70,60,.85) 12.5% 13%),
+  repeating-linear-gradient(180deg,transparent 0 16%,rgba(40,70,60,.85) 16% 16.6%);}
+.loc-jardim .plants{left:0;right:0;bottom:0;height:42%;background:
+  radial-gradient(ellipse at 8% 100%,#163a26 0 22%,transparent 23%),
+  radial-gradient(ellipse at 24% 100%,#1e4a30 0 18%,transparent 19%),
+  radial-gradient(ellipse at 78% 100%,#163a26 0 24%,transparent 25%),
+  radial-gradient(ellipse at 94% 100%,#24563a 0 18%,transparent 19%),
+  radial-gradient(circle at 18% 58%,#ff9ec4 0 .8vmin,transparent 1vmin),
+  radial-gradient(circle at 84% 52%,#f3dca0 0 .8vmin,transparent 1vmin),
+  radial-gradient(circle at 70% 66%,#ff9ec4 0 .7vmin,transparent .9vmin);}
+
+/* Gala */
+.loc-gala{background:radial-gradient(ellipse at 50% 20%,#4a3420,#1a0f0a 60%,#080404);}
+.loc-gala .chand{top:-4%;width:26vmin;height:20vmin;background:radial-gradient(ellipse at 50% 55%,rgba(255,230,170,.85),rgba(255,200,120,.25) 35%,transparent 68%);}
+.loc-gala .ch1{left:12%;} .loc-gala .ch2{left:50%;transform:translateX(-50%);width:36vmin;height:26vmin;} .loc-gala .ch3{right:12%;}
+.loc-gala .confetti{inset:0;background:
+  radial-gradient(circle at 10% 30%,var(--gold-2) 0 2px,transparent 3px),radial-gradient(circle at 30% 60%,var(--rose) 0 2px,transparent 3px),
+  radial-gradient(circle at 55% 25%,var(--gold-2) 0 2px,transparent 3px),radial-gradient(circle at 75% 55%,var(--violet) 0 2px,transparent 3px),
+  radial-gradient(circle at 90% 20%,var(--gold-2) 0 2px,transparent 3px),radial-gradient(circle at 42% 80%,var(--gold-2) 0 2px,transparent 3px);
+  background-size:100% 100%;animation:pulse 3s ease-in-out infinite;}
+.loc-gala .floor{left:0;right:0;bottom:0;height:24%;background:linear-gradient(180deg,#2a1a10,#0a0503);border-top:2px solid rgba(217,181,108,.5);}
+
+/* Dia */
+.loc-dia{background:linear-gradient(180deg,#f7c59f 0%,#f3a6a1 35%,#a98bc2 75%,#5f5a8f 100%);}
+.loc-dia .sun{left:50%;top:18%;width:22vmin;height:22vmin;margin-left:-11vmin;border-radius:50%;
+  background:radial-gradient(circle,#fff6d8,#ffd27f 60%,rgba(255,180,100,0) 72%);box-shadow:0 0 120px 40px rgba(255,210,140,.55);}
+.loc-dia .city{opacity:.85;}
+.loc-dia .city{background:repeating-linear-gradient(90deg,rgba(255,255,255,.18) 0 2px,transparent 2px 9px),#3b2f55;}
+.loc-dia .city::after{background:repeating-linear-gradient(180deg,transparent 0 6px,rgba(59,47,85,.92) 6px 14px);}
+
+/* ================= HUD ================= */
+#hud{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:flex-start;gap:8px;
+  padding:max(10px,env(safe-area-inset-top)) 16px 10px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.6),transparent);}
+#hud > *{pointer-events:auto;}
+.clock{display:flex;align-items:center;gap:.7em;padding:.45em 1em .45em .5em;border-radius:999px;background:rgba(10,6,14,.6);border:1px solid var(--line);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);}
+.clock .orb{width:28px;height:28px;border-radius:50%;flex:none;background:linear-gradient(180deg,var(--sky1),var(--sky2));border:1px solid rgba(255,255,255,.25);position:relative;overflow:hidden;}
+.clock .orb::after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;left:8px;top:7px;
+  background:radial-gradient(circle at 35% 35%,#fffbea,#e9dfc8);box-shadow:0 0 8px rgba(255,240,210,.6);}
+.clock .orb.sun::after{background:radial-gradient(circle,#fff6d8,#ffbf5a);box-shadow:0 0 10px rgba(255,200,100,.9);}
+.clock .t{font-family:var(--serif);font-size:calc(1.15rem * var(--fs));letter-spacing:.05em;}
+.clock .d{font-size:.72rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;}
+.hud-right{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;align-items:center;}
+.money{padding:.45em .9em;border-radius:999px;background:rgba(10,6,14,.6);border:1px solid rgba(217,181,108,.35);color:var(--gold-2);font-size:calc(.85rem * var(--fs));}
+
+/* ================= PERSONAGEM EM CENA ================= */
+#charLayer{position:absolute;left:0;right:0;bottom:0;top:0;z-index:5;pointer-events:none;display:flex;align-items:flex-end;justify-content:center;
+  transition:transform .6s ease;}
+#charLayer .portrait{margin-bottom:-2vh;transition:opacity .5s ease,transform .5s ease;}
+#charLayer .portrait.leaving{opacity:0;transform:translateY(20px);}
+#charLayer .portrait.entering{animation:rise .6s ease both;}
+#game.mode-hub #charLayer{transform:translateX(18vw);}
+
+/* ================= HUB ================= */
+#hub{position:absolute;left:max(16px,2vw);top:76px;bottom:16px;width:min(420px,calc(100vw - 32px));z-index:15;
+  display:flex;flex-direction:column;gap:10px;overflow:auto;padding-bottom:4px;scrollbar-width:thin;}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px 18px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 20px 50px rgba(0,0,0,.45);animation:rise .4s ease both;}
+.panel h2{margin:0 0 .2em;font-family:var(--serif);font-weight:400;font-size:calc(1.6rem * var(--fs));letter-spacing:.02em;}
+.panel h3{margin:0 0 .6em;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:600;}
+.panel p{margin:.2em 0 .8em;color:var(--muted);line-height:1.5;font-size:calc(.9rem * var(--fs));}
+.presence{display:flex;flex-wrap:wrap;gap:6px;margin:.2em 0 .6em;}
+.tag{display:inline-flex;align-items:center;gap:.4em;padding:.25em .7em;border-radius:999px;font-size:.78rem;border:1px solid var(--line);background:rgba(255,255,255,.04);}
+.tag .dot{width:8px;height:8px;border-radius:50%;}
+.actions{display:flex;flex-direction:column;gap:7px;}
+.action{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;padding:.75em 1em;border-radius:12px;
+  border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.035);transition:all .2s;font-size:calc(.92rem * var(--fs));}
+.action:hover:not(:disabled),.action:focus-visible{border-color:var(--rose);background:rgba(255,79,147,.08);outline:none;}
+.action:disabled{opacity:.45;}
+.action .meta{font-size:.72rem;color:var(--muted);white-space:nowrap;}
+.action .why{display:block;font-size:.74rem;color:var(--muted);margin-top:.2em;}
+.action.special{border-color:rgba(217,181,108,.55);background:linear-gradient(90deg,rgba(217,181,108,.14),rgba(255,79,147,.06));}
+.action.special .label::before{content:'✦ ';color:var(--gold-2);}
+.map{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.map .action{flex-direction:column;align-items:flex-start;gap:2px;padding:.65em .8em;}
+.map .action.here{border-color:rgba(68,230,216,.55);background:rgba(68,230,216,.07);}
+.map .who{font-size:.72rem;color:var(--muted);}
+
+/* ================= DIÁLOGO ================= */
+#dialogue{position:absolute;left:0;right:0;margin:0 auto;bottom:max(14px,env(safe-area-inset-bottom));z-index:25;
+  width:min(980px,calc(100vw - 32px));min-height:168px;padding:30px 28px 22px;border-radius:20px;cursor:pointer;user-select:none;-webkit-user-select:none;
+  background:linear-gradient(180deg,rgba(24,12,32,.86),rgba(10,5,15,.94));border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 30px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,79,147,.08),0 0 40px rgba(155,107,255,.12);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:rise .35s ease both;}
+#dialogue .name{position:absolute;top:-17px;left:24px;padding:.35em 1.2em;border-radius:999px;font-family:var(--serif);font-size:calc(1.05rem * var(--fs));
+  letter-spacing:.06em;background:#120a18;border:1px solid var(--nc,var(--gold));color:var(--nc,var(--gold));box-shadow:0 0 18px color-mix(in srgb,var(--nc,#d9b56c) 45%,transparent);}
+#dialogue .name.narr{display:none;}
+#dialogue .text{font-size:calc(1.12rem * var(--fs));line-height:1.65;min-height:3.3em;white-space:pre-wrap;}
+#dialogue .text.narr{font-style:italic;color:#e4d6e6;font-family:var(--serif);font-size:calc(1.18rem * var(--fs));}
+#dialogue .text.thought{color:var(--c-player);font-style:italic;}
+#dialogue .next{position:absolute;right:22px;bottom:12px;color:var(--rose);animation:pulse 1.2s infinite;font-size:.9rem;}
+#dialogue .dctrl{position:absolute;top:-15px;right:20px;display:flex;gap:6px;}
+#dialogue .dctrl .icon-btn{padding:.3em .7em;font-size:.7rem;background:#120a18;}
+
+#choices{position:absolute;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:80px 16px 200px;
+  background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.35),rgba(0,0,0,.7));}
+#choices .choice{width:min(640px,100%);text-align:left;padding:1em 1.3em;border-radius:14px;border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(90deg,rgba(26,12,34,.95),rgba(16,8,22,.95));font-size:calc(1rem * var(--fs));line-height:1.45;transition:all .2s;
+  animation:rise .35s ease both;}
+#choices .choice:nth-child(2){animation-delay:.06s} #choices .choice:nth-child(3){animation-delay:.12s} #choices .choice:nth-child(4){animation-delay:.18s}
+#choices .choice:hover,#choices .choice:focus-visible{border-color:var(--rose);box-shadow:0 0 24px rgba(255,79,147,.25);transform:translateX(4px);outline:none;}
+#choices .choice .k{display:inline-block;width:1.6em;color:var(--gold);font-family:var(--serif);}
+#choices .choice .note{display:block;margin-top:.35em;font-size:.78rem;color:#ffb36b;}
+
+#fader{position:absolute;inset:0;z-index:40;background:#000;opacity:0;pointer-events:none;transition:opacity .9s ease;}
+#fader.on{opacity:1;}
+
+/* ================= TOASTS ================= */
+#toasts{position:fixed;top:64px;right:16px;z-index:90;display:flex;flex-direction:column;gap:6px;align-items:flex-end;pointer-events:none;}
+.toast{padding:.55em 1em;border-radius:12px;background:rgba(16,8,22,.92);border:1px solid var(--line);font-size:calc(.85rem * var(--fs));
+  box-shadow:0 10px 30px rgba(0,0,0,.5);animation:rise .3s ease both;max-width:min(360px,80vw);}
+.toast.good{border-color:rgba(255,79,147,.6);} .toast.bad{border-color:rgba(120,140,255,.6);} .toast.info{border-color:rgba(217,181,108,.6);}
+.toast.out{opacity:0;transform:translateY(-6px);transition:all .4s;}
+
+/* ================= MODAIS ================= */
+#modal{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(3,1,6,.72);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.modal-box{width:min(720px,100%);max-height:calc(100vh - 32px);overflow:auto;background:linear-gradient(180deg,#1a0e22,#0d0711);border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;padding:22px 22px 18px;box-shadow:0 40px 80px rgba(0,0,0,.7);animation:rise .3s ease both;}
+.modal-box.narrow{width:min(440px,100%);}
+.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;}
+.modal-head h2{margin:0;font-family:var(--serif);font-weight:400;font-size:calc(1.6rem * var(--fs));}
+.modal-box p{color:var(--muted);line-height:1.55;}
+.modal-foot{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:16px;}
+.list{display:flex;flex-direction:column;gap:8px;}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);}
+.row .grow{flex:1;min-width:0;}
+.row .title{font-weight:600;}
+.row .desc{font-size:.82rem;color:var(--muted);margin-top:.15em;line-height:1.4;}
+.row .ico{font-size:1.5rem;width:1.8em;text-align:center;flex:none;}
+.row .btns{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.setting{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;flex-wrap:wrap;}
+.seg button{border:0;background:transparent;padding:.45em .85em;font-size:.8rem;color:var(--muted);}
+.seg button.on{background:linear-gradient(135deg,rgba(255,79,147,.45),rgba(155,107,255,.4));color:#fff;}
+.rel-card{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:14px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);}
+.rel-card .mini{position:relative;width:110px;height:130px;overflow:hidden;border-radius:12px;background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.07),transparent 70%);}
+.rel-card .mini .portrait{position:absolute;left:50%;top:-2px;margin-left:-60px;--pscale:5px;}
+.rel-card h4{margin:0;font-family:var(--serif);font-size:1.3rem;font-weight:400;}
+.rel-card .role{font-size:.78rem;color:var(--muted);}
+.bar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin:.5em 0 .2em;}
+.bar > i{display:block;height:100%;border-radius:999px;transition:width .6s ease;}
+.rel-meta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);}
+.chap-dots{display:flex;gap:4px;margin:.4em 0;}
+.chap-dots i{width:10px;height:10px;border-radius:50%;border:1px solid rgba(255,255,255,.3);}
+.chap-dots i.on{border-color:transparent;}
+.rel-card .bio{font-size:.84rem;line-height:1.5;color:#d8c8d8;margin:.4em 0 0;}
+.rel-card .likes{font-size:.78rem;color:var(--muted);margin-top:.4em;}
+.rel-card .invite{font-size:.8rem;color:var(--gold-2);margin-top:.4em;}
+.log-line{padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem;line-height:1.5;}
+.log-line b{font-family:var(--serif);font-weight:400;}
+.input{width:100%;padding:.8em 1em;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:var(--text);font-size:1rem;}
+.input:focus{outline:none;border-color:var(--rose);}
+.err{color:#ff9a9a;font-size:.82rem;min-height:1.2em;margin-top:.4em;}
+
+/* ================= DIA ================= */
+#dayPanel{position:absolute;left:0;right:0;top:76px;bottom:16px;margin:0 auto;width:min(640px,calc(100vw - 32px));overflow:auto;z-index:15;display:flex;flex-direction:column;justify-content:center;}
+#dayPanel > .panel{margin:auto 0;}
+#dayPanel .panel{background:rgba(30,18,40,.82);}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:.6em 0 1em;}
+.summary .cell{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:.85rem;}
+.summary .cell b{display:block;font-family:var(--serif);font-size:1.25rem;font-weight:400;color:var(--gold-2);}
+
+/* ================= FINAL ================= */
+#ending{background:#050307;overflow:auto;}
+#ending .end-bg{position:fixed;inset:0;}
+#ending .end-inner{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:12vh 20px 10vh;text-align:center;}
+#ending .kicker{letter-spacing:.5em;text-transform:uppercase;color:var(--gold);font-size:.75rem;}
+#ending h1{font-family:var(--serif);font-weight:400;font-style:italic;font-size:clamp(2.4rem,8vw,4.6rem);margin:.3em 0 .6em;animation:flicker 8s infinite;}
+#ending .end-text p{font-family:var(--serif);font-size:calc(1.15rem * var(--fs));line-height:1.8;color:#eadbe8;text-align:left;animation:rise .8s ease both;}
+#ending .end-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:2.4em;}
+.ending-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;}
+.ending-card{padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);min-height:110px;}
+.ending-card.on{border-color:rgba(217,181,108,.55);background:linear-gradient(135deg,rgba(217,181,108,.12),rgba(255,79,147,.06));}
+.ending-card h4{margin:0 0 .4em;font-family:var(--serif);font-weight:400;font-size:1.2rem;}
+.ending-card p{margin:0;font-size:.82rem;}
+
+/* ================= RESPONSIVO ================= */
+@media (max-width:760px){
+  :root{--pscale:min(1.45vh,3.6vw);}
+  #game.mode-hub #charLayer{transform:translateY(-43vh) scale(.62);transform-origin:50% 100%;}
+  #hub{top:auto;left:8px;right:8px;width:auto;bottom:8px;max-height:50vh;}
+  #dialogue{padding:26px 18px 18px;min-height:150px;}
+  #dialogue .text{font-size:calc(1rem * var(--fs));}
+  #dialogue .text.narr{font-size:calc(1.05rem * var(--fs));}
+  #choices{padding:70px 12px 180px;}
+  .clock .d{display:none;}
+  .rel-card{grid-template-columns:1fr;}
+  .rel-card .mini{width:100%;}
+  .rel-card .mini .portrait{left:50%;}
+  #hud{padding-left:10px;padding-right:10px;}
+  .icon-btn .lbl{display:none;}
+}
+@media (max-height:520px) and (orientation:landscape){
+  :root{--pscale:2.2vh;}
+  #dialogue{min-height:120px;padding:22px 18px 14px;}
+  #hub{top:60px;}
+}
+/* ================= RETRATOS EM CSS ================= */
+.portrait{
+  --lid:16%; --iris-y:0em; --iris-x:0em; --blush:0;
+  --bl-r:-2deg; --br-r:2deg; --bl-y:0em; --br-y:0em;
+  position:relative; width:24em; height:36em; flex:none;
+  font-size:var(--pscale,14px);
+  filter: drop-shadow(0 0 1.4em var(--aura));
+}
+.portrait > div{position:absolute;}
+.portrait.breathe{animation:breathe 5s ease-in-out infinite;}
+.p-aura{left:50%;top:6em;width:22em;height:26em;margin-left:-11em;border-radius:50%;
+  background:radial-gradient(ellipse at 50% 45%, var(--aura) 0%, transparent 65%);opacity:.55;}
+
+/* Cabelo de trás */
+.p-hairback{left:50%;}
+.p-hairback i{position:absolute;display:block;}
+
+/* Corpo */
+.p-body{left:50%;top:16.7em;width:19.6em;height:18.8em;margin-left:-9.8em;
+  border-radius:50% 50% 8% 8% / 32% 32% 0 0;background:var(--cloth);overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%);}
+.p-body::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 18%,transparent 82%,rgba(0,0,0,.35));}
+.p-chest{position:absolute;left:50%;top:-.2em;width:7em;height:6em;margin-left:-3.5em;
+  background:linear-gradient(180deg,var(--skin-d) 0%,var(--skin) 35%,var(--skin-l) 100%);}
+.p-cloth{position:absolute;inset:0;}
+.p-neck{left:50%;top:13.4em;width:3.5em;height:5.6em;margin-left:-1.75em;
+  background:linear-gradient(180deg,var(--skin-d) 0%,var(--skin-d) 22%,var(--skin) 55%,var(--skin) 100%);
+  border-radius:0 0 1.2em 1.2em;}
+.p-front{left:0;top:0;width:100%;height:100%;pointer-events:none;}
+.p-front > div{position:absolute;}
+
+/* Cabeça */
+.p-headwrap{left:50%;top:3.6em;width:8.4em;height:10.8em;margin-left:-4.2em;}
+.p-headwrap > div{position:absolute;}
+.p-skin{inset:0;border-radius:50% 50% 46% 46% / 42% 42% 58% 58%;
+  background:
+    radial-gradient(ellipse at 50% 108%, var(--skin-d) 0%, transparent 38%),
+    radial-gradient(ellipse at 50% 38%, var(--skin-l) 0%, var(--skin) 55%, var(--skin-d) 100%);
+  box-shadow: inset -.5em -.3em 1em rgba(0,0,0,.18), inset .3em 0 .8em rgba(255,255,255,.05);}
+.p-ear{top:4.5em;width:1.15em;height:2.1em;border-radius:50%;
+  background:radial-gradient(ellipse at 60% 50%, var(--skin-d), var(--skin) 70%);}
+.p-ear.l{left:-.45em;} .p-ear.r{right:-.45em;}
+.p-blush{top:6.5em;width:2.3em;height:1.1em;border-radius:50%;
+  background:radial-gradient(ellipse, rgba(255,70,110,.55), transparent 70%);opacity:var(--blush);transition:opacity .4s;}
+.p-blush.l{left:.7em;} .p-blush.r{right:.7em;}
+
+/* Sobrancelhas */
+.p-brow{top:3.85em;width:2em;height:.62em;border-top:.24em solid var(--brow);
+  border-radius:50% 50% 0 0 / 100% 100% 0 0;transition:transform .35s ease;}
+.p-brow.l{left:1.15em;transform:translateY(var(--bl-y)) rotate(var(--bl-r));}
+.p-brow.r{right:1.15em;transform:translateY(var(--br-y)) rotate(var(--br-r));}
+
+/* Olhos */
+.p-eye{top:4.75em;width:1.8em;height:.9em;}
+.p-eye.l{left:1.25em;} .p-eye.r{right:1.25em;}
+.p-ball{position:absolute;inset:0;overflow:hidden;background:#fbf4f1;
+  border-top:.17em solid var(--lash);
+  border-radius:60% 60% 50% 50% / 90% 90% 45% 45%;
+  box-shadow:inset 0 .14em .1em rgba(0,0,0,.18);transition:opacity .25s;}
+.p-iris{position:absolute;width:.98em;height:.98em;border-radius:50%;left:50%;
+  top:50%;margin:-.56em 0 0 -.49em;
+  transform:translate(var(--iris-x),var(--iris-y));transition:transform .35s ease;
+  background:radial-gradient(circle at 50% 50%, #0a0508 0 24%, var(--iris) 30%, var(--iris-d) 78%, #120a08 100%);}
+.p-iris::after{content:'';position:absolute;width:.24em;height:.24em;border-radius:50%;background:#fff;top:.16em;right:.2em;opacity:.9;}
+.p-eye.r .p-iris{background:radial-gradient(circle at 50% 50%, #0a0508 0 24%, var(--iris-r,var(--iris)) 30%, var(--iris-rd,var(--iris-d)) 78%, #120a08 100%);}
+.p-lid{position:absolute;left:0;right:0;top:0;height:var(--lid);
+  background:linear-gradient(180deg,var(--skin-d),var(--skin));
+  border-bottom:.08em solid rgba(40,10,20,.45);transition:height .3s ease;}
+.portrait.blink .p-lid{animation:blink 6s infinite;}
+.p-eye::after{content:'';position:absolute;top:-.12em;right:-.3em;width:.55em;height:.2em;
+  background:var(--lash);border-radius:0 100% 0 100%;transform:rotate(-24deg);}
+.p-eye.l::after{right:auto;left:-.3em;transform:scaleX(-1) rotate(-24deg);}
+.p-eye::before{content:'';position:absolute;display:none;left:.12em;right:.12em;top:.15em;height:.6em;
+  border-top:.2em solid var(--lash);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+.mood-laugh .p-ball{opacity:0;}
+.mood-laugh .p-eye::before{display:block;}
+
+/* Nariz */
+.p-nose{left:50%;top:5.7em;width:.8em;height:1.7em;margin-left:-.4em;
+  background:linear-gradient(90deg, transparent 35%, rgba(70,25,15,.16) 62%, transparent 85%);
+  border-radius:0 0 50% 50%;}
+.p-nose::after{content:'';position:absolute;left:50%;bottom:-.05em;width:1em;height:.42em;margin-left:-.5em;
+  border-radius:50%;box-shadow:inset 0 -.12em .12em rgba(70,25,15,.28);}
+
+/* Boca */
+.p-mouth{left:50%;top:8.05em;width:2.2em;height:.62em;margin-left:-1.1em;
+  background:linear-gradient(180deg, var(--lip) 0 46%, var(--lip-d) 46% 54%, var(--lip) 54% 100%);
+  border-radius:45% 45% 50% 50% / 55% 55% 65% 65%;transition:all .3s ease;}
+.p-mouth::before{content:'';position:absolute;left:50%;top:0;width:.5em;height:.18em;margin-left:-.25em;
+  border-radius:0 0 50% 50%;background:rgba(0,0,0,.18);}
+.p-mouth::after{content:'';position:absolute;left:32%;top:62%;width:.5em;height:.12em;border-radius:50%;background:rgba(255,255,255,.45);}
+.mood-smile .p-mouth,.mood-laugh .p-mouth{width:2.5em;margin-left:-1.25em;height:.8em;
+  background:#3b0c18;border:.15em solid var(--lip);border-top-width:.11em;
+  border-radius:.25em .25em 1.25em 1.25em / .25em .25em .95em .95em;}
+.mood-laugh .p-mouth{height:1.05em;width:2.6em;margin-left:-1.3em;}
+.mood-smile .p-mouth::before,.mood-laugh .p-mouth::before{left:8%;right:8%;width:auto;margin:0;top:0;height:38%;
+  background:#f6efea;border-radius:0 0 .3em .3em;}
+.mood-smile .p-mouth::after,.mood-laugh .p-mouth::after{display:none;}
+.mood-smirk .p-mouth{transform:rotate(-7deg) translateX(.18em);width:2em;margin-left:-1em;}
+.mood-surprised .p-mouth{width:1.05em;height:1.15em;margin-left:-.52em;top:7.95em;background:#3b0c18;
+  border:.16em solid var(--lip);border-radius:50%;}
+.mood-surprised .p-mouth::before,.mood-surprised .p-mouth::after{display:none;}
+.mood-sad .p-mouth{width:1.8em;margin-left:-.9em;height:.48em;top:8.2em;
+  border-radius:55% 55% 30% 30% / 90% 90% 25% 25%;}
+.mood-shy .p-mouth{width:1.55em;margin-left:-.78em;height:.52em;}
+.mood-flirty .p-mouth{width:2.25em;margin-left:-1.12em;height:.7em;transform:rotate(-3deg);
+  background:linear-gradient(180deg, var(--lip) 0 42%, #3b0c18 42% 58%, var(--lip) 58% 100%);}
+
+.p-mark,.p-freckles,.p-extra,.p-hairside,.p-hairfront{pointer-events:none;}
+.p-mark{display:none;}
+.p-freckles{display:none;}
+
+/* Estados de humor */
+.mood-smile{ --lid:22%; --blush:.25; --bl-r:-5deg; --br-r:5deg; --bl-y:-.06em; --br-y:-.06em;}
+.mood-laugh{ --blush:.5; --bl-y:-.18em; --br-y:-.18em; --bl-r:-7deg; --br-r:7deg;}
+.mood-smirk{ --lid:32%; --bl-r:3deg; --br-r:-9deg; --br-y:-.28em; --iris-x:.1em; --blush:.1;}
+.mood-shy{ --lid:46%; --iris-y:.2em; --iris-x:-.12em; --blush:.85; --bl-r:-11deg; --br-r:11deg; --bl-y:-.06em; --br-y:-.06em;}
+.mood-surprised{ --lid:0%; --bl-y:-.42em; --br-y:-.42em; --bl-r:-3deg; --br-r:3deg;}
+.mood-sad{ --lid:38%; --iris-y:.14em; --bl-r:-14deg; --br-r:14deg; --bl-y:-.1em; --br-y:-.1em;}
+.mood-flirty{ --lid:48%; --blush:.55; --bl-r:-2deg; --br-r:-8deg; --br-y:-.2em; --iris-x:.1em;}
+
+@keyframes blink{0%,93%,100%{height:var(--lid);}95.5%{height:100%;}}
+@keyframes breathe{0%,100%{transform:translateY(0);}50%{transform:translateY(-.18em);}}
+
+/* ---------- VICTORIA ---------- */
+.char-victoria{--skin:#c68a62;--skin-l:#d9a07a;--skin-d:#a26a48;--hair:#0d0b11;--hair-l:#3e3852;
+  --iris:#c9822e;--iris-d:#5c3311;--lip:#a8132f;--lip-d:#5e0716;--brow:#140c10;--lash:#0e070b;
+  --cloth:#0c0a0f;--aura:rgba(232,176,74,.42);}
+.char-victoria .p-hairback{top:2.4em;width:12.8em;height:21.5em;margin-left:-6.6em;
+  border-radius:6.4em 6.4em 2.8em 3.6em / 6.4em 6.4em 3em 3em;
+  background:linear-gradient(100deg,var(--hair) 0%,#1d1a26 26%,var(--hair-l) 34%,#17141e 43%,var(--hair) 66%,#26212f 82%,var(--hair) 100%);}
+.char-victoria .p-body{background:
+  linear-gradient(115deg, transparent 0 33%, #1d1a22 33% 34.5%, transparent 34.5%),
+  linear-gradient(245deg, transparent 0 33%, #1d1a22 33% 34.5%, transparent 34.5%),
+  linear-gradient(180deg,#1a1720,#09080c 60%);}
+.char-victoria .p-chest{width:6.4em;margin-left:-3.2em;height:7.5em;clip-path:polygon(0 0,100% 0,50% 100%);}
+.char-victoria .p-cloth{background:
+  linear-gradient(118deg, transparent 0 30%, rgba(255,255,255,.07) 30% 31%, transparent 31% 100%),
+  linear-gradient(242deg, transparent 0 30%, rgba(255,255,255,.07) 30% 31%, transparent 31% 100%);}
+.char-victoria .p-necklace{left:50%;top:16.9em;width:4.6em;height:3.6em;margin-left:-2.3em;
+  border:.09em solid #e8c475;border-top:none;border-radius:0 0 50% 50% / 0 0 100% 100%;}
+.char-victoria .p-necklace::after{content:'';position:absolute;left:50%;bottom:-.55em;width:.6em;height:.8em;margin-left:-.3em;
+  background:linear-gradient(135deg,#fff3c4,#d6a64a 60%,#8a6420);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);}
+.char-victoria .p-lock.l{left:calc(50% - 6.4em);top:9.2em;width:2.9em;height:15.5em;
+  border-radius:50% 40% 60% 50% / 8% 20% 85% 90%;transform:rotate(3deg);
+  background:linear-gradient(95deg,var(--hair) 0%,#2a2636 45%,var(--hair-l) 55%,var(--hair) 100%);}
+.char-victoria .p-hairfront{top:-.8em;left:-.7em;width:9.8em;height:6.6em;
+  border-radius:50% 50% 0 0 / 62% 62% 0 0;
+  background:linear-gradient(105deg,var(--hair) 0%,#221e2c 30%,var(--hair-l) 44%,#1a1722 56%,var(--hair) 75%);
+  clip-path:polygon(0 0,100% 0,100% 62%,94% 54%,86% 46%,76% 40%,66% 36%,60% 35%,54% 38%,46% 42%,36% 48%,26% 56%,17% 66%,10% 80%,5% 96%,0 100%);}
+.char-victoria .p-hairfront::before{content:'';position:absolute;left:8%;top:30%;width:50%;height:30%;
+  border-bottom:.12em solid rgba(120,110,160,.35);border-radius:0 0 100% 0 / 0 0 100% 0;transform:rotate(-12deg);}
+.char-victoria .p-hairside{left:-.9em;top:3.4em;width:2.2em;height:8.4em;
+  background:linear-gradient(90deg,var(--hair) 30%,#26212f 70%,var(--hair));
+  border-radius:60% 20% 30% 70% / 30% 30% 70% 70%;}
+.char-victoria .p-ear.r::after{content:'';position:absolute;left:30%;bottom:-1.1em;width:.55em;height:1.2em;
+  border-radius:50%;border:.12em solid #e8c475;}
+.char-victoria .p-mark{display:block;left:6.2em;top:7.6em;width:.18em;height:.18em;border-radius:50%;background:#4a2414;}
+
+/* ---------- LUNA ---------- */
+.char-luna{--skin:#f0d4cc;--skin-l:#fbe6df;--skin-d:#d8b0a6;--hair:#c9b5ea;--hair-l:#efe6ff;--hair-d:#8f78bf;
+  --iris:#9a63ff;--iris-d:#3d1c7a;--iris-r:#2fd6c5;--iris-rd:#0b5a55;--lip:#7a2b63;--lip-d:#3e0f33;
+  --brow:#6d5a92;--lash:#1d1222;--cloth:#16141c;--aura:rgba(160,120,255,.45);}
+.char-luna .p-hairback{top:2.5em;width:12.2em;height:15.2em;margin-left:-6.1em;
+  border-radius:6em 6em 0 0 / 6em 6em 0 0;
+  background:linear-gradient(100deg,var(--hair-d) 0%,var(--hair) 30%,var(--hair-l) 42%,var(--hair) 55%,var(--hair-d) 100%);
+  clip-path:polygon(0 0,100% 0,100% 82%,95% 93%,90% 86%,84% 100%,78% 90%,72% 96%,28% 96%,22% 88%,15% 100%,10% 86%,4% 95%,0 84%);}
+.char-luna .p-hairback i{left:68%;top:28%;width:12%;height:72%;
+  background:linear-gradient(180deg,transparent,#3fe6d4 25%,#2bb8c9 80%,transparent);opacity:.85;
+  clip-path:polygon(0 0,100% 0,100% 90%,50% 100%,0 92%);}
+.char-luna .p-body{background:
+  radial-gradient(circle at 22% 62%, rgba(68,230,216,.55) 0 .35em, transparent .4em),
+  radial-gradient(circle at 26% 70%, rgba(255,79,147,.6) 0 .22em, transparent .26em),
+  radial-gradient(circle at 78% 55%, rgba(155,107,255,.6) 0 .3em, transparent .34em),
+  radial-gradient(circle at 70% 80%, rgba(68,230,216,.5) 0 .2em, transparent .25em),
+  linear-gradient(100deg,#1d1a24 0 28%, #2c2838 28% 29%, transparent 29% 71%, #2c2838 71% 72%, #1d1a24 72%),
+  linear-gradient(180deg,#5b3d8f 0%,#3b2763 100%);}
+.char-luna .p-chest{width:8.6em;margin-left:-4.3em;height:3.4em;border-radius:0 0 50% 50% / 0 0 100% 100%;}
+.char-luna .p-cloth{background:linear-gradient(180deg,transparent 0 30%, rgba(255,255,255,.04) 30% 31%, transparent 31%);}
+.char-luna .p-necklace{left:50%;top:15.9em;width:3.9em;height:.55em;margin-left:-1.95em;background:#141018;border-radius:.2em;
+  box-shadow:0 .05em 0 rgba(255,255,255,.12) inset;}
+.char-luna .p-necklace::after{content:'';position:absolute;left:50%;top:.3em;width:.6em;height:.6em;margin-left:-.3em;border:.1em solid #d6d6e8;border-radius:50%;}
+.char-luna .p-hairfront{top:-.7em;left:-.65em;width:9.7em;height:5.6em;
+  border-radius:50% 50% 0 0 / 70% 70% 0 0;
+  background:linear-gradient(95deg,var(--hair-d) 0%,var(--hair) 25%,var(--hair-l) 48%,var(--hair) 65%,var(--hair-d) 100%);
+  clip-path:polygon(0 0,100% 0,100% 82%,93% 70%,88% 86%,80% 62%,72% 80%,63% 60%,55% 74%,46% 58%,38% 76%,30% 60%,22% 80%,14% 64%,8% 88%,0 74%);}
+.char-luna .p-hairfront::after{content:'';position:absolute;left:62%;top:30%;width:9%;height:46%;
+  background:linear-gradient(180deg,#3fe6d4,#2bb8c9);clip-path:polygon(0 0,100% 0,80% 100%,30% 80%);opacity:.9;}
+.char-luna .p-hairside{left:-1.05em;top:2.4em;width:10.5em;height:9.8em;}
+.char-luna .p-hairside::before,.char-luna .p-hairside::after{content:'';position:absolute;top:0;width:2em;height:100%;
+  background:linear-gradient(180deg,var(--hair),var(--hair-d));}
+.char-luna .p-hairside::before{left:0;clip-path:polygon(0 0,100% 0,70% 35%,85% 60%,60% 78%,70% 100%,35% 84%,20% 100%,0 80%);}
+.char-luna .p-hairside::after{right:0;clip-path:polygon(0 0,100% 0,100% 80%,80% 100%,65% 84%,30% 100%,40% 78%,15% 60%,30% 35%);}
+.char-luna .p-mark{display:block;left:6.3em;top:6.15em;width:.17em;height:.17em;border-radius:50%;background:#5a3a4a;}
+.char-luna .p-nose::before{content:'';position:absolute;left:.62em;bottom:.05em;width:.22em;height:.22em;border-radius:50%;
+  border:.07em solid #e2e2f0;border-left-color:transparent;}
+.char-luna .p-ear.l::after,.char-luna .p-ear.r::after{content:'';position:absolute;left:25%;top:.25em;width:.5em;height:.5em;border-radius:50%;border:.1em solid #d6d6e8;}
+.char-luna .p-lock.r{left:calc(50% + 3.6em);top:10.6em;width:2.4em;height:7.8em;
+  background:linear-gradient(85deg,var(--hair),var(--hair-d));
+  clip-path:polygon(0 0,100% 0,90% 70%,100% 100%,60% 85%,40% 100%,20% 75%);}
+
+/* ---------- SOPHIE ---------- */
+.char-sophie{--skin:#f2c8a9;--skin-l:#fcdcc3;--skin-d:#d9a685;--hair:#7b3a22;--hair-l:#b8643a;--hair-d:#4e2214;
+  --iris:#5f9b55;--iris-d:#213f1c;--lip:#d27682;--lip-d:#9b4552;--brow:#5a2a18;--lash:#2a140c;
+  --cloth:#6b1f30;--aura:rgba(255,110,160,.42);}
+.char-sophie .p-hairback{top:2.6em;width:10.6em;height:11.2em;margin-left:-5.3em;
+  border-radius:50% 50% 42% 42% / 56% 56% 44% 44%;
+  background:radial-gradient(ellipse at 40% 30%,var(--hair-l) 0%,var(--hair) 45%,var(--hair-d) 100%);}
+.char-sophie .p-hairback i{left:66%;top:62%;width:4.6em;height:4.2em;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,var(--hair-l),var(--hair) 50%,var(--hair-d));
+  box-shadow:-.3em .2em .6em rgba(0,0,0,.35);}
+.char-sophie .p-body{background:
+  linear-gradient(90deg, transparent 0 31%, #f4efe9 31% 69%, transparent 69%) top/100% 40% no-repeat,
+  linear-gradient(180deg,#7a2236,#521424 70%);}
+.char-sophie .p-chest{width:3em;margin-left:-1.5em;height:1.6em;clip-path:polygon(0 0,100% 0,50% 100%);}
+.char-sophie .p-cloth{background:
+  linear-gradient(108deg, transparent 0 34%, #7a2236 34% 100%) left/50% 100% no-repeat,
+  linear-gradient(252deg, transparent 0 34%, #7a2236 34% 100%) right/50% 100% no-repeat;}
+.char-sophie .p-cloth::after{content:'SOPHIE';position:absolute;left:66%;top:28%;font:700 .55em/1 var(--sans);letter-spacing:.15em;
+  color:#3a1a0a;background:linear-gradient(135deg,#f3dc9a,#c9a24f);padding:.35em .7em;border-radius:.2em;}
+.char-sophie .p-necklace{left:50%;top:16.8em;width:3.2em;height:1.4em;margin-left:-1.6em;
+  background:
+    radial-gradient(circle at 50% 50%, #8e2a40 0 .32em, transparent .34em),
+    linear-gradient(60deg, transparent 0 20%, #9b2f47 20% 48%, transparent 48%) left/50% 100% no-repeat,
+    linear-gradient(-60deg, transparent 0 20%, #9b2f47 20% 48%, transparent 48%) right/50% 100% no-repeat;}
+.char-sophie .p-lock.l,.char-sophie .p-lock.r{top:13.6em;width:3.2em;height:4.4em;border-radius:50%;opacity:0;}
+.char-sophie .p-front::before{content:'';position:absolute;left:50%;top:16.7em;width:6.4em;height:1.8em;margin-left:-3.2em;
+  background:
+    linear-gradient(35deg, transparent 0 40%, #fbf7f2 40% 100%) left/50% 100% no-repeat,
+    linear-gradient(-35deg, transparent 0 40%, #fbf7f2 40% 100%) right/50% 100% no-repeat;
+  filter:drop-shadow(0 .1em .1em rgba(0,0,0,.2));}
+.char-sophie .p-hairfront{top:-.7em;left:-.6em;width:9.6em;height:6.2em;
+  border-radius:50% 50% 0 0 / 62% 62% 0 0;
+  background:radial-gradient(ellipse at 42% 18%,var(--hair-l),var(--hair) 50%,var(--hair-d));
+  clip-path:polygon(0 0,100% 0,100% 92%,96% 76%,90% 62%,82% 52%,72% 46%,62% 43%,55% 41%,50% 44%,45% 41%,38% 43%,28% 46%,18% 52%,10% 62%,4% 76%,0 92%);}
+.char-sophie .p-hairfront::before{content:'';position:absolute;left:24%;top:38%;width:24%;height:22%;
+  border-bottom:.1em solid rgba(255,190,140,.35);border-radius:0 0 0 100%;}
+.char-sophie .p-hairfront::after{content:'';position:absolute;right:24%;top:38%;width:24%;height:22%;
+  border-bottom:.1em solid rgba(255,190,140,.35);border-radius:0 0 100% 0;}
+.char-sophie .p-hairside{left:-.7em;top:3.6em;width:9.8em;height:8.2em;}
+.char-sophie .p-hairside::before,.char-sophie .p-hairside::after{content:'';position:absolute;top:0;width:1.3em;height:100%;
+  background:linear-gradient(180deg,var(--hair),var(--hair-d));}
+.char-sophie .p-hairside::before{left:0;clip-path:polygon(30% 0,100% 0,70% 30%,60% 55%,75% 80%,40% 100%,10% 78%,0 45%);}
+.char-sophie .p-hairside::after{right:0;clip-path:polygon(0 0,70% 0,100% 45%,90% 78%,60% 100%,25% 80%,40% 55%,30% 30%);}
+.char-sophie .p-freckles{display:block;left:1.5em;top:6.2em;width:5.4em;height:1em;opacity:.55;
+  background:
+    radial-gradient(circle at 8% 40%, #a8613f 0 .07em, transparent .09em),
+    radial-gradient(circle at 16% 70%, #a8613f 0 .06em, transparent .08em),
+    radial-gradient(circle at 24% 30%, #a8613f 0 .07em, transparent .09em),
+    radial-gradient(circle at 76% 30%, #a8613f 0 .07em, transparent .09em),
+    radial-gradient(circle at 84% 70%, #a8613f 0 .06em, transparent .08em),
+    radial-gradient(circle at 92% 40%, #a8613f 0 .07em, transparent .09em),
+    radial-gradient(circle at 50% 10%, #a8613f 0 .05em, transparent .07em);}
+.char-sophie .p-extra{left:.75em;top:4.05em;width:6.9em;height:2.3em;
+  background:linear-gradient(#c9a35a,#c9a35a) center 38%/1.2em .12em no-repeat;}
+.char-sophie .p-extra::before,.char-sophie .p-extra::after{content:'';position:absolute;top:0;width:2.75em;height:2.25em;
+  border:.13em solid #c9a35a;border-radius:46%;background:rgba(255,255,255,.06);
+  box-shadow:inset .3em -.3em .5em rgba(255,255,255,.08);}
+.char-sophie .p-extra::before{left:0;} .char-sophie .p-extra::after{right:0;}
+.char-sophie.unmasked .p-extra{display:none;}
+</style>
+</head>
+<body>
+<!-- MENU INICIAL -->
+<section id="menu" class="screen active" aria-label="Menu inicial">
+  <div class="menu-bg loc loc-rua" id="menuBg"></div>
+  <div class="menu-portraits" id="menuPortraits" aria-hidden="true"></div>
+  <div class="menu-inner">
+    <h1 class="logo">Velvet Nights<small>HOTEL VELVET · DESDE 1927</small></h1>
+    <p class="tagline">Sete noites. Três mulheres. Um hotel que nunca dorme — e escolhas que não se desfazem.</p>
+    <div class="menu-buttons">
+      <button class="btn primary" id="btnNew">Nova história</button>
+      <button class="btn" id="btnContinue">Continuar <span class="sub" id="continueSub"></span></button>
+      <button class="btn" id="btnLoad">Carregar</button>
+      <button class="btn" id="btnEndings">Finais desbloqueados</button>
+      <button class="btn" id="btnSettings">Configurações</button>
+    </div>
+    <p class="menu-note">Obra de ficção para maiores de 18 anos. Todas as personagens são adultas. Contém flerte e intimidade sugerida, sem conteúdo explícito.</p>
+  </div>
+</section>
+
+<!-- JOGO -->
+<section id="game" class="screen" aria-label="Jogo">
+  <div id="stage"></div>
+  <div id="charLayer"></div>
+  <header id="hud">
+    <div class="clock" id="clock" title="Noite e hora atuais">
+      <div class="orb" id="clockOrb"></div>
+      <div><div class="t" id="clockTime">20:00</div><div class="d" id="clockDay">Noite 1</div></div>
+    </div>
+    <div class="hud-right">
+      <span class="money" id="money" title="Dinheiro">100 €</span>
+      <button class="icon-btn" id="btnRel" title="Relações">♥ <span class="lbl">Relações</span></button>
+      <button class="icon-btn" id="btnInv" title="Inventário">✦ <span class="lbl">Inventário</span></button>
+      <button class="icon-btn" id="btnPause" title="Menu (Esc)">☰ <span class="lbl">Menu</span></button>
+    </div>
+  </header>
+  <div id="hub" class="hidden"></div>
+  <div id="dayPanel" class="hidden"></div>
+  <div id="dialogue" class="hidden" role="button" tabindex="0" aria-live="polite">
+    <div class="name" id="dName"></div>
+    <div class="dctrl">
+      <button class="icon-btn" id="btnLog" title="Histórico">Histórico</button>
+      <button class="icon-btn" id="btnAuto" title="Avanço automático">Auto</button>
+    </div>
+    <div class="text" id="dText"></div>
+    <div class="next" id="dNext">▼</div>
+  </div>
+  <div id="choices" class="hidden" role="group" aria-label="Escolhas"></div>
+  <div id="fader"></div>
+</section>
+
+<!-- FINAL -->
+<section id="ending" class="screen" aria-label="Final">
+  <div class="end-bg loc" id="endBg"></div>
+  <div class="end-inner">
+    <div class="kicker" id="endKicker">Final</div>
+    <h1 id="endTitle"></h1>
+    <div class="end-text" id="endText"></div>
+    <div class="end-actions">
+      <button class="btn primary" id="btnEndMenu">Voltar ao menu</button>
+      <button class="btn" id="btnEndNew">Nova história</button>
+    </div>
+  </div>
+</section>
+
+<div id="modal" class="hidden" role="dialog" aria-modal="true"></div>
+<div id="toasts" aria-live="polite"></div>
+<script>
+'use strict';
+/* =====================================================================
+   VELVET NIGHTS — núcleo: constantes, dados, estado, gravação e motor
+   ===================================================================== */
+
+const SAVE_VERSION = 1;
+const KEYS = {
+  slot: id => 'velvetNights.save.' + id,
+  settings: 'velvetNights.settings',
+  endings: 'velvetNights.endings'
+};
+const SLOTS = ['auto', '1', '2', '3'];
+const NIGHT_START = 1200;      // 20:00 (minutos desde a meia-noite do dia em que começa o turno)
+const NIGHT_END = 1800;        // 06:00 do dia seguinte
+const LAST_FREE_NIGHT = 6;     // noites 1–6 são jogáveis; a noite 7 é a Gala
+const GALA_NIGHT = 7;
+const SALARY = 60;
+const COST = { travel: 10, story: 45, small: 20, gift: 10, work: 60, special: 90, blackout: 30, wait: 30 };
+const CHAR_IDS = ['victoria', 'luna', 'sophie'];
+
+/* ---------- utilitários ---------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+function fmtTime(t) {
+  const m = ((Math.round(t) % 1440) + 1440) % 1440;
+  return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+}
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+const Store = {
+  ok: (() => { try { const k = '__vn_probe'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; } catch (e) { return false; } })(),
+  get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } },
+  del(k) { try { localStorage.removeItem(k); return true; } catch (e) { return false; } }
+};
+
+/* ---------- personagens ---------- */
+const CHARS = {
+  victoria: {
+    name: 'Victoria', full: 'Victoria Ravel', age: 34, color: '#e8b04a',
+    role: 'Empresária · Suite Presidencial',
+    where: 'Costuma estar no Velvet Bar entre as 21:00 e as 02:00.',
+    bio: [
+      'Ocupa a Suite Presidencial há duas semanas. Elegante, confiante e provocadora — fala três línguas ao telemóvel e nenhuma delas com paciência.',
+      'Testa toda a gente. Despreza o servilismo e adora quem lhe responde à altura.',
+      'CEO do Grupo Ravel. Veio comprar o Velvet; a venda será anunciada na Gala.',
+      'O pai, Henrique, foi paquete no Velvet em 1986 e despedido por um roubo que nunca se provou. Ela construiu um império com essa raiva.',
+      'Pediu-te uma única coisa: que não a faças de tola.',
+      'Por trás da armadura há alguém que passou vinte anos sem deixar ninguém ficar até ao amanhecer.'
+    ]
+  },
+  luna: {
+    name: 'Luna', full: 'Luna Moreau', age: 27, color: '#b896ff',
+    role: 'Artista · Quarto 707',
+    where: 'Costuma estar no Terraço entre as 23:00 e as 05:00.',
+    bio: [
+      'Vive no quarto 707 há quatro meses e paga a estadia com quadros. Misteriosa, brincalhona, imprevisível.',
+      'Tem um olho violeta e outro verde-água, e desenha pessoas em quinze segundos.',
+      'É a Noctua — a artista anónima das corujas de néon que aparecem nas paredes da cidade.',
+      'Cresceu de hotel em hotel com a mãe cantora. O Velvet foi o primeiro sítio onde desfez a mala.',
+      'Tem uma regra: nunca fica. Em lado nenhum, com ninguém.',
+      'Talvez a regra tenha deixado de fazer sentido.'
+    ]
+  },
+  sophie: {
+    name: 'Sophie', full: 'Sophie Duarte', age: 25, color: '#ff7fae',
+    role: 'Rececionista da noite',
+    where: 'Está na Receção até à meia-noite; depois faz uma pausa até às 02:00.',
+    bio: [
+      'Rececionista do turno da noite há três anos. Tímida, organizada, sabe onde está tudo — e cora com facilidade.',
+      'Escreve romances às escondidas num caderno de capa vermelha.',
+      'A mãe queria que fosse contabilista. Ela queria histórias.',
+      'Na cave, canta jazz de máscara de renda sob o nome de Mademoiselle Rouge.',
+      'Foi convidada a cantar na Gala. Penso em ti nos intervalos, disse ela.',
+      'Já não tem medo de ser inteira.'
+    ]
+  }
+};
+const MARCEL = { name: 'Marcel', color: '#a9bdd2' };
+
+function affLevel(v) {
+  if (v >= 80) return 'Inseparável';
+  if (v >= 60) return 'Apaixonada';
+  if (v >= 40) return 'Próxima';
+  if (v >= 25) return 'Cúmplice';
+  if (v >= 10) return 'Conhecida';
+  return 'Desconhecida';
+}
+
+/* ---------- presentes ---------- */
+const ITEMS = {
+  rosa:      { name: 'Rosa Vermelha',          price: 12, icon: '🌹', desc: 'Um clássico. Há quem ache romântico; há quem ache um cliché.' },
+  chocolate: { name: 'Bombons Artesanais',     price: 18, icon: '🍫', desc: 'Caixa de bombons de uma chocolataria da Baixa.' },
+  poesia:    { name: 'Livro de Poesia',        price: 22, icon: '📖', desc: 'Edição antiga de sonetos, com dedicatória em branco.' },
+  pinceis:   { name: 'Pincéis de Pelo de Marta', price: 30, icon: '🖌️', desc: 'Pincéis profissionais. Caros, finos, perfeitos.' },
+  vinil:     { name: 'Vinil de Jazz Raro',     price: 38, icon: '🎷', desc: 'Primeira prensagem de um disco de jazz de 1959.' },
+  caixa:     { name: 'Caixinha de Música',     price: 40, icon: '🎶', desc: 'Toca uma valsa antiga quando se abre a tampa.' },
+  vinho:     { name: 'Vinho do Porto Vintage', price: 48, icon: '🍷', desc: 'Uma garrafa de 1994. Para quem sabe apreciar.' },
+  perfume:   { name: 'Perfume Noir',           price: 65, icon: '🖤', desc: 'Âmbar, couro e rosa negra. Frasco de cristal.' }
+};
+const ITEM_IDS = Object.keys(ITEMS);
+const PREFS = {
+  victoria: { vinho: 'love', perfume: 'love', rosa: 'like', vinil: 'like', chocolate: 'hate' },
+  luna:     { pinceis: 'love', vinil: 'love', chocolate: 'like', poesia: 'like', rosa: 'hate', perfume: 'hate' },
+  sophie:   { poesia: 'love', caixa: 'love', rosa: 'like', chocolate: 'like', vinho: 'hate' }
+};
+const GIFT_VALUE = { love: 10, like: 5, neutral: 2, hate: -5 };
+const REACTION_LABEL = { love: 'adora', like: 'gosta', neutral: 'indiferente', hate: 'não gosta' };
+
+/* ---------- locais ---------- */
+const LOCS = {
+  rececao:      { name: 'Receção', desc: 'Mármore, latão e um lustre que já viu tudo. O coração do Velvet.' },
+  bar:          { name: 'Velvet Bar', desc: 'Espelhos fumados, cadeirões de veludo e néon cor-de-rosa por cima das garrafas.' },
+  terraco:      { name: 'Terraço', desc: 'Vinte andares acima da cidade, com uma piscina vazia e as poucas estrelas que a cidade deixa ver.' },
+  boutique:     { name: 'Boutique Noir', desc: 'Presentes para hóspedes indecisos. Aberta das 18:00 às 03:00.' },
+  funcionarios: { name: 'Sala dos Funcionários', desc: 'Cacifos, café requentado e o único sofá do hotel onde ninguém finge.' },
+  escarlate:    { name: 'Sala Escarlate', secret: true, desc: 'Um clube de jazz escondido na cave. Oficialmente, não existe.' },
+  suite:        { name: 'Suite Presidencial', secret: true, desc: 'Metade do último piso e uma janela que engole a cidade inteira.' },
+  estudio:      { name: 'Estúdio 707', secret: true, desc: 'O quarto da Luna, transformado em atelier. Ninguém entra sem convite.' },
+  jardim:       { name: 'Jardim de Inverno', secret: true, desc: 'Uma estufa de vidro esquecida atrás da cozinha, cheia de orquídeas teimosas.' }
+};
+const MAP_ORDER = ['rececao', 'bar', 'terraco', 'boutique', 'funcionarios', 'escarlate', 'suite', 'estudio', 'jardim'];
+const SHOP_OPEN = [1080, 1620];
+
+/* ---------- capítulos (requisitos) ---------- */
+// Os capítulos 3 e 5 de cada personagem são convites para um encontro especial
+const CHAPTERS = {
+  victoria: {
+    1: { day: 1, aff: 0 }, 2: { day: 2, aff: 10 },
+    3: { day: 3, aff: 25, invite: { loc: 'suite', from: 1530, to: 1650 } },
+    4: { day: 4, aff: 40 },
+    5: { day: 5, aff: 55, invite: { loc: 'suite', from: 1590, to: 1710 } }
+  },
+  luna: {
+    1: { day: 1, aff: 0 }, 2: { day: 2, aff: 10 },
+    3: { day: 3, aff: 25, invite: { loc: 'estudio', from: 1650, to: 1770 } },
+    4: { day: 4, aff: 40 },
+    5: { day: 5, aff: 55, invite: { loc: 'terraco', from: 1620, to: 1740 } }
+  },
+  sophie: {
+    1: { day: 1, aff: 0 }, 2: { day: 2, aff: 10 },
+    3: { day: 3, aff: 25, invite: { loc: 'escarlate', from: 1470, to: 1590 } },
+    4: { day: 4, aff: 40 },
+    5: { day: 5, aff: 55, invite: { loc: 'jardim', from: 1710, to: 1790 } }
+  }
+};
+
+/* ---------- estado ---------- */
+let state = null;
+
+function newState(name) {
+  return {
+    v: SAVE_VERSION, name, day: 1, time: NIGHT_START, nextStart: NIGHT_START, money: 100,
+    phase: 'night', loc: 'rececao', introDone: false, nightIntro: 0,
+    aff: { victoria: 0, luna: 0, sophie: 0 },
+    chap: { victoria: 0, luna: 0, sophie: 0 },
+    inv: {}, flags: {}, invites: {},
+    talked: {}, gifted: {},
+    known: { victoria: {}, luna: {}, sophie: {} },
+    lastSmall: {}, tipsTonight: 0, lastNight: null, dayResult: null
+  };
+}
+
+function isInt(v) { return typeof v === 'number' && Number.isFinite(v) && Math.floor(v) === v; }
+
+/* Valida e normaliza um estado carregado. Devolve null se for irrecuperável. */
+function validateState(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  if (raw.v !== SAVE_VERSION) return null;
+  if (typeof raw.name !== 'string' || !raw.name.trim()) return null;
+  if (!isInt(raw.day) || raw.day < 1 || raw.day > GALA_NIGHT) return null;
+  if (raw.phase !== 'night' && raw.phase !== 'day') return null;
+  const s = newState(raw.name.trim().slice(0, 16));
+  s.day = raw.day;
+  s.phase = raw.phase;
+  s.time = isInt(raw.time) ? clamp(raw.time, 1080, NIGHT_END) : NIGHT_START;
+  s.nextStart = isInt(raw.nextStart) ? clamp(raw.nextStart, 1080, 1320) : NIGHT_START;
+  s.money = isInt(raw.money) ? clamp(raw.money, 0, 99999) : 0;
+  s.loc = (typeof raw.loc === 'string' && LOCS[raw.loc]) ? raw.loc : 'rececao';
+  s.introDone = !!raw.introDone;
+  s.nightIntro = isInt(raw.nightIntro) ? raw.nightIntro : 0;
+  s.tipsTonight = isInt(raw.tipsTonight) ? Math.max(0, raw.tipsTonight) : 0;
+  for (const c of CHAR_IDS) {
+    s.aff[c] = raw.aff && isInt(raw.aff[c]) ? clamp(raw.aff[c], 0, 100) : 0;
+    s.chap[c] = raw.chap && isInt(raw.chap[c]) ? clamp(raw.chap[c], 0, 5) : 0;
+    if (raw.talked && isInt(raw.talked[c])) s.talked[c] = raw.talked[c];
+    if (raw.gifted && isInt(raw.gifted[c])) s.gifted[c] = raw.gifted[c];
+    if (raw.lastSmall && isInt(raw.lastSmall[c])) s.lastSmall[c] = raw.lastSmall[c];
+    if (raw.known && raw.known[c] && typeof raw.known[c] === 'object') {
+      for (const it of ITEM_IDS) {
+        const r = raw.known[c][it];
+        if (r === 'love' || r === 'like' || r === 'neutral' || r === 'hate') s.known[c][it] = r;
+      }
+    }
+    const inv = raw.invites && raw.invites[c];
+    if (inv && typeof inv === 'object' && (inv.n === 3 || inv.n === 5) && isInt(inv.day) && isInt(inv.from) && isInt(inv.to)
+        && LOCS[inv.loc] && s.chap[c] === inv.n - 1) {
+      s.invites[c] = { n: inv.n, loc: inv.loc, day: inv.day, from: inv.from, to: inv.to };
+    }
+  }
+  if (raw.inv && typeof raw.inv === 'object') {
+    for (const it of ITEM_IDS) if (isInt(raw.inv[it]) && raw.inv[it] > 0) s.inv[it] = Math.min(raw.inv[it], 9);
+  }
+  if (raw.flags && typeof raw.flags === 'object') {
+    for (const k of Object.keys(raw.flags)) if (/^[a-z0-9_]{1,40}$/.test(k) && raw.flags[k] === true) s.flags[k] = true;
+  }
+  if (raw.lastNight && typeof raw.lastNight === 'object' && isInt(raw.lastNight.day)) {
+    s.lastNight = { day: raw.lastNight.day, salary: isInt(raw.lastNight.salary) ? raw.lastNight.salary : SALARY, tips: isInt(raw.lastNight.tips) ? raw.lastNight.tips : 0 };
+  }
+  // coerência: noite 7 é sempre a Gala; não pode estar em fase "dia"
+  if (s.day === GALA_NIGHT) s.phase = 'night';
+  return s;
+}
+
+/* ---------- configurações ---------- */
+const DEFAULT_SETTINGS = { textSpeed: 'normal', autoSpeed: 'normal', bigText: false, reduceMotion: false, showAff: true };
+let settings = Object.assign({}, DEFAULT_SETTINGS);
+function loadSettings() {
+  try {
+    const raw = JSON.parse(Store.get(KEYS.settings) || '{}');
+    if (['slow', 'normal', 'fast', 'instant'].includes(raw.textSpeed)) settings.textSpeed = raw.textSpeed;
+    if (['slow', 'normal', 'fast'].includes(raw.autoSpeed)) settings.autoSpeed = raw.autoSpeed;
+    settings.bigText = raw.bigText === true;
+    settings.reduceMotion = raw.reduceMotion === true;
+    settings.showAff = raw.showAff !== false;
+  } catch (e) { settings = Object.assign({}, DEFAULT_SETTINGS); }
+}
+function saveSettings() { Store.set(KEYS.settings, JSON.stringify(settings)); }
+
+/* ---------- gravações ---------- */
+function readSlot(id) {
+  const raw = Store.get(KEYS.slot(id));
+  if (raw == null) return { empty: true };
+  try {
+    const data = JSON.parse(raw);
+    const st = validateState(data && data.state);
+    if (!st) return { corrupt: true };
+    return { state: st, savedAt: typeof data.savedAt === 'number' ? data.savedAt : 0 };
+  } catch (e) { return { corrupt: true }; }
+}
+function writeSlot(id) {
+  if (!state) return false;
+  return Store.set(KEYS.slot(id), JSON.stringify({ savedAt: Date.now(), state }));
+}
+function slotLabel(st) {
+  if (st.phase === 'day') return `Dia ${st.day} · depois do turno`;
+  if (st.day === GALA_NIGHT) return `Noite 7 · Gala de Veludo`;
+  return `Noite ${st.day} · ${fmtTime(st.time)} · ${LOCS[st.loc].name}`;
+}
+function latestSave() {
+  let best = null;
+  for (const id of SLOTS) {
+    const r = readSlot(id);
+    if (r.state && (!best || r.savedAt > best.savedAt)) best = { id, ...r };
+  }
+  return best;
+}
+function getEndings() {
+  try {
+    const arr = JSON.parse(Store.get(KEYS.endings) || '[]');
+    return Array.isArray(arr) ? arr.filter(x => typeof x === 'string') : [];
+  } catch (e) { return []; }
+}
+function unlockEnding(id) {
+  const arr = getEndings();
+  if (!arr.includes(id)) { arr.push(id); Store.set(KEYS.endings, JSON.stringify(arr)); }
+}
+
+/* ---------- horários das personagens ---------- */
+function inviteActive(s, c, t = s.time) {
+  const inv = s.invites[c];
+  return !!(inv && inv.day === s.day && t >= inv.from && t < inv.to);
+}
+function charLoc(s, c, t = s.time) {
+  if (inviteActive(s, c, t)) return s.invites[c].loc;
+  if (c === 'sophie') {
+    if (t >= 1080 && t < 1440) return 'rececao';
+    if (t >= 1440 && t < 1560) return s.chap.sophie >= 3 ? 'escarlate' : 'funcionarios';
+    return null;
+  }
+  if (c === 'victoria') return (t >= 1260 && t < 1560) ? 'bar' : null;
+  if (c === 'luna') return (t >= 1380 && t < 1740) ? 'terraco' : null;
+  return null;
+}
+function charsAt(s, loc) { return CHAR_IDS.filter(c => charLoc(s, c) === loc); }
+
+function locUnlocked(s, id) {
+  if (!LOCS[id].secret) return true;
+  return !!s.flags['loc_' + id];
+}
+/* Pode o jogador entrar neste local agora? */
+function canEnter(s, id) {
+  if (!locUnlocked(s, id)) return { ok: false, why: 'Ainda não conheces este lugar.' };
+  if (id === 'boutique' && (s.time < SHOP_OPEN[0] || s.time >= SHOP_OPEN[1])) return { ok: false, why: 'Fechada (abre às 18:00, fecha às 03:00).' };
+  const invHere = CHAR_IDS.map(c => s.invites[c]).filter(inv => inv && inv.loc === id && inv.day === s.day);
+  if (id === 'escarlate') {
+    if (invHere.some(inv => s.time >= inv.from && s.time < inv.to)) return { ok: true };
+    if (s.chap.sophie >= 3 && s.time >= 1440 && s.time < 1620) return { ok: true };
+    return { ok: false, why: s.chap.sophie >= 3 ? 'Só abre entre as 00:00 e as 03:00.' : 'A porta verde está trancada.' };
+  }
+  if (id === 'suite' || id === 'estudio' || id === 'jardim') {
+    const inv = invHere[0];
+    if (inv && s.time >= inv.from && s.time < inv.to) return { ok: true };
+    if (inv && s.time < inv.from) return { ok: false, why: `Encontro marcado para as ${fmtTime(inv.from)}.` };
+    return { ok: false, why: 'Só com convite.' };
+  }
+  return { ok: true };
+}
+
+/* ---------- capítulos ---------- */
+function nextChapter(s, c) {
+  const n = s.chap[c] + 1;
+  if (n > 5) return null;
+  if (s.invites[c]) return null;
+  const d = CHAPTERS[c][n];
+  if (s.day < d.day || s.aff[c] < d.aff) return null;
+  if (n === 5 && s.flags[c + '_declined']) return null;
+  if (c === 'luna' && s.flags.luna_closed) return null;
+  if (c === 'luna' && n >= 4 && s.flags.luna_betrayed && !s.flags.luna_forgiven) return null;
+  return { n, ...d };
+}
+function makeInvite(s, c, n) {
+  const d = CHAPTERS[c][n];
+  s.invites[c] = { n, loc: d.invite.loc, day: s.day, from: d.invite.from, to: d.invite.to };
+  if (LOCS[d.invite.loc].secret && !s.flags['loc_' + d.invite.loc]) {
+    s.flags['loc_' + d.invite.loc] = true;
+    UI.toast('Novo local desbloqueado: ' + LOCS[d.invite.loc].name, 'info');
+  }
+}
+function promisedChars(s) { return CHAR_IDS.filter(c => s.flags['promise_' + c]); }
+function promiseNote(c) {
+  return s => {
+    const others = promisedChars(s).filter(x => x !== c);
+    return others.length ? '⚠ Já prometeste o teu coração a ' + others.map(x => CHARS[x].name).join(' e ') + '.' : '';
+  };
+}
+
+/* =====================================================================
+   MOTOR DE CENAS
+   Nós: {who,m,t} fala · {bg} · {show,m} · {hide} · {fx} · {if,then,else}
+        {choice:[...]} · {fade} · {stop} · função(s) → nós dinâmicos
+   ===================================================================== */
+const Engine = {
+  frames: [], onEnd: null, running: false,
+  start(nodes, onEnd) {
+    this.frames = [{ nodes, i: 0 }];
+    this.onEnd = onEnd || null;
+    this.running = true;
+    UI.enterDialogue();
+    this.step();
+  },
+  step() {
+    while (this.running) {
+      const f = this.frames[this.frames.length - 1];
+      if (!f) { this.finish(); return; }
+      if (f.i >= f.nodes.length) { this.frames.pop(); continue; }
+      const n = f.nodes[f.i++];
+      if (n == null) continue;
+      if (typeof n === 'function') {
+        const r = n(state);
+        if (Array.isArray(r) && r.length) this.frames.push({ nodes: r, i: 0 });
+        continue;
+      }
+      if (n.stop) { this.frames = []; continue; }
+      if (n.bg) { UI.setBg(n.bg); continue; }
+      if (n.hide) { UI.hideChar(); continue; }
+      if (n.show) { UI.showChar(n.show, n.m || 'neutral'); continue; }
+      if (n.fx) { n.fx(state); UI.refreshHud(); continue; }
+      if (n.if) {
+        const branch = n.if(state) ? n.then : n.else;
+        if (branch && branch.length) this.frames.push({ nodes: branch, i: 0 });
+        continue;
+      }
+      if (n.fade) { UI.fadeThrough(() => this.step()); return; }
+      if (n.choice) {
+        const opts = n.choice.filter(o => !o.show || o.show(state));
+        if (!opts.length) continue;
+        UI.showChoices(opts, o => this.choose(o));
+        return;
+      }
+      if (n.t != null) { UI.showLine(n, () => this.step()); return; }
+    }
+  },
+  choose(o) {
+    if (o.aff) for (const c of Object.keys(o.aff)) addAff(c, o.aff[c]);
+    if (o.set) for (const f of o.set) state.flags[f] = true;
+    if (o.money) addMoney(o.money);
+    if (o.fx) o.fx(state);
+    UI.refreshHud();
+    UI.log(null, '» ' + fill(o.t));
+    if (o.next && o.next.length) this.frames.push({ nodes: o.next, i: 0 });
+    this.step();
+  },
+  finish() {
+    this.running = false;
+    this.frames = [];
+    UI.leaveDialogue();
+    const cb = this.onEnd; this.onEnd = null;
+    if (cb) cb();
+  },
+  abort() { this.running = false; this.frames = []; this.onEnd = null; }
+};
+
+function fill(t) { return String(t).replace(/\{nome\}/g, state ? state.name : ''); }
+
+function addAff(c, n) {
+  if (!state || !CHARS[c] || !n) return;
+  const before = state.aff[c];
+  state.aff[c] = clamp(before + n, 0, 100);
+  const d = state.aff[c] - before;
+  if (d !== 0 && settings.showAff) UI.toast(`${d > 0 ? '♥' : '♡'} ${CHARS[c].name} ${d > 0 ? '+' : ''}${d}`, d > 0 ? 'good' : 'bad');
+}
+function addMoney(n) {
+  if (!state || !n) return;
+  state.money = Math.max(0, state.money + n);
+  UI.toast(`${n > 0 ? '+' : ''}${n} €`, 'info');
+}
+function addItem(id, n = 1) {
+  if (!ITEMS[id]) return false;
+  const cur = state.inv[id] || 0;
+  if (cur + n > 9) return false;
+  state.inv[id] = cur + n;
+  return true;
+}
+
+/* ---------- atalhos para escrever cenas ---------- */
+const N = t => ({ who: null, t });
+const P = t => ({ who: 'player', t });
+const M = t => ({ who: 'marcel', t });
+const V = (m, t) => ({ who: 'victoria', m, t });
+const L = (m, t) => ({ who: 'luna', m, t });
+const S = (m, t) => ({ who: 'sophie', m, t });
+const BG = bg => ({ bg });
+const SHOW = (c, m) => ({ show: c, m });
+const HIDE = { hide: true };
+const FADE = { fade: true };
+const STOP = { stop: true };
+const IF = (cond, a, b) => ({ if: cond, then: a, else: b || [] });
+const FX = fn => ({ fx: fn });
+const CH = (...opts) => ({ choice: opts });
+const has = f => s => !!s.flags[f];
+const not = f => s => !s.flags[f];
+/* =====================================================================
+   VELVET NIGHTS — narrativa
+   ===================================================================== */
+
+/* ---------- Introdução (noite 1) ---------- */
+const SC_INTRO = [
+  BG('rua'), HIDE,
+  N('A chuva parou há poucos minutos. A Rua das Camélias brilha como verniz acabado de aplicar e, ao fundo, por cima de uma porta giratória de latão, um letreiro pulsa em tons de vinho e violeta: HOTEL VELVET.'),
+  N('Dizem que é o hotel mais antigo da cidade. Dizem que nunca fecha, que os hóspedes nunca dão o nome verdadeiro e que ninguém sai de lá exatamente igual ao que entrou.'),
+  P('(Primeira noite de trabalho. Respira, {nome}.)'),
+  BG('rececao'),
+  N('Lá dentro, o ar cheira a madeira encerada, gardénias e a qualquer coisa mais difícil de nomear. Talvez segredos.'),
+  M('Deves ser {nome}. Cinco minutos adiantado. Ótimo. Não te habitues a impressionar-me, que eu canso-me depressa.'),
+  N('Marcel Vidal, o gerente da noite, tem o bigode mais bem aparado que alguma vez viste e uns olhos que parecem já ter visto tudo duas vezes.'),
+  M('O turno é das vinte às seis. Serás o nosso concierge noturno: resolves problemas, satisfazes caprichos e, acima de tudo, não fazes perguntas.'),
+  M('Três regras. Primeira: nunca perguntes a um hóspede o que veio cá fazer. Segunda: nunca prometas o que não podes cumprir.'),
+  CH(
+    { t: '«E a terceira?»', set: ['asked_rule3'], next: [
+      M('Nunca te apaixones por quem vive debaixo deste teto.'),
+      N('Faz uma pausa e solta uma gargalhada curta, seca como um martini.'),
+      M('Ninguém cumpre a terceira. Mas fica dito.')
+    ] },
+    { t: '«Parecem regras fáceis.»', set: ['cocky_rules'], next: [
+      M('Todas as regras parecem fáceis às oito da noite. Às quatro da manhã, conversamos.'),
+      M('Há uma terceira: não te apaixones pelos hóspedes. Ninguém a cumpre, mas fica dito.')
+    ] }
+  ),
+  M('No fim da semana há a Gala de Veludo. A Madame Odette, a dona, vai anunciar o futuro do hotel. Dizem que o vai vender.'),
+  M('Até lá, quero os hóspedes felizes e os escândalos fora dos jornais.'),
+  S('surprised', 'S-Sr. Vidal! A Suite Presidencial pediu gelo outra vez, e o elevador de serviço está a fazer aquele barulho, e—'),
+  N('Uma rapariga de óculos redondos e coque meio desfeito trava a fundo ao ver-te. Endireita o colete cor de vinho.'),
+  M('Sophie, este é {nome}, o novo concierge. Mostra-lhe a casa. Eu trato do gelo da Sra. Ravel antes que ela me congele a mim.'),
+  N('O Marcel afasta-se. A Sophie respira fundo, como quem se prepara para mergulhar.'),
+  S('shy', 'Olá... desculpa. Bem-vindo ao Velvet. Eu sou a Sophie, rececionista da noite até à meia-noite. Depois disso sou... só a Sophie.'),
+  CH(
+    { t: '«Prazer, Sophie. Acho que vou precisar de uma boa guia.»', aff: { sophie: 3 }, next: [
+      S('smile', 'Boa guia, não sei. Mas conheço todos os rangidos deste chão.')
+    ] },
+    { t: '«"Só a Sophie" parece-me mais do que suficiente.»', aff: { sophie: 4 }, next: [
+      S('shy', 'Isso... foi simpático. Não estou habituada.')
+    ] }
+  ),
+  S('neutral', 'Rápido, então. A Receção é aqui. O Velvet Bar fica à esquerda — depois das nove é território da Sra. Ravel, da Suite Presidencial.'),
+  S('neutral', 'O Terraço é no último piso. Se vires uma rapariga de cabelo lilás a falar com a lua, é a Luna, do 707. Paga a estadia com quadros. O Sr. Vidal finge que não sabe.'),
+  S('smile', 'A Boutique Noir, ao pé do elevador, vende presentes para hóspedes indecisos. E a Sala dos Funcionários é onde se bebe café e se pica o ponto à saída.'),
+  HIDE,
+  N('A noite é tua. Cada conversa, cada deslocação e cada tarefa consomem tempo — o relógio está no canto superior. O turno acaba às 06:00.'),
+  FX(s => { s.introDone = true; })
+];
+
+/* ---------- Mensagens do Marcel no início de cada noite ---------- */
+const NIGHT_INTROS = {
+  2: [M('Noite dois. Ainda cá estás — bom sinal. Hoje há casamento no salão nobre; se ouvires choro, é o padrinho.')],
+  3: [M('Noite três. Alguém pintou outra coruja de néon numa parede da cidade. Os jornais chamam-lhe "Noctua". A Sra. Ravel chama-lhe vandalismo.')],
+  4: [M('Noite quatro. O quadro elétrico anda a fazer birras. Se as luzes falharem, mantém a calma e mantém os hóspedes longe das escadas.')],
+  5: [M('Noite cinco. Faltam dois dias para a Gala. Anda toda a gente nervosa — até eu, e eu não fico nervoso desde 1997.')],
+  6: [M('Última noite antes da Gala. Amanhã o Velvet muda de mãos — ou de alma. Faz hoje o que tiveres de fazer, {nome}.')]
+};
+
+/* =====================================================================
+   SOPHIE
+   ===================================================================== */
+const SOPHIE = {};
+SOPHIE[1] = [
+  N('A Sophie está debruçada sobre o balcão, a escrever num caderno de capa vermelha com tanta concentração que nem te ouve chegar.'),
+  P('Sophie?'),
+  S('surprised', 'Ah!'),
+  N('O caderno escorrega-lhe das mãos e aterra aberto aos teus pés. A letra é miudinha e cuidada, e uma frase salta-te à vista: «...e quando ele lhe tocou na nuca, ela esqueceu-se de todas as razões para dizer que não.»'),
+  S('shy', 'D-dá-me isso. Por favor.'),
+  CH(
+    { t: 'Devolver-lho de imediato. «Não li nada, prometo.»', aff: { sophie: 6 }, set: ['sophie_discreet'], next: [
+      S('shy', 'Mentes muito mal, {nome}. Mas obrigada por fingires.'),
+      S('smile', 'É... uma história. Escrevo nos intervalos. Ninguém sabe.')
+    ] },
+    { t: '«"...esqueceu-se de todas as razões para dizer que não." Sophie, quem diria.»', aff: { sophie: 4 }, set: ['sophie_teased'], next: [
+      N('Por um segundo achas que ela se vai desfazer de vergonha. Em vez disso, inclina-se sobre o balcão e baixa a voz.'),
+      S('flirty', 'Se contares a alguém, lembra-te de que tenho as chaves de todos os quartos. Incluindo o teu cacifo.'),
+      S('shy', '...Não sei de onde é que isto saiu. Esquece.')
+    ] },
+    { t: '«Escreves? Gostava de ler, um dia.»', aff: { sophie: 8 }, set: ['sophie_reader'], next: [
+      S('surprised', 'A sério? Ninguém nunca... quer dizer.'),
+      S('smile', 'Talvez. Quando estiver pronto. Ou quando eu tiver coragem — o que acontecer primeiro.')
+    ] }
+  ),
+  S('neutral', 'Já conheces os hóspedes difíceis? A Sra. Ravel pede coisas impossíveis às três da manhã e deixa gorjetas de cem euros. A Luna desaparece durante dias e volta com tinta no cabelo.'),
+  S('smile', 'E eu sou a aborrecida que sabe onde está tudo.'),
+  CH(
+    { t: '«Aborrecida não é a palavra que me ocorre.»', aff: { sophie: 3 }, next: [
+      S('shy', 'Qual é, então?'),
+      P('Ainda estou a decidir. Mas não é essa.'),
+      S('laugh', 'Vou cobrar-te essa resposta.')
+    ] },
+    { t: '«Quem sabe onde está tudo é quem manda nisto tudo.»', aff: { sophie: 2 }, next: [
+      S('laugh', 'Não digas isso ao Sr. Vidal. Ele ainda acredita que é ele.')
+    ] }
+  )
+];
+SOPHIE[2] = [
+  N('Encontras a Sophie com os olhos brilhantes e as mãos a tremer ligeiramente sobre o teclado.'),
+  S('sad', 'Não é nada. O hóspede do 312 achou que a culpa de estar a chover era minha. Gritou durante dez minutos. Eu sorri durante dez minutos.'),
+  CH(
+    { t: 'Ir à copa e trazer-lhe um chá de camomila.', aff: { sophie: 8 }, set: ['sophie_tea'], next: [
+      N('Voltas com uma chávena fumegante e dois biscoitos roubados do carrinho do pequeno-almoço. Ela olha para a chávena como se fosse uma joia.'),
+      S('shy', 'Ninguém faz isto por mim. Normalmente sou eu que faço isto pelos outros.')
+    ] },
+    { t: '«Devias ter-lhe respondido à letra.»', aff: { sophie: 3 }, next: [
+      S('neutral', 'Eu? Aqui atrás do balcão sou a Sophie simpática. A Sophie que responde à letra...'),
+      S('smirk', '...essa só sai mais tarde.'),
+      P('Mais tarde do que isto?'),
+      S('shy', 'Esquece o que eu disse.')
+    ] },
+    { t: 'Imitar o hóspede do 312 com voz de pato zangado.', aff: { sophie: 6 }, next: [
+      N('«O CÉU ESTÁ A CAIR E A CULPA É DA RECEÇÃO!» A Sophie tenta manter a compostura. Falha. Ri-se até ter de tirar os óculos para limpar as lágrimas.'),
+      S('laugh', 'Pára! Se ele desce, despedem-nos aos dois!')
+    ] }
+  ),
+  S('neutral', 'A minha mãe queria que eu fosse contabilista. Coisa segura, dizia ela. Os números não te partem o coração.'),
+  S('shy', '{nome}... achas que uma pessoa pode ser duas coisas ao mesmo tempo? Calma por fora e um incêndio por dentro?'),
+  CH(
+    { t: '«As pessoas mais interessantes que conheço são exatamente assim.»', aff: { sophie: 4 }, set: ['sophie_fire'], next: [
+      S('smile', 'Então talvez eu seja interessante. Que ideia assustadora.')
+    ] },
+    { t: '«Toda a gente esconde alguma coisa. Até eu.»', aff: { sophie: 3 }, set: ['sophie_mutual'], next: [
+      S('surprised', 'Tu? O que é que escondes?'),
+      P('Isso é conversa para outra noite.'),
+      S('smirk', 'Vou cobrar. Já tenho uma lista.')
+    ] },
+    { t: '«Prefiro pessoas simples, sem surpresas.»', aff: { sophie: -3 }, next: [
+      S('sad', 'Ah. Claro. Faz sentido.'),
+      N('Ela volta a olhar para o ecrã, e a conversa arrefece como um chá esquecido.')
+    ] }
+  ),
+  S('neutral', 'Às vezes, depois da meia-noite, ouve-se música lá em baixo, na cave. Dizem que é o fantasma de uma cantora dos anos cinquenta.'),
+  S('smirk', 'Eu não acredito em fantasmas. Mas acredito em música.')
+];
+SOPHIE.inv3 = [
+  IF(has('sophie_missed3'), [
+    S('sad', 'Esperei por ti ontem. Cantei a última canção a olhar para a porta.'),
+    S('neutral', 'Vou dar-te outra oportunidade. Só mais uma.'),
+    FX(s => { delete s.flags.sophie_missed3; })
+  ], [
+    N('A Sophie espera que o último hóspede entre no elevador. Depois desliza pelo balcão uma chave antiga, atada com uma fita de veludo vermelho.')
+  ]),
+  S('shy', 'Hoje, entre a meia-noite e meia e as duas e meia, desce à cave. Corredor de serviço, a porta verde ao fundo. Bate três vezes.'),
+  S('flirty', 'E não digas a ninguém. A ninguém mesmo.'),
+  CH(
+    { t: '«Lá estarei.»', aff: { sophie: 2 }, next: [S('smile', 'Não te atrases. Lá em baixo, o tempo passa de outra maneira.')] },
+    { t: '«Isto é um encontro, Sophie?»', aff: { sophie: 3 }, next: [
+      S('shy', 'Isso... depende de a quem perguntares.'),
+      S('smirk', 'Se perguntares à Sophie da receção, não. Se perguntares à outra...'),
+      N('Ela não acaba a frase. Nem precisa.')
+    ] }
+  ),
+  FX(s => makeInvite(s, 'sophie', 3)),
+  N('Convite: Sala Escarlate, entre as 00:30 e as 02:30.')
+];
+SOPHIE[3] = [
+  BG('escarlate'), HIDE,
+  N('Bates três vezes. A porta verde abre-se para uma escada estreita, e a escada para um mundo que não devia existir: uma sala de veludo escarlate, mesas redondas com velas, um piano de cauda e meia dúzia de pessoas que conheces de vista — o barman, duas camareiras, o pianista do turno da tarde.'),
+  N('No palco minúsculo, sob um único foco de luz, uma mulher de vestido vermelho e máscara de renda negra canta um fado com alma de jazz, numa voz de fumo e mel.'),
+  N('Demoras três versos a perceber. Os óculos desapareceram, o coque desfez-se em ondas sobre os ombros e os lábios estão pintados de carmim. Mas aquele jeito de fechar os olhos nas notas altas...'),
+  P('(...Sophie?)'),
+  N('Quando a canção acaba, ela desce do palco, atravessa a sala sem pressa e senta-se à tua mesa, cruzando as pernas.'),
+  FX(() => UI.setUnmasked(true)),
+  S('smirk', 'Surpreendido? Aqui em baixo chamam-me Mademoiselle Rouge.'),
+  S('flirty', 'Lá em cima peço desculpa por tudo. Cá em baixo digo o que penso.'),
+  P('E o que é que pensas?'),
+  S('flirty', 'Que ficas muito bem à luz das velas. E que estás a olhar para mim como se eu fosse um capítulo que ainda não leste.'),
+  CH(
+    { t: '«Estás deslumbrante. Nas duas versões.»', aff: { sophie: 10 }, set: ['sophie_both'], next: [
+      S('surprised', 'Nas duas?'),
+      N('Por baixo da máscara, vês a Sophie da receção a corar. Ela ri-se baixinho.'),
+      S('shy', 'És perigoso, sabias? Era suposto seres tu a ficar sem jeito.')
+    ] },
+    { t: '«Prefiro esta Sophie.»', aff: { sophie: 4 }, next: [
+      S('sad', 'Esta também sou eu. Mas a outra também. Não me podes ter às metades, {nome}.'),
+      S('neutral', 'Fica a lição. Grátis, por ser a primeira.')
+    ] },
+    { t: 'Levantar-te e estender-lhe a mão. «Dança comigo.»', aff: { sophie: 8 }, set: ['sophie_danced'], next: [
+      N('O pianista percebe antes de toda a gente e muda para uma balada lenta. A Sophie hesita meio segundo — depois pousa a mão na tua.'),
+      N('Dançam entre as mesas. Ela encosta a testa ao teu ombro e, por um momento, a cave inteira cheira a rosas e a cera de vela.'),
+      S('shy', 'Nunca dancei assim com ninguém. Nunca.')
+    ] }
+  ),
+  N('Ela aproxima-se. O perfume dela é baunilha e qualquer coisa mais escura. Os vossos rostos ficam a um sopro de distância.'),
+  N('«Rouge! Última canção!», chama o pianista.'),
+  S('laugh', 'Salva pelo piano.'),
+  S('flirty', 'Ou talvez tenhas sido tu o salvo. Ainda não decidi.'),
+  S('smile', 'Isto fica entre nós, sim? O Sr. Vidal sabe e finge que não sabe. É a nossa forma de amor neste hotel: fingir bem.'),
+  N('A partir de hoje, a Sala Escarlate abre-te as portas entre a meia-noite e as três.'),
+  FX(() => UI.setUnmasked(false))
+];
+SOPHIE[4] = [
+  N('A Sophie tem um envelope dourado nas mãos e olha para ele como quem olha para uma bomba.'),
+  S('surprised', 'A cantora da Gala cancelou. O Sr. Vidal perguntou-me se eu conhecia alguém... e depois olhou para mim daquela maneira.'),
+  S('sad', 'Ele quer a Mademoiselle Rouge no palco da Gala. À frente de toda a gente. Da Madame Odette, da Sra. Ravel, dos jornalistas.'),
+  S('shy', 'De máscara, consigo. Sem máscara, a Sophie da receção desmaia na segunda estrofe.'),
+  CH(
+    { t: '«Canta sem máscara. Mereces que te vejam inteira.»', aff: { sophie: 8 }, set: ['sophie_brave'], next: [
+      S('surprised', 'Inteira...'),
+      N('Ela repete a palavra como quem prova um vinho novo.'),
+      S('smile', 'Está bem. Se eu desmaiar, a culpa é tua e és tu que me apanhas.')
+    ] },
+    { t: '«Usa a máscara. Não tens de provar nada a ninguém.»', aff: { sophie: 6 }, set: ['sophie_safe'], next: [
+      S('smile', 'Obrigada por não me empurrares. Toda a gente me empurra para algum lado.')
+    ] },
+    { t: '«Talvez seja melhor não cantares. É arriscado.»', aff: { sophie: -4 }, set: ['sophie_nosing'], next: [
+      S('sad', 'Pois. Tens razão. É mais seguro.'),
+      N('Ela guarda o envelope numa gaveta e fecha-a devagar. Fica um silêncio que pesa.')
+    ] }
+  ),
+  S('neutral', 'Posso perguntar-te uma coisa? Mas tens de responder a sério.'),
+  S('shy', 'Eu não sou boa nisto. Nos livros, as personagens sabem sempre o que dizer. Eu só sei que penso em ti nos intervalos. Que escrevo sobre ti.'),
+  S('sad', 'Isto entre nós é só um flirt de turno da noite? Porque se for, preciso de saber antes de me deixar cair.'),
+  CH(
+    { t: '«Não é. És tu que eu quero, Sophie.»', aff: { sophie: 10 }, set: ['promise_sophie'], note: promiseNote('sophie'), next: [
+      N('Ela tira os óculos, devagar, e pousa-os no balcão.'),
+      FX(() => UI.setUnmasked(true)),
+      S('flirty', 'Então prova.'),
+      N('O beijo é tímido no primeiro segundo e tudo menos tímido no segundo. Algures, o telefone da receção toca. Nenhum dos dois atende.'),
+      FX(() => UI.setUnmasked(false))
+    ] },
+    { t: '«Ainda estou a descobrir o que sinto.»', next: [
+      S('sad', 'Está bem. É uma resposta honesta.'),
+      S('neutral', 'Eu espero. Mas não para sempre, {nome}. Nem as personagens dos livros esperam para sempre.')
+    ] }
+  )
+];
+SOPHIE.inv5 = [
+  IF(not('promise_sophie'), [
+    S('shy', 'Ainda estás a descobrir o que sentes?'),
+    CH(
+      { t: '«Já descobri. És tu.»', aff: { sophie: 6 }, set: ['promise_sophie'], note: promiseNote('sophie'), next: [
+        S('laugh', 'Demoraste! Mas chegaste.')
+      ] },
+      { t: '«Ainda não sei, Sophie.»', aff: { sophie: -5 }, set: ['sophie_declined'], next: [
+        S('sad', 'Então vou deixar de esperar. Não é castigo. É só... cuidar de mim.'),
+        N('A partir de hoje, a Sophie será tua amiga — e nada mais.'),
+        STOP
+      ] }
+    )
+  ]),
+  IF(has('sophie_missed5'), [
+    S('sad', 'Ontem esperei no jardim até o sol nascer. Sozinha. Foi bonito, mas eu queria que fosse bonito contigo.'),
+    FX(s => { delete s.flags.sophie_missed5; })
+  ]),
+  S('smile', 'Conheces o jardim de inverno? A estufa de vidro atrás da cozinha, que ninguém usa desde que o jardineiro se reformou?'),
+  S('shy', 'Hoje, quando o turno estiver a acabar — entre as quatro e meia e as seis menos dez — encontra-te lá comigo. Quero ler-te uma coisa.'),
+  S('flirty', 'E quero ver o nascer do sol contigo. É pedir muito?'),
+  CH(
+    { t: '«É pedir pouco.»', aff: { sophie: 2 }, next: [S('shy', 'Então peço mais da próxima vez.')] },
+    { t: '«Vou contar os minutos.»', aff: { sophie: 3 }, next: [S('smile', 'Eu também. Já comecei.')] }
+  ),
+  FX(s => makeInvite(s, 'sophie', 5)),
+  N('Convite: Jardim de Inverno, entre as 04:30 e as 05:50.')
+];
+SOPHIE[5] = [
+  BG('jardim'), HIDE,
+  N('A estufa é uma catedral de vidro e ferro verde. Orquídeas esquecidas florescem por teimosia, e o céu, lá em cima, começa a passar do negro para um violeta cansado.'),
+  N('A Sophie está sentada num banco de ferro, descalça, com o caderno vermelho no colo. Já não traz o colete, e a camisa branca tem os dois primeiros botões abertos.'),
+  S('shy', 'Vieste.'),
+  S('smile', 'Senta-te. E não te rias.'),
+  N('Ela lê. A história é sobre uma rececionista e um desconhecido que chega numa noite de chuva. Reconheces as falas. Reconheces-te.'),
+  IF(has('sophie_tea'), [N('Há uma chávena de camomila no capítulo dois. Ela olha para ti por cima dos óculos quando a lê.')]),
+  IF(has('sophie_danced'), [N('Há uma dança numa cave à luz das velas. Ela lê essa parte mais devagar.')]),
+  S('flirty', 'O capítulo final ainda não está escrito. Achei que devíamos... investigar. Pela autenticidade.'),
+  CH(
+    { t: '«Lê-me o resto. Depois escrevemos o fim juntos.»', aff: { sophie: 8 }, set: ['sophie_coauthor'], next: [
+      S('shy', 'Coautor. Gosto de como isso soa.')
+    ] },
+    { t: 'Tirar-lhe o caderno das mãos, com cuidado, e beijá-la.', aff: { sophie: 10 }, set: ['sophie_kiss'], next: [
+      S('surprised', 'Isso não estava no guião...'),
+      FX(() => UI.setUnmasked(true)),
+      S('flirty', '...mas fica muito melhor.')
+    ] }
+  ),
+  N('Ela puxa-te pela gravata até não haver espaço nenhum entre vocês. As mãos dela, que tremem sempre sobre o teclado, não tremem agora.'),
+  FADE,
+  N('O que acontece a seguir fica entre vocês, as orquídeas e o primeiro raio de sol que atravessa o vidro.'),
+  N('Quando o turno da manhã chega, encontra apenas um caderno vermelho esquecido num banco, aberto numa página nova. A primeira frase diz: «E foi assim que ela deixou de ter medo.»'),
+  FX(() => UI.setUnmasked(false))
+];
+const SOPHIE_SMALL = [
+  [S('smile', 'Sabias que o quarto 404 não existe? O arquiteto era supersticioso. Os hóspedes perdidos passam meia hora à procura.'), P('E tu deixas?'), S('smirk', 'Às vezes. É o meu pequeno poder.')],
+  [S('neutral', 'Estou a ler um romance em que o duque se apaixona pela governanta. É péssimo. Já vou no terceiro da série.'), S('shy', 'Não me julgues.')],
+  [S('smile', 'O Sr. Vidal guarda chocolates na segunda gaveta. Se precisares de subornar alguém, já sabes.')],
+  [S('shy', 'Ficas bem com esse uniforme. Quer dizer — o uniforme fica bem. Em ti. Esquece.')],
+  [S('neutral', 'Há um hóspede que pede sempre despertar às 3:33. Nunca atende. Acho que só gosta de saber que alguém se lembra dele.')],
+  { min: 3, nodes: [S('flirty', 'Ontem sonhei com a cave. Tu estavas lá. Eu não estava a cantar.'), N('Ela não explica o que estava a fazer. Sorri e volta ao trabalho.')] },
+  { min: 4, nodes: [S('smile', 'Ensaiei a canção da Gala no duche. A vizinha bateu na parede. Acho que foi um aplauso.')] }
+];
+
+/* =====================================================================
+   VICTORIA
+   ===================================================================== */
+const VICTORIA = {};
+VICTORIA[1] = [
+  N('O Velvet Bar é uma caixa de joias: espelhos fumados, cadeirões de veludo bordeaux, néon cor-de-rosa a escrever VELVET por cima das garrafas. Ao balcão, sozinha, uma mulher de vestido preto fala ao telemóvel em três línguas.'),
+  N('Desliga a meio de uma frase em alemão e vira-se. Os olhos dela, cor de âmbar, avaliam-te dos sapatos ao nó da gravata. Demoram-se no nó.'),
+  V('smirk', 'És novo. Os novos têm sempre esse olhar, como se ainda acreditassem que este sítio é mágico.'),
+  V('neutral', 'O barman foi buscar gelo à Antártida, pelos vistos. Recomenda-me uma bebida, concierge. E não me desiludas.'),
+  CH(
+    { t: '«Um Negroni. Amargo, elegante e não pede desculpa.»', aff: { victoria: 8 }, set: ['victoria_negroni'], next: [
+      V('smirk', 'Estás a descrever a bebida ou a mim?'),
+      P('Diga-me a senhora.'),
+      V('laugh', 'Boa resposta. Péssima para o meu ego, que já é grande.')
+    ] },
+    { t: '«Um copo de água. Parece-me que já vai no terceiro martini.»', aff: { victoria: 6 }, set: ['victoria_bold'], next: [
+      N('Durante um segundo, o bar inteiro parece suster a respiração.'),
+      V('laugh', 'Atrevido. Gosto de atrevidos — até deixarem de ter graça. Tu ainda tens.')
+    ] },
+    { t: '«O que a senhora desejar, claro.»', aff: { victoria: 1 }, next: [
+      V('neutral', 'Que aborrecido. O servilismo é tão... dois mil e nove.'),
+      V('smirk', 'Tenta outra vez amanhã. Com mais espinha.')
+    ] }
+  ),
+  V('neutral', 'Victoria Ravel. Se ainda não ouviste o nome, vais ouvi-lo esta semana.'),
+  CH(
+    { t: '«E o que a traz ao Velvet, Sra. Ravel?»', aff: { victoria: 2 }, next: [
+      V('smirk', 'Primeira regra do Marcel e já a quebras? Negócios. E talvez prazer, se a semana correr bem.')
+    ] },
+    { t: '«Victoria. Fica-lhe bem.»', aff: { victoria: 3 }, next: [
+      V('flirty', 'Tudo me fica bem, querido. Mas obrigada por reparares.')
+    ] }
+  ),
+  N('Ela pousa um cartão de visita preto no bolso do teu casaco, sem pedir licença. Os dedos ficam lá um segundo a mais do que o necessário.'),
+  V('flirty', 'Para o caso de precisares de um emprego a sério. Ou de outra coisa.')
+];
+VICTORIA[2] = [
+  V('smirk', '{nome}. Senta-te. Não, não me interessa se estás de serviço. Eu sou o serviço.'),
+  V('neutral', 'Vamos jogar um jogo. Eu faço uma pergunta e tu respondes com a verdade. Depois trocamos. Quem mentir paga a próxima ronda.'),
+  V('neutral', 'Porque é que alguém como tu aceita um turno da noite num hotel velho?'),
+  CH(
+    { t: '«Precisava de recomeçar. A cidade de dia já não tinha lugar para mim.»', aff: { victoria: 8 }, set: ['victoria_honest'], next: [
+      N('O sorriso dela vacila. Só um pouco. Só por um segundo.'),
+      V('neutral', 'Isso foi verdade a sério. Raramente a ouço de graça.')
+    ] },
+    { t: '«Disseram-me que as hóspedes eram interessantes. Não mentiram.»', aff: { victoria: 5 }, next: [
+      V('smirk', 'Lisonja. Meia verdade, meia estratégia. Aceito, mas fica registado.')
+    ] },
+    { t: '«Pelo salário.»', aff: { victoria: 1 }, next: [
+      V('neutral', 'Pragmático. Eu era assim aos vinte. Depois fiquei rica e passei a ser pragmática com estilo.')
+    ] }
+  ),
+  V('neutral', 'A minha vez. Uma verdade: vim comprar este hotel.'),
+  N('Ela diz isto com a naturalidade de quem pede mais gelo.'),
+  V('smirk', 'A Odette assina na Gala e o Velvet passa a ser um Ravel. Ainda não sei se o mantenho de pé ou se o deito abaixo e construo uma coisa com menos fantasmas.'),
+  CH(
+    { t: '«O Velvet tem alma. Espero que saiba o que está a comprar.»', aff: { victoria: 6 }, set: ['victoria_challenged'], next: [
+      V('surprised', 'Alma.'),
+      V('smirk', 'Toda a gente me fala da alma das coisas quando lhes quero pôr um preço. Mas tu disseste-o como se acreditasses.')
+    ] },
+    { t: '«Então devo tratar bem a futura patroa.»', aff: { victoria: 4 }, next: [
+      V('flirty', 'Devias. Mas não demasiado bem. Tira-me a graça.')
+    ] },
+    { t: '«Deite-o abaixo. Um hotel não é um museu.»', aff: { victoria: 2 }, next: [
+      V('neutral', 'Falas como os meus advogados. Ainda não sei se gosto.')
+    ] }
+  ),
+  V('flirty', 'Perdeste o jogo, já agora. Tens uma cara que não mente. É um defeito terrível. Não o corrijas.')
+];
+VICTORIA.inv3 = [
+  IF(has('victoria_missed3'), [
+    V('neutral', 'Ontem fiquei com uma garrafa de champanhe a aquecer e o orgulho ferido. Não estou habituada a esperar, {nome}.'),
+    V('smirk', 'Vou fingir que não aconteceu. Uma vez.'),
+    FX(s => { delete s.flags.victoria_missed3; })
+  ]),
+  V('flirty', 'Esta noite, entre a uma e meia e as três e meia, quero uma garrafa de champanhe na Suite Presidencial.'),
+  V('smirk', 'E quero que sejas tu a levá-la. E que fiques para a beber. Considera isto uma ordem da futura administração.'),
+  CH(
+    { t: '«Lá estarei, Victoria.»', aff: { victoria: 2 }, next: [V('smile', 'Victoria. Sem "senhora". Estamos a progredir.')] },
+    { t: '«Isso faz parte do serviço de quartos?»', aff: { victoria: 3 }, next: [V('flirty', 'Hoje faz parte do que eu quiser.')] }
+  ),
+  FX(s => makeInvite(s, 'victoria', 3)),
+  N('Convite: Suite Presidencial, entre a 01:30 e as 03:30.')
+];
+VICTORIA[3] = [
+  BG('suite'), HIDE,
+  N('A Suite Presidencial ocupa metade do último piso. Uma janela do chão ao teto engole a cidade inteira — pontes, néons, o rio negro a brilhar como seda.'),
+  N('A Victoria trocou o vestido preto por seda cor de vinho e está descalça, de copo vazio na mão, à tua espera.'),
+  V('smile', 'Pontual. Abre a garrafa. Quero ver se tens mãos firmes.'),
+  N('A rolha sai com um suspiro, não com um estalo. Ela arqueia uma sobrancelha, impressionada.'),
+  V('neutral', 'Quero mostrar-te uma coisa. Não a mostro a ninguém.'),
+  N('Tira da mala uma fotografia antiga, a preto e branco: um rapaz de farda de paquete, sorriso torto, encostado ao balcão da receção do Velvet. A mesma receção onde trabalhas.'),
+  V('sad', 'O meu pai. Henrique. Trabalhou aqui em 1986. Acusaram-no de roubar o colar de uma hóspede. Nunca provaram nada, mas despediram-no na mesma, à frente de toda a gente.'),
+  V('sad', 'Nunca mais foi o mesmo. Morreu quando eu tinha dezanove anos. Construí um império com a raiva que ele me deixou.'),
+  V('neutral', 'E agora vou comprar o sítio que o expulsou. Quero o meu nome por cima da porta onde ele foi humilhado.'),
+  CH(
+    { t: '«E o que é que ele quereria que fizesses com o Velvet?»', aff: { victoria: 10 }, set: ['victoria_father'], next: [
+      V('surprised', 'Ninguém me pergunta isso. Perguntam-me quanto, quando, porquê. Nunca o que ele quereria.'),
+      V('sad', 'Ele adorava este sítio. Mesmo depois de tudo. Falava do lustre da receção como quem fala de uma namorada.')
+    ] },
+    { t: '«A vingança fica-te bem. Não sei se te faz feliz.»', aff: { victoria: 8 }, next: [
+      V('smirk', 'Fica-me bem, não fica? Como tudo.'),
+      V('sad', 'Feliz... Há anos que não uso essa palavra num contrato.')
+    ] },
+    { t: '«Compra-o e deita-o abaixo. Eles merecem.»', aff: { victoria: 3 }, set: ['victoria_revenge'], next: [
+      V('neutral', 'É o que os meus advogados dizem. Que é justiça.'),
+      V('sad', 'Então porque é que soa tão mal dito em voz alta?')
+    ] }
+  ),
+  N('Ela aproxima-se. Pega-te na gravata e enrola-a devagar à volta dos dedos, puxando-te até sentires o calor dela.'),
+  V('flirty', 'És perigoso, {nome}. Fazes-me falar. Eu pago a pessoas para não me fazerem falar.'),
+  N('Os lábios dela passam a milímetros dos teus... e desviam-se para a tua orelha.'),
+  V('smirk', 'Ainda não. Gosto de saborear as coisas. Boa noite, concierge.')
+];
+VICTORIA[4] = [
+  N('A Victoria tem três telemóveis em cima do balcão e nenhum sorriso.'),
+  V('neutral', 'Apareceu outra coruja. Desta vez na fachada do MEU futuro hotel. Néon, quatro metros, olhos que te seguem. Os investidores acham que é um protesto.'),
+  V('smirk', 'Noctua. A cidade inteira adora-a. Eu só queria saber quem é, para lhe oferecer um contrato ou um advogado. Ainda não decidi qual dos dois.'),
+  V('neutral', 'Tu andas por este hotel a noite inteira. Sabes quem é?'),
+  CH(
+    { t: '«É a Luna. Do 707.»', show: has('luna_secret'), aff: { victoria: 6, luna: -20 }, set: ['luna_betrayed'], fx: st => { delete st.invites.luna; }, next: [
+      V('surprised', 'A rapariga do terraço? Que poético. E que conveniente.'),
+      V('smirk', 'Obrigada. Vou tratar disto.'),
+      N('Algo frio desliza-te pelo estômago. Talvez seja arrependimento.')
+    ] },
+    { t: '«Sei. E não te vou dizer.»', show: has('luna_secret'), aff: { victoria: 5, luna: 3 }, set: ['victoria_respect'], next: [
+      V('surprised', 'Estás a recusar-me alguma coisa?'),
+      N('Por um momento parece ofendida. Depois, inesperadamente, sorri.'),
+      V('smile', 'Lealdade. Não se compra. Acredita, já tentei.')
+    ] },
+    { t: '«Não faço ideia.»', show: has('luna_secret'), aff: { victoria: 1 }, next: [
+      V('smirk', 'Mentes mal. Já tínhamos estabelecido isso.'),
+      V('neutral', 'Mas respeito quem protege os seus. Até certo ponto.')
+    ] },
+    { t: '«Não faço ideia, sinceramente.»', show: not('luna_secret'), aff: { victoria: 2 }, next: [
+      V('neutral', 'Hm. Este hotel guarda segredos melhor do que um banco suíço.')
+    ] }
+  ),
+  V('neutral', 'Os meus advogados querem transformar o Velvet num Ravel. Vidro, aço, check-in por aplicação. Nada de turno da noite. Nada de Marcel. Nada de... isto.'),
+  N('Faz um gesto vago que inclui o néon, o barman, o lustre — e a ti.'),
+  CH(
+    { t: '«Mantém-lhe a alma. Mantém as pessoas. É isso que vale dinheiro aqui.»', aff: { victoria: 6 }, set: ['victoria_soul'], next: [
+      V('neutral', 'Falas como o meu pai.'),
+      V('sad', '...Isso não foi uma crítica.')
+    ] },
+    { t: '«O negócio é teu. Faz o que der mais lucro.»', aff: { victoria: 2 }, set: ['victoria_cold'], next: [
+      V('neutral', 'Resposta sensata. Fico desiludida por seres sensato.')
+    ] }
+  ),
+  V('neutral', 'Eu não peço nada a ninguém, {nome}. Compro, negoceio, ganho. Mas vou pedir-te uma coisa.'),
+  V('sad', 'Não me faças de tola. Se isto é um jogo para ti, diz-mo agora, enquanto ainda me consigo rir.'),
+  CH(
+    { t: '«Não é um jogo. Eu quero-te, Victoria.»', aff: { victoria: 10 }, set: ['promise_victoria'], note: promiseNote('victoria'), next: [
+      V('surprised', '...'),
+      N('Fica calada o tempo suficiente para o barman decidir ir buscar mais gelo.'),
+      V('flirty', 'Finalmente.'),
+      N('Puxa-te pelo colarinho e beija-te contra o balcão, como quem assina um contrato que esperou anos para assinar.')
+    ] },
+    { t: '«Gosto de jogos.»', next: [
+      V('smirk', 'Então joguemos. Mas não esperes que eu perca.'),
+      V('neutral', 'Eu nunca perco, {nome}. Às vezes só desisto antes.')
+    ] }
+  )
+];
+VICTORIA.inv5 = [
+  IF(not('promise_victoria'), [
+    V('neutral', 'Ainda gostas de jogos, {nome}?'),
+    CH(
+      { t: '«Já não. Quero-te a ti.»', aff: { victoria: 6 }, set: ['promise_victoria'], note: promiseNote('victoria'), next: [
+        V('smile', 'Demoraste. Ainda bem que sou paciente. Não sou nada paciente.')
+      ] },
+      { t: '«Ainda gosto.»', aff: { victoria: -5 }, set: ['victoria_declined'], next: [
+        V('neutral', 'Então o jogo acabou. Ganhei eu: saio daqui com o coração intacto.'),
+        N('A partir de hoje, a Victoria tratar-te-á com uma cortesia impecável — e uma distância de cinco estrelas.'),
+        STOP
+      ] }
+    )
+  ]),
+  IF(has('victoria_missed5'), [
+    V('sad', 'Ontem esperei. Eu. Esperei. Com a luz acesa, como uma adolescente.'),
+    V('neutral', 'Não me voltes a fazer isso.'),
+    FX(s => { delete s.flags.victoria_missed5; })
+  ]),
+  V('neutral', 'Esta noite não há champanhe. Nem contratos. Nem fotografias velhas.'),
+  V('flirty', 'Entre as duas e meia e as quatro e meia. Suite Presidencial. Só tu, eu e a cidade lá fora a fingir que não vê.'),
+  CH(
+    { t: '«Não falto.»', aff: { victoria: 2 }, next: [V('smirk', 'Eu sei que não.')] },
+    { t: '«E se a cidade vir?»', aff: { victoria: 3 }, next: [V('flirty', 'Então que aprenda alguma coisa.')] }
+  ),
+  FX(s => makeInvite(s, 'victoria', 5)),
+  N('Convite: Suite Presidencial, entre as 02:30 e as 04:30.')
+];
+VICTORIA[5] = [
+  BG('suite'), HIDE,
+  N('A suite está às escuras. Só a cidade ilumina o quarto, a desenhar-lhe o contorno contra a janela.'),
+  V('neutral', 'Assinei esta tarde a versão final da proposta.'),
+  IF(has('victoria_soul'), [
+    V('smile', 'O Velvet fica Velvet. O Marcel fica. A Sophie fica. A rapariga do 707 fica, desde que pague a renda em quadros que valham alguma coisa.'),
+    V('sad', 'O meu pai ia rir-se de mim. Ia rir-se e chorar.')
+  ], [
+    V('neutral', 'Remodelação total. Os advogados estão contentes. Eu estou... a tentar estar.')
+  ]),
+  V('sad', 'Toda a gente me vê como uma mulher que não precisa de ninguém. Passei vinte anos a vender essa imagem. Vendeu-se muito bem.'),
+  V('neutral', 'Mas esta noite não quero vender nada.'),
+  CH(
+    { t: '«Não precisas de ser forte comigo.»', aff: { victoria: 10 }, set: ['victoria_soft'], next: [
+      N('Ela encosta a testa ao teu peito, e sentes a armadura toda — os ombros direitos, o queixo erguido — a ceder devagar.'),
+      V('sad', 'Não te habitues. ...Habitua-te.')
+    ] },
+    { t: '«Fica comigo até ao amanhecer.»', aff: { victoria: 10 }, set: ['victoria_dawn'], next: [
+      V('flirty', 'Querido, a partir de sábado o amanhecer deste hotel é meu.'),
+      V('smile', 'Mas fico. Contigo, fico.')
+    ] }
+  ),
+  N('Desaperta-te a gravata com a mesma calma com que assina milhões. A seda cor de vinho escorrega-lhe por um ombro.'),
+  FADE,
+  N('O resto da noite é uma língua que nenhum dos dois precisa de traduzir.'),
+  N('Lá fora, a cidade continua acordada. Cá dentro, pela primeira vez em vinte anos, Victoria Ravel deixa o telemóvel tocar até desistir.')
+];
+const VICTORIA_SMALL = [
+  [V('smirk', 'Sabes qual é a diferença entre um negócio e uma sedução? Nenhuma. Em ambos, quem mostra pressa perde.')],
+  [V('neutral', 'O barman faz o pior martini da cidade. E eu volto todas as noites. Chama-se lealdade. Ou masoquismo.')],
+  [V('flirty', 'Gravata torta outra vez. Anda cá.'), N('Endireita-ta com dois gestos precisos e uma palmadinha no peito.'), V('smirk', 'Pronto. Agora estás apresentável para seres admirado.')],
+  [V('neutral', 'Passei o dia em reuniões com homens a explicarem-me coisas que fui eu que inventei. Diz-me algo inteligente, para eu recuperar a fé na espécie.'), P('A noite é mais honesta do que o dia.'), V('smile', 'Aceitável. Podes ir.')],
+  [V('smile', 'O Marcel tentou cobrar-me o gelo extra. Admiro um homem com princípios. Paguei o triplo.')],
+  { min: 3, nodes: [V('sad', 'Às vezes olho para o lustre da receção e imagino o meu pai a limpá-lo. Ridículo, não é?'), P('Não é.'), V('neutral', '...Obrigada.')] },
+  { min: 4, nodes: [V('flirty', 'Tenho uma reunião às nove. Estou a pensar faltar. A culpa é tua.')] }
+];
+
+/* =====================================================================
+   LUNA
+   ===================================================================== */
+const LUNA = {};
+LUNA[1] = [
+  N('O terraço do Velvet é uma ilha suspensa sobre a cidade: antenas, uma piscina vazia desde 2019, cadeiras de ferro enferrujadas. E, sentada no parapeito, com as pernas a balançar sobre vinte andares de nada, uma rapariga de cabelo lilás a beber chá de um termo.'),
+  L('smirk', 'Se vens dizer-me que não posso estar aqui, chegaste tarde. Três concierges já tentaram. Um agora é monge.'),
+  N('Ela vira-se. Um olho violeta, outro verde-água. Os dois a rirem-se de ti.'),
+  L('smile', 'Teste rápido, novato. Não penses. De que cor é a noite?'),
+  CH(
+    { t: '«Preta. Obviamente.»', aff: { luna: 1 }, next: [L('neutral', 'Bocejo. Reprovado. Mas tens direito a recurso.')] },
+    { t: '«Azul-meia-noite, com um toque de néon arrependido.»', aff: { luna: 8 }, set: ['luna_poet'], next: [
+      L('laugh', 'Néon arrependido! Vou roubar isso. Vou mesmo roubar isso, não te zangues.')
+    ] },
+    { t: '«Da cor dos teus olhos. Dos dois.»', aff: { luna: 5 }, set: ['luna_flirt1'], next: [
+      L('flirty', 'Ui. Lisonjeiro e observador. Combinação perigosa para as duas da manhã.')
+    ] }
+  ),
+  L('neutral', 'Luna. Quarto 707. E não, não é nome artístico. A minha mãe era cantora e muito dramática. A minha irmã chama-se Aurora. Aurora Boreal. Juro.'),
+  L('smile', 'Fica quieto. Assim.'),
+  N('Tira um caderno do casaco e desenha-te em quinze segundos, com traços rápidos e seguros. Arranca a folha e entrega-ta. És tu, mas com mais estrelas à volta do que mereces.'),
+  CH(
+    { t: '«É lindo. Posso ficar com ele?»', aff: { luna: 3 }, next: [L('smile', 'Já é teu. Dou sempre os desenhos. Guardá-los é como prender pássaros.')] },
+    { t: '«Puseste-me estrelas a mais.»', aff: { luna: 2 }, next: [L('smirk', 'Eu desenho o que vejo, não o que tu vês. Problema teu.')] }
+  ),
+  L('neutral', 'Volta amanhã. Ou não. As melhores coisas acontecem sem marcação.')
+];
+LUNA[2] = [
+  N('A Luna chega ao terraço a correr, sem fôlego, com o capuz puxado e as mãos manchadas de uma tinta que brilha, verde e rosa, na escuridão.'),
+  N('Ao longe, ouves uma sirene. Ela encosta-se ao parapeito e começa a rir-se baixinho.'),
+  L('smirk', 'Boa noite, concierge. Que noite agradável para estar aqui. Há horas. Desde sempre.'),
+  CH(
+    { t: '«Tens tinta néon nas mãos. E há uma coruja nova na Rua das Camélias...»', aff: { luna: 6 }, set: ['luna_secret'], next: [
+      L('surprised', '...'),
+      L('laugh', 'Detetive! Pronto, apanhaste-me.')
+    ] },
+    { t: 'Não dizer nada. Oferecer-lhe um lenço.', aff: { luna: 8 }, set: ['luna_secret', 'luna_discreet'], next: [
+      N('Ela olha para o lenço, depois para ti.'),
+      L('smile', 'És discreto. Isso é mais raro do que tinta fluorescente de qualidade.'),
+      L('neutral', 'Por isso vou contar-te. Não sei bem porquê. Talvez por isso mesmo.')
+    ] },
+    { t: '«Não quero saber, desde que não me pintes o cacifo.»', aff: { luna: 4 }, next: [
+      L('laugh', 'O teu cacifo é a minha próxima obra-prima. Cinzento-repartição, uma tela tão triste...'),
+      L('smirk', 'Um dia conto-te. Hoje ainda não confio em ti o suficiente.')
+    ] }
+  ),
+  IF(has('luna_secret'), [
+    L('neutral', 'Noctua. A coruja. Sou eu. Pinto o que esta cidade esconde à noite — quem trabalha enquanto os outros dormem.'),
+    L('sad', 'Se a Ravel soubesse, era despejada antes de conseguir dizer "liberdade de expressão". Ela quer comprar o hotel, sabias?'),
+    CH(
+      { t: '«O teu segredo está seguro comigo.»', aff: { luna: 4 }, set: ['luna_swore'], next: [
+        L('smile', 'Vou acreditar em ti. É raro eu acreditar em pessoas. Não estragues.')
+      ] },
+      { t: '«Porquê corujas?»', aff: { luna: 3 }, next: [
+        L('smile', 'Porque veem no escuro. E porque ninguém lhes pergunta o que fazem acordadas.'),
+        L('flirty', 'Como tu, aliás. Tens qualquer coisa de coruja.')
+      ] }
+    )
+  ], [
+    L('neutral', 'Bem. Tenho de lavar as mãos antes que alguém faça perguntas menos simpáticas do que as tuas.')
+  ])
+];
+LUNA.inv3 = [
+  IF(not('luna_secret'), [
+    L('neutral', 'Já que vais ver o estúdio, mais vale saberes: as corujas de néon pela cidade? A Noctua? Sou eu.'),
+    P('Desconfiava.'),
+    L('smirk', 'Claro que desconfiavas. Tens cara de quem desconfia de tudo, menos de mim.'),
+    FX(s => { s.flags.luna_secret = true; })
+  ]),
+  IF(has('luna_missed3'), [
+    L('sad', 'Ontem pintei sozinha até o sol nascer. Correu bem. Aborrecidamente bem.'),
+    L('neutral', 'Tinha guardado um pincel para ti.'),
+    FX(s => { delete s.flags.luna_missed3; })
+  ]),
+  L('smile', 'Queres ver o meu estúdio? É o 707. Ninguém entra lá. Nem a senhora da limpeza — tem medo das minhas telas.'),
+  L('flirty', 'Entre as três e meia e as cinco e meia. Antes que o sol chegue e estrague tudo.'),
+  CH(
+    { t: '«Combinado.»', aff: { luna: 2 }, next: [L('smile', 'Traz a curiosidade. Deixa o uniforme.')] },
+    { t: '«Às três e meia? És mesmo uma criatura da noite.»', aff: { luna: 3 }, next: [L('laugh', 'Coruja, querido. Coruja. Já devias saber.')] }
+  ),
+  FX(s => makeInvite(s, 'luna', 3)),
+  N('Convite: Estúdio 707, entre as 03:30 e as 05:30.')
+];
+LUNA[3] = [
+  BG('estudio'), HIDE,
+  N('O quarto 707 já não é um quarto. A cama está encostada à parede, coberta por um lençol manchado de tinta. Tubos de néon caem do teto como lianas, e há telas por todo o lado — encostadas, empilhadas, penduradas.'),
+  N('Reconheces as caras. O Marcel a dormir numa cadeira. A Sophie a escrever na receção. O barman. A Victoria, de costas, a olhar para a cidade.'),
+  N('E, na tela mais recente, ainda húmida: tu, ao balcão, com um meio sorriso que não sabias que tinhas.'),
+  L('shy', 'Não olhes para essa. Ainda não está pronta. Tu ainda não estás pronto.'),
+  L('neutral', 'Cresci em hotéis. A minha mãe cantava em todos — Paris, Lisboa, Montreal, Istambul. Nunca fiquei mais de dois meses em lado nenhum.'),
+  L('sad', 'O Velvet foi o primeiro sítio onde desfiz a mala. E agora a Ravel vai comprá-lo e, provavelmente, deitá-lo abaixo para fazer apartamentos de luxo com nome de flor.'),
+  CH(
+    { t: '«Se o Velvet fechar, a tua casa não desaparece. Levas-la contigo.»', aff: { luna: 8 }, set: ['luna_home'], next: [
+      L('sad', 'Isso é bonito. É o género de coisa que a minha mãe dizia antes de fazermos as malas outra vez.'),
+      L('smile', 'Mas tu dizes como se fosse verdade.')
+    ] },
+    { t: '«Então vamos lutar por ele.»', aff: { luna: 10 }, set: ['luna_fight'], next: [
+      L('surprised', 'Vamos? No plural?'),
+      L('laugh', 'Ninguém me diz "vamos" desde o jardim-escola.')
+    ] },
+    { t: '«Talvez seja altura de partires, antes que te expulsem.»', aff: { luna: -3 }, next: [
+      L('neutral', 'Sim. Talvez.'),
+      N('Ela vira uma tela contra a parede. A tua.')
+    ] }
+  ),
+  N('Pega num pincel fino, molha-o numa tinta que brilha a violeta sob a luz negra e segura-te no pulso.'),
+  L('flirty', 'Fica quieto. É só uma lua pequenina. Para saberes de onde vens.'),
+  N('O pincel faz-te cócegas. A respiração dela também.'),
+  L('flirty', 'Agora tira o casaco. Quero pintar-te. Só o casaco... por agora.'),
+  CH(
+    { t: 'Tirar o casaco, devagar, sem desviar o olhar.', aff: { luna: 6 }, set: ['luna_posed'], next: [
+      L('shy', 'Ok. Ok, isso foi... eficaz.'),
+      N('Pela primeira vez desde que a conheces, a Luna fica sem palavras. Pinta durante uma hora em silêncio e, de vez em quando, morde o lábio.')
+    ] },
+    { t: '«Só se pintares comigo.»', aff: { luna: 8 }, set: ['luna_painted_together'], next: [
+      L('laugh', 'Exigente!'),
+      N('Ela põe-te um pincel na mão e guia-a com a sua. Pintam uma coruja a quatro mãos, torta e perfeita. Acabam os dois com tinta até aos cotovelos — e ela com uma mancha verde no queixo que te recusas a contar-lhe.')
+    ] }
+  )
+];
+LUNA.confront = [
+  N('A Luna está no parapeito, de costas. Não se vira quando chegas.'),
+  L('neutral', 'Hoje bateu-me à porta um advogado da Ravel. Muito educado. Sabia que eu era a Noctua. Ofereceu-me um contrato de exclusividade ou um processo, à escolha.'),
+  L('sad', 'Só três pessoas no mundo sabiam. A minha irmã, que está na Islândia. Eu. E tu.'),
+  CH(
+    { t: '«Fui eu. Errei. Não tenho desculpa — só te peço desculpa.»', aff: { luna: 8 }, set: ['luna_forgiven'], next: [
+      N('Ela fica calada tanto tempo que achas que não vai responder.'),
+      L('neutral', 'Pelo menos não mentiste. Isso conta. Não conta tudo, mas conta.'),
+      L('sad', 'Vou precisar de tempo. Mas não vou fugir. Ainda.')
+    ] },
+    { t: '«Não fui eu! Deve ter sido outra pessoa... talvez a Sophie.»', aff: { luna: -15 }, set: ['luna_closed'], fx: st => { delete st.invites.luna; }, next: [
+      L('neutral', 'A Sophie nem sabe o meu apelido.'),
+      L('sad', 'Mentes mal, {nome}. Toda a gente to diz, não diz?'),
+      N('Ela desce do parapeito e passa por ti sem te tocar. A partir de hoje, a Luna não volta a dirigir-te a palavra.')
+    ] }
+  )
+];
+LUNA[4] = [
+  L('smile', 'Tenho um plano. É ilegal, perigoso e lindo. As três melhores qualidades de um plano.'),
+  L('neutral', 'Na noite antes da Gala vou pintar a fachada do Velvet. Uma coruja de dez metros a abraçar o letreiro. Uma carta de amor ao hotel, para quem o comprar ver bem o que está a comprar.'),
+  L('flirty', 'Preciso de alguém que segure as cordas. E que não grite se eu escorregar.'),
+  CH(
+    { t: '«Conta comigo. Eu seguro as cordas.»', aff: { luna: 8 }, set: ['luna_mural'], next: [L('laugh', 'Eu sabia! Tens cara de cúmplice desde o primeiro dia.')] },
+    { t: '«É arriscado demais para mim, mas vigio a entrada.»', aff: { luna: 5 }, set: ['luna_lookout'], next: [L('smile', 'Um vigia. Também serve. Toda a obra de arte precisa de um.')] },
+    { t: '«Não posso arriscar este emprego, Luna.»', aff: { luna: -2 }, next: [
+      L('neutral', 'Justo. Toda a gente tem uma coisa que não pode perder.'),
+      L('sad', 'Eu é que nunca tive.')
+    ] }
+  ),
+  N('Ela senta-se no parapeito e puxa-te para o lado dela. Lá em baixo, a cidade é um mar de luzes que não acaba.'),
+  L('sad', 'Eu tenho uma regra, {nome}. Nunca fico. Em lado nenhum, com ninguém. Quando um sítio começa a parecer casa, faço a mala.'),
+  L('flirty', 'Mas tu estás a fazer-me querer quebrá-la. E isso assusta-me. Diz-me para ficar. Ou diz-me para ir. Mas diz alguma coisa.'),
+  CH(
+    { t: '«Fica. Comigo.»', aff: { luna: 10 }, set: ['promise_luna'], note: promiseNote('luna'), next: [
+      L('surprised', '...'),
+      N('Ela ri-se, nervosa, e depois deixa de rir.'),
+      N('O beijo sabe a chá de jasmim, a tinta e a vertigem. Ela agarra-te pelo casaco como se o parapeito fosse a única coisa entre vocês e a queda — e talvez seja.')
+    ] },
+    { t: '«Não te vou prender a nada, Luna.»', aff: { luna: 2 }, next: [
+      L('smile', 'Que resposta generosa.'),
+      L('sad', 'E que resposta segura. Tu jogas sempre pelo seguro, não jogas?')
+    ] }
+  )
+];
+LUNA.inv5 = [
+  IF(not('promise_luna'), [
+    L('neutral', 'Continuas sem me querer prender a nada?'),
+    CH(
+      { t: '«Quero. Se deixares. Fica.»', aff: { luna: 6 }, set: ['promise_luna'], note: promiseNote('luna'), next: [L('laugh', 'Finalmente! Que suspense!')] },
+      { t: '«Não, Luna.»', aff: { luna: -5 }, set: ['luna_declined'], next: [
+        L('smile', 'Ok. Então sigo a minha regra.'),
+        N('Ela sorri — e algo nos olhos dela fecha uma janela. A partir de hoje serão amigos. Bons amigos. Só isso.'),
+        STOP
+      ] }
+    )
+  ]),
+  IF(has('luna_missed5'), [
+    L('sad', 'Ontem fiquei no terraço até as estrelas se irem embora. Foram mais pontuais do que tu.'),
+    FX(s => { delete s.flags.luna_missed5; })
+  ]),
+  L('flirty', 'Esta noite, entre as três e as cinco, aqui no terraço. A piscina vazia encheu-se com a chuva e o néon reflete-se lá dentro. Parece um quadro meu.'),
+  L('smile', 'Traz-te a ti. Eu trago a tinta.'),
+  CH(
+    { t: '«Vou estar lá.»', aff: { luna: 2 }, next: [L('smile', 'Eu sei. É estranho saber isso.')] },
+    { t: '«Tinta? Que tipo de encontro é esse?»', aff: { luna: 3 }, next: [L('flirty', 'Do tipo que não sai na lavagem.')] }
+  ),
+  FX(s => makeInvite(s, 'luna', 5)),
+  N('Convite: Terraço, entre as 03:00 e as 05:00.')
+];
+LUNA[5] = [
+  BG('terraco'), HIDE,
+  N('A piscina abandonada é um espelho negro cheio de chuva. As luzes do letreiro do Velvet refletem-se na água — vinho, violeta, rosa — e a Luna está sentada na borda, descalça, com um frasco de tinta fluorescente ao lado.'),
+  L('smile', 'Chegaste. Tira os sapatos. Regras da casa.'),
+  N('Ela molha dois dedos na tinta e desenha uma linha luminosa no teu antebraço. Depois outra. Uma constelação nova.'),
+  L('flirty', 'A tua vez. Pinta-me num sítio onde ninguém tenha pintado.'),
+  CH(
+    { t: '«Pinta-me um mapa. Para eu encontrar sempre o caminho até ti.»', aff: { luna: 10 }, set: ['luna_map'], next: [
+      L('shy', 'Isso é a frase mais lamechas que já ouvi.'),
+      L('flirty', 'Diz outra vez.')
+    ] },
+    { t: 'Beijar-lhe o pulso, no sítio exato onde ela te pintou a lua.', aff: { luna: 10 }, set: ['luna_wrist'], next: [
+      L('surprised', 'Batoteiro.'),
+      L('flirty', 'Faz outra vez.')
+    ] }
+  ),
+  N('A tinta brilha por onde as mãos passam. O casaco de couro dela cai no chão de azulejo sem fazer barulho.'),
+  FADE,
+  N('Lá em cima, as estrelas são poucas — a cidade come-as quase todas. Mas são suficientes. O resto da noite é pintado a quatro mãos, num quadro que nenhum dos dois vai alguma vez vender.'),
+  N('Ao amanhecer, a água da piscina ainda guarda manchas de néon. A Luna adormece com a cabeça no teu ombro e o sorriso de quem, pela primeira vez, não está a pensar em fazer a mala.')
+];
+const LUNA_SMALL = [
+  [L('smirk', 'Hoje contei catorze estrelas. Ontem foram nove. A cidade está a perder a guerra.')],
+  [L('smile', 'O Marcel deixou-me um croissant à porta. Não disse nada. Eu pintei-lhe um gato no guardanapo. É a nossa relação.')],
+  [L('neutral', 'Às vezes acho que os pombos do terraço sabem coisas. Olha para aquele. Aquele sabe coisas.')],
+  [L('flirty', 'Tens cara de quem nunca fez nada proibido. Ainda vamos tratar disso.')],
+  [L('smile', 'Estou a experimentar pintar só com café. O 707 cheira a pequeno-almoço há três dias.')],
+  { min: 3, nodes: [L('shy', 'A tua lua no pulso ainda brilha? Mostra.'), N('Ela segura-te o pulso um bocadinho mais do que precisa.')] },
+  { min: 4, nodes: [L('smile', 'Já comprei a tinta para a fachada. Doze litros. A senhora da loja acha que vou pintar um barco.')] }
+];
+
+const CHAPTER_SCENES = { victoria: VICTORIA, luna: LUNA, sophie: SOPHIE };
+const SMALL_TALK = { victoria: VICTORIA_SMALL, luna: LUNA_SMALL, sophie: SOPHIE_SMALL };
+const SAY = { victoria: V, luna: L, sophie: S };
+
+/* ---------- reações a presentes ---------- */
+const GIFT_LINES = {
+  victoria: {
+    love: [['flirty', '{item}? Tens um gosto perigosamente bom. Começo a desconfiar de ti.'], ['smile', 'Isto é exatamente o que eu teria escolhido. Como é que sabias?']],
+    like: [['smile', 'Simpático. Aceito. Não te habitues a ser simpático, aborrece-me.']],
+    neutral: [['neutral', 'Hm. Um gesto. Agradeço o gesto.']],
+    hate: [['neutral', '{item}? Querido, tenho uma reunião de acionistas amanhã. Açúcar não entra na minha agenda.']]
+  },
+  luna: {
+    love: [['laugh', 'Não. NÃO. {item}?! Vou chorar. Não estou a chorar. É tinta.'], ['surprised', 'Onde é que encontraste isto?! Vou ter de te pintar outra vez, como agradecimento.']],
+    like: [['smile', 'Ooh. Gosto. Gosto mesmo.']],
+    neutral: [['neutral', 'Obrigada. Vou encontrar-lhe uma utilidade. Provavelmente artística.']],
+    hate: { rosa: [['neutral', 'Uma rosa... As flores cortadas são cadáveres bonitos, sabias?']], perfume: [['neutral', 'Cheira a centro comercial. Desculpa. Mas cheira.']] }
+  },
+  sophie: {
+    love: [['surprised', 'Para mim? {item}? Vou guardar isto para sempre. Literalmente. Tenho uma caixa.'], ['shy', 'Ninguém me dá coisas assim. Ninguém repara nestas coisas.']],
+    like: [['shy', 'Obrigada... és mesmo querido.']],
+    neutral: [['smile', 'Que simpático! Obrigada, {nome}.']],
+    hate: [['sad', 'Oh... {item}. É lindo, mas eu não bebo. Nunca bebi. Obrigada pela intenção.']]
+  }
+};
+function giftScene(c, item) {
+  const r = (PREFS[c] && PREFS[c][item]) || 'neutral';
+  let pool = GIFT_LINES[c][r];
+  if (!Array.isArray(pool)) pool = pool[item] || [['neutral', 'Obrigada.']];
+  const [mood, line] = pick(pool);
+  const itemName = ITEMS[item].name;
+  return {
+    reaction: r,
+    nodes: [
+      N(`Entregas-lhe o presente: ${ITEMS[item].icon} ${itemName}.`),
+      SAY[c](mood, line.replace('{item}', itemName))
+    ]
+  };
+}
+
+/* ---------- trabalho ---------- */
+const WORK_LINES = [
+  'Um casal em lua de mel quer pétalas de rosa na banheira às três da manhã. Arranjas pétalas. Não perguntas de onde.',
+  'Um tenor da ópera perdeu a voz e a chave do quarto. Recuperas uma das duas.',
+  'Um homem de chapéu pede-te que digas a quem perguntar que ele nunca esteve aqui. Ninguém pergunta.',
+  'Acompanhas uma senhora de noventa anos ao terraço para ver a lua. Ela conta-te que dançou com um rei neste mesmo hotel.',
+  'Uma despedida de solteira tenta raptar o pianista. Negocias a sua libertação a troco de duas garrafas de espumante.',
+  'Encontras um caniche perdido no elevador de serviço. A dona chora de alegria e enfia-te notas no bolso.'
+];
+
+/* ---------- apagão (noite 4) ---------- */
+const SC_BLACKOUT = [
+  HIDE,
+  N('Sem aviso, o Velvet apaga-se. O zumbido do néon morre. Os elevadores param. Durante um segundo, o hotel inteiro fica em silêncio, como se sustivesse a respiração.'),
+  M('(pelo rádio) {nome}! O gerador demora vinte minutos a arrancar. Preciso de ti onde fizeres mais falta. Decide tu.'),
+  CH(
+    { t: 'Ir ao elevador da suite — a Victoria ficou presa lá dentro.', show: s => s.chap.victoria >= 1, aff: { victoria: 8 }, set: ['blackout_victoria'], next: [
+      N('Forças as portas com uma barra de ferro. Lá dentro, à luz do telemóvel, a Victoria está sentada no chão do elevador, de sapatos na mão.'),
+      V('sad', 'Não digas a ninguém que tenho medo de espaços fechados. Destruo-te.'),
+      V('smile', '...Obrigada por teres vindo. A sério.'),
+      N('Ela segura-te a mão até a luz voltar. E não a larga logo a seguir.')
+    ] },
+    { t: 'Subir ao terraço — a Luna está lá em cima, sozinha.', show: s => s.chap.luna >= 1 && !s.flags.luna_closed, aff: { luna: 8 }, set: ['blackout_luna'], next: [
+      N('Sem néons nem candeeiros, o céu aparece de repente por cima do terraço: centenas de estrelas que a cidade escondia.'),
+      L('laugh', 'Estás a ver isto?! A cidade apagou-se e o céu acordou!'),
+      N('Deitam-se no cimento, ombro com ombro, a contar estrelas. Ela perde a conta de propósito, para poder recomeçar.')
+    ] },
+    { t: 'Ir à sala dos funcionários — a Sophie tem medo do escuro.', show: s => s.chap.sophie >= 1, aff: { sophie: 8 }, set: ['blackout_sophie'], next: [
+      N('Encontras a Sophie com uma vela acesa e um livro aberto, a fingir que não está a tremer.'),
+      S('shy', 'Não tenho medo do escuro. Tenho medo do que a imaginação faz com ele.'),
+      S('smile', 'Mas contigo aqui, a imaginação porta-se... de outra maneira.'),
+      N('Ela lê-te em voz alta até a luz voltar — e nenhum dos dois repara quando volta.')
+    ] },
+    { t: 'Ficar na receção a acalmar os hóspedes.', set: ['blackout_duty'], fx: s => { s.tipsTonight += 40; }, money: 40, next: [
+      N('Distribuis velas, piadas e garrafas de água. Quando a luz volta, o Marcel aparece com um envelope.'),
+      M('Gorjetas dos hóspedes. Pela primeira vez na história, ninguém se queixou de um apagão. Bom trabalho, {nome}.')
+    ] }
+  ),
+  FX(s => { s.flags.blackout_done = true; })
+];
+
+/* =====================================================================
+   GALA (noite 7) e finais
+   ===================================================================== */
+function eligibleChars(s) {
+  return CHAR_IDS.filter(c => s.chap[c] >= 5 && s.flags['promise_' + c] && s.aff[c] >= 50 && !s.flags[c + '_declined']
+    && !(c === 'luna' && (s.flags.luna_closed || (s.flags.luna_betrayed && !s.flags.luna_forgiven))));
+}
+const lunaGone = s => !!(s.flags.luna_betrayed && !s.flags.luna_forgiven);
+const hotelSaved = s => s.chap.victoria >= 4 && !!s.flags.victoria_soul;
+
+const ACCUSE = {
+  victoria: V('neutral', 'Curioso, {nome}. Lembro-me de te pedir uma única coisa: que não me fizesses de tola.'),
+  luna: L('sad', 'Pediste-me para ficar. Eu fiquei. Afinal era uma fila.'),
+  sophie: S('sad', 'Eu escrevi um final para nós. Afinal tu estavas a escrever vários.')
+};
+const GALA_INVITE = {
+  victoria: [
+    N('A Victoria desce do estrado e atravessa o salão na tua direção, a ignorar três ministros e um banqueiro.'),
+    V('flirty', 'Tenho um carro à porta e uma suite com vista. A suite agora é minha, já agora. Vens?')
+  ],
+  luna: [
+    N('O teu telemóvel vibra. Uma fotografia: a lua pintada no teu pulso. E por baixo, em minúsculas: «terraço. agora. traz-te a ti.»'),
+    SHOW('luna', 'flirty'),
+    N('Quando chegas lá acima, ela está sentada no parapeito, de vestido preto e ténis, como se fosse a coisa mais natural do mundo.')
+  ],
+  sophie: [
+    N('A Sophie desce do palco ainda com o coração aos saltos e para à tua frente, com os olhos a brilhar.'),
+    S('shy', 'Então? Como é que acaba a história?')
+  ]
+};
+
+function galaScene() {
+  return [
+    BG('gala'), HIDE,
+    N('Noite sete. A Gala de Veludo.'),
+    N('O átrio do Velvet nunca esteve tão bonito: o lustre limpo até brilhar como um pequeno sol, rosas cor de vinho em todas as colunas, um quarteto de cordas a tocar jazz a meio volume.'),
+    IF(has('tux'), [
+      N('Vestes um smoking alugado que te assenta melhor do que tinhas direito. Até o Marcel arqueia uma sobrancelha de aprovação.')
+    ], [
+      N('Vestes o uniforme do hotel, impecavelmente engomado. O Marcel acena: «Quem trabalha cá veste a casa. Muito bem.»')
+    ]),
+    IF(s => lunaGone(s), [
+      N('O quarto 707 está vazio. A Luna partiu durante a noite, sem se despedir de ninguém. Deixou apenas uma coruja pequenina pintada na porta.')
+    ], [
+      IF(s => s.chap.luna >= 4 && has('luna_mural')(s), [
+        N('Lá fora, os convidados param na passadeira de boca aberta: durante a noite, uma coruja de néon com dez metros de asas apareceu a abraçar o letreiro do hotel. Tem um olho violeta e outro verde-água.'),
+        N('Ninguém sabe quem a pintou. Tu sabes. Ainda tens tinta debaixo das unhas e as palmas das mãos a arder das cordas.')
+      ]),
+      IF(s => s.chap.luna >= 4 && has('luna_lookout')(s), [
+        N('Lá fora, os convidados param na passadeira de boca aberta: uma coruja de néon com dez metros de asas abraça agora o letreiro do hotel.'),
+        N('Passaste a noite anterior a vigiar a entrada enquanto ela pintava. Ninguém vos viu. Quase ninguém.')
+      ])
+    ]),
+    IF(s => s.chap.sophie >= 4, [
+      IF(has('sophie_brave'), [
+        N('Às onze, as luzes baixam. A Sophie sobe ao palco sem máscara e sem óculos, num vestido vermelho que faz o salão inteiro esquecer-se de respirar.'),
+        N('Canta como se o hotel fosse dela. Durante três minutos, é.')
+      ]),
+      IF(has('sophie_safe'), [
+        N('Às onze, as luzes baixam. A Mademoiselle Rouge sobe ao palco de máscara de renda, e o salão inteiro passa a canção a tentar adivinhar quem ela é.'),
+        N('Tu sabes. E ela sabe que tu sabes.')
+      ]),
+      IF(has('sophie_nosing'), [
+        N('A cantora da Gala é uma substituta de última hora. Canta bem. Não canta como a Sophie cantaria. A Sophie, ao fundo da sala, também sabe.')
+      ])
+    ]),
+    N('À meia-noite, a Madame Odette — oitenta e dois anos, pérolas e bengala de prata — sobe ao estrado.'),
+    N('«O Velvet foi a minha vida inteira. Esta noite, passa para as mãos de Victoria Ravel.»'),
+    IF(s => hotelSaved(s), [
+      SHOW('victoria', 'smile'),
+      V('smile', '«O Velvet vai continuar a ser o Velvet. Com o turno da noite, com o Marcel, com as corujas — sim, as corujas. E com um lustre que, a partir de hoje, se chama Henrique.»'),
+      N('O Marcel, ao teu lado, tira um lenço do bolso e finge que é alergia.')
+    ], [
+      SHOW('victoria', 'neutral'),
+      V('neutral', '«O Ravel Velvet reabrirá daqui a dezoito meses, completamente renovado. Agradeço a todos os funcionários os serviços prestados.»'),
+      N('Um murmúrio gelado atravessa o salão. O Marcel endireita a gravata e não diz nada. Diz tudo.')
+    ]),
+    HIDE,
+    s => {
+      const promised = promisedChars(s).filter(c => !(c === 'luna' && lunaGone(s)));
+      if (promised.length >= 2) {
+        const nodes = [N('E é então que acontece aquilo de que o Marcel te avisou na primeira noite.')];
+        for (const c of promised) nodes.push(ACCUSE[c]);
+        nodes.push(HIDE, N('Não há gritos. É pior: há silêncio — e depois costas a afastarem-se, cada uma para seu lado.'));
+        nodes.push(FX(st => { st.ending = 'dividido'; }));
+        return nodes;
+      }
+      const elig = eligibleChars(s);
+      if (elig.length) {
+        const c = elig[0];
+        return [
+          ...GALA_INVITE[c],
+          CH(
+            { t: `Ir com a ${CHARS[c].name}.`, fx: st => { st.ending = c; } },
+            { t: 'Agradecer, despedir-te e sair sozinho pela porta das traseiras.', fx: st => { st.ending = 'solitario'; st.flags.walked_away = true; } }
+          )
+        ];
+      }
+      return [
+        N('A música continua. Os convidados dançam. Ninguém te procura no meio da multidão — e talvez a culpa seja tua.'),
+        FX(st => { st.ending = 'solitario'; })
+      ];
+    }
+  ];
+}
+
+const ENDINGS = {
+  victoria: { title: 'Coroa de Veludo', teaser: 'Um final com a Victoria.' },
+  luna: { title: 'Néon e Tinta Fresca', teaser: 'Um final com a Luna.' },
+  sophie: { title: 'Primeira Luz', teaser: 'Um final com a Sophie.' },
+  solitario: { title: 'Última Chamada', teaser: 'Sair do Velvet sozinho.' },
+  dividido: { title: 'Coração Dividido', teaser: 'Quem promete a todas acaba sem nenhuma.' }
+};
+
+function endingText(id, s) {
+  const n = s.name;
+  const saved = hotelSaved(s);
+  const P_ = [];
+  if (id === 'victoria') {
+    P_.push('Saem pela porta giratória de braço dado, debaixo dos flashes dos fotógrafos. A Victoria não esconde a cara. Pela primeira vez na vida, não lhe interessa o que os jornais vão escrever.');
+    if (saved) {
+      P_.push('Um ano depois, o Velvet continua a ser o Velvet. O lustre da receção chama-se Henrique, e há uma pequena placa de latão para o provar.');
+      P_.push(`Tu és o novo diretor do turno da noite — o Marcel ainda te endireita a gravata — e todas as noites, às duas da manhã, alguém liga da Suite Presidencial a pedir champanhe. Levas sempre. E ficas sempre.`);
+    } else {
+      P_.push('Um ano depois, o Ravel Velvet é de vidro e aço, e o turno da noite é uma aplicação. Mas a Victoria guardou o lustre antigo numa casa à beira-mar, onde agora passam os fins de semana.');
+      P_.push(`Às vezes ela olha para ele e diz: «Talvez tivesses razão.» Tu nunca disseste que tinhas. Ela lembra-se na mesma.`);
+    }
+    if (s.flags.victoria_soft) P_.push('Ela continua a nunca perder. Só aprendeu contigo que há coisas em que não vale a pena ganhar — e que não precisa de ser forte quando a porta da suite se fecha.');
+    else P_.push('Ela continua a nunca perder. Só aprendeu contigo que há coisas em que não vale a pena ganhar — e que o amanhecer sabe melhor quando não se está sozinha.');
+  } else if (id === 'luna') {
+    P_.push('No terraço, a Luna tira da mochila dois bilhetes de comboio e um frasco de tinta fluorescente.');
+    P_.push('«Não vou fugir», diz ela. «Vou mudar de sítio. É diferente. Desta vez levo a minha casa comigo.» E pega-te na mão.');
+    if (saved) P_.push('Não precisam de partir para sempre: com o Velvet salvo, o 707 continua à espera deles, com as telas encostadas às paredes e a cama coberta de tinta. Mas primeiro, o mundo.');
+    else P_.push('O Velvet que ela amava vai desaparecer debaixo de andaimes. Ela não chora. Pinta uma última coruja no tapume das obras, com dois corações em vez de olhos.');
+    P_.push('Um ano depois, há corujas de néon em Lisboa, Berlim, Montreal e Istambul. Em todas, escondida num canto, há uma pequena lua — igual à que tens tatuada no pulso, no sítio exato onde ela a pintou pela primeira vez.');
+    P_.push('A Noctua continua anónima. Mas quando os jornalistas lhe perguntam onde fica a casa dela, a Luna responde sempre o mesmo: «Onde estiver a outra metade da tinta.»');
+  } else if (id === 'sophie') {
+    P_.push('Saem para a rua quando a orquestra ainda está a tocar. A Sophie tira os sapatos de salto e caminha descalça pela calçada molhada, a rir-se como quem acabou de se libertar de alguma coisa.');
+    if (s.flags.sophie_brave) P_.push('Depois da Gala, ninguém fala de outra coisa: a rececionista que cantou como uma estrela. Chovem convites. Ela aceita dois e recusa o resto. «Não preciso de todos os palcos», diz-te. «Só dos que escolho.»');
+    else if (s.flags.sophie_safe) P_.push('A Mademoiselle Rouge continua a cantar às quintas-feiras na Sala Escarlate, e tu tens sempre a mesma mesa, ao pé do palco. No fim de cada canção, ela tira a máscara só para ti.');
+    else P_.push('Ela não volta a pensar em cantar. Mas começa, finalmente, a mostrar a quem quer o que escreve — e tu és sempre o primeiro a ler.');
+    P_.push(`Dois anos depois, há um romance nas montras das livrarias chamado «Turno da Noite», de Sophie Duarte. A dedicatória diz apenas: «Para ${n}, que leu a primeira página e ficou para o resto.»`);
+    P_.push('Ela continua a corar quando a elogias. Mas agora, quando cora, puxa-te pela gravata.');
+  } else if (id === 'solitario') {
+    P_.push('Sais pela porta das traseiras enquanto a orquestra toca a última valsa. Lá fora, a Rua das Camélias está molhada outra vez, e o letreiro pulsa por cima de ti como um coração que não é teu.');
+    if (s.flags.walked_away) P_.push('Alguém esperava por ti lá dentro. Sabes isso. Às vezes, ir embora é a única promessa que se consegue cumprir.');
+    const friends = [];
+    if (s.aff.victoria >= 40) friends.push('Semanas depois, chega-te pelo correio um cartão preto da Victoria, com uma oferta de emprego e uma frase escrita à mão: «Ainda tens graça.»');
+    if (s.aff.luna >= 40 && !s.flags.luna_closed && !lunaGone(s)) friends.push('Um dia, aparece uma coruja pequenina pintada na parede em frente à tua casa. Tem um olho violeta e outro verde-água.');
+    if (s.aff.sophie >= 40) friends.push('A Sophie manda-te o primeiro capítulo do livro dela. Há uma personagem secundária muito parecida contigo. É simpática. Não fica com ninguém.');
+    P_.push(...friends);
+    P_.push(saved ? 'O Velvet sobrevive sem ti. Talvez, em parte, por tua causa.' : 'Dezoito meses depois, o Velvet fecha para obras e nunca mais reabre como era. Passas lá à frente às vezes. O lustre já não está lá.');
+    if (CHAR_IDS.some(c => s.flags[c + '_declined'])) P_.push('Algumas portas fecharam-se porque hesitaste. Outras porque escolheste. Nenhuma se fechou sem razão.');
+    P_.push(s.flags.asked_rule3
+      ? 'O Marcel tinha razão: ninguém cumpre a terceira regra. Tu cumpriste. Ainda não sabes se foi uma vitória.'
+      : 'As regras pareciam fáceis às oito da noite. Às quatro da manhã, percebeste o que o Marcel queria dizer.');
+  } else if (id === 'dividido') {
+    P_.push('Na manhã seguinte, o Marcel chama-te ao escritório. Não está zangado. É pior: está desiludido.');
+    P_.push(`«Segunda regra, ${n}: nunca prometas o que não podes cumprir. Disse-to logo na primeira noite.»`);
+    P_.push('Não és despedido. Pedes a demissão antes que seja preciso.');
+    const pr = promisedChars(s);
+    if (pr.includes('victoria')) P_.push('A Victoria assina a compra do Velvet sem olhar para ti uma única vez. O teu nome não aparece em nenhuma ata.');
+    if (pr.includes('luna')) P_.push('O 707 fica vazio ao fim de dois dias. Na porta, uma coruja de néon com o coração rachado.');
+    if (pr.includes('sophie')) P_.push('A Sophie muda-se para o turno da manhã. Quando vais buscar as tuas coisas ao cacifo, encontras lá dentro o caderno vermelho, com as últimas páginas arrancadas.');
+    P_.push('Um ano depois ainda passas, às vezes, pela Rua das Camélias. O letreiro continua a pulsar em vinho e violeta. Não entras. Há hotéis que só se visitam uma vez.');
+  }
+  return P_;
+}
+/* =====================================================================
+   VELVET NIGHTS — interface e fluxo de jogo
+   ===================================================================== */
+
+const PORTRAIT_HTML = '<div class="p-aura"></div><div class="p-hairback"><i></i></div><div class="p-body"><div class="p-chest"></div><div class="p-cloth"></div></div><div class="p-neck"></div><div class="p-front"><div class="p-lock l"></div><div class="p-lock r"></div><div class="p-necklace"></div></div><div class="p-headwrap"><div class="p-ear l"></div><div class="p-ear r"></div><div class="p-skin"></div><div class="p-blush l"></div><div class="p-blush r"></div><div class="p-freckles"></div><div class="p-brow l"></div><div class="p-brow r"></div><div class="p-eye l"><div class="p-ball"><div class="p-iris"></div><div class="p-lid"></div></div></div><div class="p-eye r"><div class="p-ball"><div class="p-iris"></div><div class="p-lid"></div></div></div><div class="p-nose"></div><div class="p-mouth"></div><div class="p-mark"></div><div class="p-hairside"></div><div class="p-hairfront"></div><div class="p-extra"></div></div>';
+const MOODS = ['neutral', 'smile', 'laugh', 'smirk', 'shy', 'surprised', 'sad', 'flirty'];
+function makePortrait(c, mood, animated) {
+  const p = el('div', 'portrait char-' + c + ' mood-' + (MOODS.includes(mood) ? mood : 'neutral'));
+  if (animated) p.classList.add('blink', 'breathe');
+  p.innerHTML = PORTRAIT_HTML;
+  p.dataset.char = c;
+  return p;
+}
+
+const SKYPART = '<div class="sky"></div><div class="stars"></div><div class="city"></div>';
+const BG_HTML = {
+  rua: '<div class="sky"></div><div class="stars"></div><div class="city far"></div><div class="facade"></div><div class="neon-text sign">Velvet</div><div class="street"></div><div class="rain"></div><div class="vignette"></div>',
+  rececao: `<div class="glow"></div><div class="win w1">${SKYPART}</div><div class="win w2">${SKYPART}</div><div class="win w3">${SKYPART}</div><div class="col c1"></div><div class="col c2"></div><div class="chand"></div><div class="desk"></div><div class="vignette"></div>`,
+  bar: '<div class="bokeh"></div><div class="shelf"></div><div class="neon-text sign">Velvet Bar</div><div class="counter"></div><div class="vignette"></div>',
+  terraco: '<div class="sky"></div><div class="stars"></div><div class="moon"></div><div class="city far"></div><div class="city"></div><div class="rail"></div><div class="pool"></div><div class="vignette"></div>',
+  boutique: '<div class="neon-text sign">Boutique Noir</div><div class="shelves"></div><div class="floor"></div><div class="vignette"></div>',
+  funcionarios: '<div class="lockers"></div><div class="lamp"></div><div class="table"></div><div class="vignette"></div>',
+  suite: `<div class="bigwin">${SKYPART}<div class="moon"></div></div><div class="curtain cl"></div><div class="curtain cr"></div><div class="floor"></div><div class="vignette"></div>`,
+  estudio: '<div class="splat"></div><div class="tube t1"></div><div class="tube t2"></div><div class="tube t3"></div><div class="canvas cv1"></div><div class="canvas cv2"></div><div class="canvas cv3"></div><div class="vignette"></div>',
+  escarlate: '<div class="curtains"></div><div class="spot"></div><div class="stage"></div><div class="candles"></div><div class="vignette"></div>',
+  jardim: '<div class="sky"></div><div class="stars"></div><div class="glass"></div><div class="plants"></div><div class="vignette"></div>',
+  gala: '<div class="chand ch1"></div><div class="chand ch2"></div><div class="chand ch3"></div><div class="confetti"></div><div class="floor"></div><div class="vignette"></div>',
+  dia: '<div class="sun"></div><div class="city far"></div><div class="city"></div>'
+};
+function makeBg(id) {
+  const d = el('div', 'loc loc-' + id);
+  d.innerHTML = BG_HTML[id] || '';
+  return d;
+}
+
+/* céu: interpolação de cor ao longo da noite */
+const SKY_KEYS = [
+  [1080, '#2b1a4a', '#ff8a5c', 0], [1170, '#1e1440', '#b8507a', .25], [1260, '#120c2c', '#4a1d5e', .6],
+  [1440, '#07061a', '#1d0e33', 1], [1620, '#060518', '#1a0d30', 1], [1710, '#141236', '#4a2a5e', .6],
+  [1770, '#2a2a5a', '#d98a8a', .2], [1800, '#3d4a7a', '#ffb48a', 0]
+];
+function hex2rgb(h) { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+function mix(a, b, k) { const A = hex2rgb(a), B = hex2rgb(b); return 'rgb(' + A.map((v, i) => Math.round(v + (B[i] - v) * k)).join(',') + ')'; }
+function skyAt(t) {
+  if (t <= SKY_KEYS[0][0]) return SKY_KEYS[0];
+  for (let i = 0; i < SKY_KEYS.length - 1; i++) {
+    const a = SKY_KEYS[i], b = SKY_KEYS[i + 1];
+    if (t >= a[0] && t <= b[0]) { const k = (t - a[0]) / (b[0] - a[0]); return [t, mix(a[1], b[1], k), mix(a[2], b[2], k), a[3] + (b[3] - a[3]) * k]; }
+  }
+  return SKY_KEYS[SKY_KEYS.length - 1];
+}
+
+/* =====================================================================
+   UI
+   ===================================================================== */
+const UI = {
+  bgId: null, charId: null, auto: false, typing: null, pending: null, autoTimer: null, logLines: [], modalStack: 0,
+
+  screen(id) {
+    for (const s of document.querySelectorAll('.screen')) s.classList.toggle('active', s.id === id);
+  },
+  applySettings() {
+    document.body.classList.toggle('large-text', settings.bigText);
+    document.body.classList.toggle('reduce-motion', settings.reduceMotion);
+  },
+
+  /* ---------- cenário ---------- */
+  setBg(id) {
+    const stage = $('#stage');
+    if (this.bgId === id && stage.firstChild) return;
+    this.bgId = id;
+    const old = Array.from(stage.children);
+    const nb = makeBg(id);
+    nb.style.opacity = '0';
+    stage.appendChild(nb);
+    requestAnimationFrame(() => requestAnimationFrame(() => { nb.style.opacity = '1'; }));
+    setTimeout(() => old.forEach(o => o.remove()), settings.reduceMotion ? 0 : 850);
+  },
+  updateSky() {
+    const root = document.documentElement.style;
+    if (!state) return;
+    if (state.phase === 'day') {
+      root.setProperty('--sky1', '#f7c59f'); root.setProperty('--sky2', '#a98bc2'); root.setProperty('--stars', '0');
+      return;
+    }
+    const [, a, b, st] = skyAt(state.time);
+    root.setProperty('--sky1', a); root.setProperty('--sky2', b); root.setProperty('--stars', String(st));
+  },
+
+  /* ---------- personagens ---------- */
+  showChar(c, mood) {
+    const layer = $('#charLayer');
+    const cur = layer.querySelector('.portrait:not(.leaving)');
+    if (cur && cur.dataset.char === c) {
+      MOODS.forEach(m => cur.classList.remove('mood-' + m));
+      cur.classList.add('mood-' + (MOODS.includes(mood) ? mood : 'neutral'));
+      return;
+    }
+    this.hideChar();
+    const p = makePortrait(c, mood, true);
+    p.classList.add('entering');
+    layer.appendChild(p);
+    this.charId = c;
+  },
+  hideChar() {
+    const layer = $('#charLayer');
+    for (const p of layer.querySelectorAll('.portrait:not(.leaving)')) {
+      p.classList.add('leaving');
+      setTimeout(() => p.remove(), settings.reduceMotion ? 0 : 500);
+    }
+    this.charId = null;
+  },
+  setUnmasked(on) {
+    const p = $('#charLayer .portrait.char-sophie:not(.leaving)');
+    if (p) p.classList.toggle('unmasked', on);
+    this.sophieUnmasked = on;
+  },
+
+  /* ---------- HUD ---------- */
+  refreshHud() {
+    if (!state) return;
+    const day = state.phase === 'day';
+    $('#clockTime').textContent = day ? 'Manhã' : fmtTime(state.time);
+    $('#clockDay').textContent = day ? 'Dia ' + state.day : (state.day === GALA_NIGHT ? 'Noite 7 · Gala' : 'Noite ' + state.day + ' de 7');
+    $('#clockOrb').classList.toggle('sun', day);
+    $('#money').textContent = state.money + ' €';
+    this.updateSky();
+  },
+
+  /* ---------- diálogo ---------- */
+  enterDialogue() {
+    $('#game').classList.remove('mode-hub');
+    $('#hub').classList.add('hidden');
+    $('#dayPanel').classList.add('hidden');
+  },
+  leaveDialogue() {
+    this.stopAuto();
+    $('#dialogue').classList.add('hidden');
+    $('#choices').classList.add('hidden');
+    this.pending = null;
+  },
+  showLine(node, cb) {
+    const box = $('#dialogue');
+    box.classList.remove('hidden');
+    $('#choices').classList.add('hidden');
+    const nameEl = $('#dName'), textEl = $('#dText');
+    let name = '', color = '';
+    textEl.className = 'text';
+    if (node.who && CHARS[node.who]) {
+      name = CHARS[node.who].name; color = CHARS[node.who].color;
+      this.showChar(node.who, node.m || 'neutral');
+      if (node.who === 'sophie' && this.sophieUnmasked) this.setUnmasked(true);
+    } else if (node.who === 'marcel') { name = MARCEL.name; color = MARCEL.color; }
+    else if (node.who === 'player') {
+      name = state.name; color = 'var(--c-player)';
+      if (/^\(/.test(node.t)) textEl.classList.add('thought');
+    } else textEl.classList.add('narr');
+    nameEl.textContent = name;
+    nameEl.className = 'name' + (name ? '' : ' narr');
+    nameEl.style.setProperty('--nc', color || 'var(--gold)');
+    const text = fill(node.t);
+    this.log(name || null, text);
+    this.pending = cb;
+    $('#dNext').style.visibility = 'hidden';
+    this.typeText(textEl, text);
+  },
+  typeText(target, text) {
+    if (this.typing) clearInterval(this.typing.timer);
+    const SPEEDS = { slow: 42, normal: 22, fast: 9, instant: 0 };
+    const speed = settings.textSpeed in SPEEDS ? SPEEDS[settings.textSpeed] : 22;
+    if (!speed) { target.textContent = text; this.typing = null; this.lineDone(); return; }
+    target.textContent = '';
+    const t = { full: text, i: 0, timer: null };
+    t.timer = setInterval(() => {
+      t.i += 1;
+      target.textContent = text.slice(0, t.i);
+      if (t.i >= text.length) { clearInterval(t.timer); this.typing = null; this.lineDone(); }
+    }, speed);
+    this.typing = t;
+  },
+  lineDone() {
+    $('#dNext').style.visibility = 'visible';
+    if (this.auto) {
+      const base = { slow: 2600, normal: 1700, fast: 950 }[settings.autoSpeed] || 1700;
+      const len = $('#dText').textContent.length;
+      clearTimeout(this.autoTimer);
+      this.autoTimer = setTimeout(() => this.advance(), base + len * 18);
+    }
+  },
+  advance() {
+    if ($('#dialogue').classList.contains('hidden')) return;
+    if (!$('#modal').classList.contains('hidden')) return;
+    if (this.typing) {
+      clearInterval(this.typing.timer);
+      $('#dText').textContent = this.typing.full;
+      this.typing = null;
+      this.lineDone();
+      return;
+    }
+    clearTimeout(this.autoTimer);
+    const cb = this.pending; this.pending = null;
+    if (cb) cb();
+  },
+  toggleAuto() {
+    this.auto = !this.auto;
+    $('#btnAuto').classList.toggle('on', this.auto);
+    if (this.auto && !this.typing && this.pending) this.lineDone();
+    if (!this.auto) clearTimeout(this.autoTimer);
+  },
+  stopAuto() { clearTimeout(this.autoTimer); },
+  showChoices(opts, cb) {
+    clearTimeout(this.autoTimer);
+    const box = $('#choices');
+    box.innerHTML = '';
+    box.classList.remove('hidden');
+    $('#dNext').style.visibility = 'hidden';
+    opts.forEach((o, i) => {
+      const b = el('button', 'choice');
+      const k = el('span', 'k', (i + 1) + '.');
+      b.appendChild(k);
+      b.appendChild(document.createTextNode(fill(o.t)));
+      const note = typeof o.note === 'function' ? o.note(state) : o.note;
+      if (note) b.appendChild(el('span', 'note', note));
+      b.addEventListener('click', () => {
+        if (box.classList.contains('hidden')) return;
+        box.classList.add('hidden');
+        box.innerHTML = '';
+        cb(o);
+      });
+      box.appendChild(b);
+    });
+    const first = box.querySelector('button');
+    if (first) setTimeout(() => first.focus({ preventScroll: true }), 50);
+  },
+  fadeThrough(cb) {
+    const f = $('#fader');
+    $('#dialogue').classList.add('hidden');
+    if (settings.reduceMotion) { this.hideChar(); cb(); return; }
+    f.classList.add('on');
+    setTimeout(() => { this.hideChar(); setTimeout(() => { f.classList.remove('on'); setTimeout(cb, 500); }, 900); }, 950);
+  },
+  log(who, text) {
+    this.logLines.push({ who, text });
+    if (this.logLines.length > 150) this.logLines.shift();
+  },
+
+  /* ---------- toasts ---------- */
+  toast(msg, type = 'info') {
+    const t = el('div', 'toast ' + type, msg);
+    $('#toasts').appendChild(t);
+    setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 450); }, 2600);
+  },
+
+  /* ---------- modais ---------- */
+  openModal(build, narrow) {
+    const m = $('#modal');
+    m.innerHTML = '';
+    const box = el('div', 'modal-box' + (narrow ? ' narrow' : ''));
+    m.appendChild(box);
+    build(box);
+    m.classList.remove('hidden');
+    clearTimeout(this.autoTimer);
+    const f = box.querySelector('input,button.btn.primary,button');
+    if (f) setTimeout(() => f.focus({ preventScroll: true }), 30);
+  },
+  closeModal() {
+    const m = $('#modal');
+    m.classList.add('hidden');
+    m.innerHTML = '';
+    if (this.auto && this.pending && !this.typing) this.lineDone();
+  },
+  modalHead(box, title) {
+    const h = el('div', 'modal-head');
+    h.appendChild(el('h2', null, title));
+    const x = el('button', 'icon-btn', 'Fechar ✕');
+    x.addEventListener('click', () => this.closeModal());
+    h.appendChild(x);
+    box.appendChild(h);
+  },
+  confirm(title, text, okLabel, onOk, danger) {
+    this.openModal(box => {
+      box.appendChild(el('h2', null, title)).style.cssText = 'font-family:var(--serif);font-weight:400;margin:0 0 .4em';
+      box.appendChild(el('p', null, text));
+      const f = el('div', 'modal-foot');
+      const no = el('button', 'btn', 'Cancelar');
+      no.addEventListener('click', () => this.closeModal());
+      const ok = el('button', 'btn ' + (danger ? 'danger' : 'primary'), okLabel);
+      ok.addEventListener('click', () => { this.closeModal(); onOk(); });
+      f.append(no, ok);
+      box.appendChild(f);
+    }, true);
+  }
+};
+
+/* =====================================================================
+   FLUXO DE JOGO
+   ===================================================================== */
+const Game = {
+  /* ---------- início ---------- */
+  newGame(name) {
+    Engine.abort();
+    state = newState(name);
+    UI.logLines = [];
+    UI.sophieUnmasked = false;
+    UI.bgId = null;
+    UI.screen('game');
+    this.resume();
+  },
+  load(st) {
+    Engine.abort();
+    UI.closeModal();
+    state = st;
+    UI.logLines = [];
+    UI.sophieUnmasked = false;
+    UI.bgId = null;
+    $('#charLayer').innerHTML = '';
+    UI.screen('game');
+    UI.toast('Jogo carregado: ' + slotLabel(st), 'info');
+    this.resume();
+  },
+  resume() {
+    UI.refreshHud();
+    if (state.phase === 'day') { this.showDay(); return; }
+    if (state.day >= GALA_NIGHT) { this.startGala(); return; }
+    UI.setBg(state.loc);
+    if (!state.introDone) {
+      state.loc = 'rececao';
+      Engine.start(SC_INTRO, () => { state.nightIntro = state.day; this.afterAction(); });
+      return;
+    }
+    if (state.nightIntro !== state.day && NIGHT_INTROS[state.day]) {
+      state.nightIntro = state.day;
+      Engine.start([BG(state.loc), HIDE, ...NIGHT_INTROS[state.day]], () => this.afterAction());
+      return;
+    }
+    this.afterAction();
+  },
+
+  /* ---------- cenas e tempo ---------- */
+  runScene(nodes, cost, after) {
+    Engine.start(nodes, () => {
+      if (after) after();
+      state.time += cost;
+      this.afterAction();
+    });
+  },
+  checkMissed(endOfNight) {
+    for (const c of CHAR_IDS) {
+      const inv = state.invites[c];
+      if (!inv) continue;
+      if (inv.day < state.day || (inv.day === state.day && (endOfNight || state.time >= inv.to))) {
+        delete state.invites[c];
+        state.flags[c + '_missed' + inv.n] = true;
+        UI.toast(`Faltaste ao encontro com a ${CHARS[c].name}.`, 'bad');
+        addAff(c, -10);
+      }
+    }
+  },
+  afterAction() {
+    UI.refreshHud();
+    this.checkMissed(false);
+    if (state.time >= NIGHT_END) { this.endNight(); return; }
+    if (state.day === 4 && state.time >= 1440 && !state.flags.blackout_done) {
+      UI.toast('As luzes tremem...', 'info');
+      this.runScene(SC_BLACKOUT, COST.blackout);
+      return;
+    }
+    this.renderHub();
+  },
+
+  /* ---------- hub ---------- */
+  renderHub() {
+    UI.setBg(state.loc);
+    UI.refreshHud();
+    $('#dayPanel').classList.add('hidden');
+    const hub = $('#hub');
+    hub.innerHTML = '';
+    hub.classList.remove('hidden');
+    $('#game').classList.add('mode-hub');
+
+    const here = charsAt(state, state.loc);
+    if (here.length) {
+      const c = here[0];
+      const mood = (c === 'luna' && state.flags.luna_closed) ? 'sad' : state.aff[c] >= 60 ? 'flirty' : state.aff[c] >= 25 ? 'smile' : 'neutral';
+      UI.showChar(c, mood);
+      UI.setUnmasked(false);
+    } else UI.hideChar();
+
+    // Painel do local
+    const p = el('div', 'panel');
+    p.appendChild(el('h3', null, 'Estás em'));
+    p.appendChild(el('h2', null, LOCS[state.loc].name));
+    p.appendChild(el('p', null, LOCS[state.loc].desc));
+    const pres = el('div', 'presence');
+    if (here.length) {
+      for (const c of here) {
+        const t = el('span', 'tag');
+        const d = el('span', 'dot'); d.style.background = CHARS[c].color;
+        t.append(d, document.createTextNode(CHARS[c].name + ' · ' + affLevel(state.aff[c])));
+        pres.appendChild(t);
+      }
+    } else {
+      pres.appendChild(el('span', 'tag', 'Não está aqui ninguém de especial neste momento.'));
+    }
+    p.appendChild(pres);
+    const hint = { bar: 'victoria', terraco: 'luna', rececao: 'sophie' }[state.loc];
+    if (hint && !here.includes(hint)) p.appendChild(el('p', null, CHARS[hint].where));
+
+    const acts = el('div', 'actions');
+    for (const c of here) this.charActions(c, acts);
+    this.placeActions(acts);
+    p.appendChild(acts);
+    hub.appendChild(p);
+
+    // Mapa
+    const mp = el('div', 'panel');
+    mp.appendChild(el('h3', null, `Ir para · ${COST.travel} min`));
+    const grid = el('div', 'map');
+    for (const id of MAP_ORDER) {
+      if (!locUnlocked(state, id)) continue;
+      const b = el('button', 'action');
+      const isHere = id === state.loc;
+      if (isHere) b.classList.add('here');
+      b.appendChild(el('span', 'label', LOCS[id].name));
+      const who = charsAt(state, id);
+      const ce = canEnter(state, id);
+      let sub = isHere ? 'Estás aqui' : (!ce.ok ? ce.why : (who.length ? who.map(c => CHARS[c].name).join(', ') : '—'));
+      b.appendChild(el('span', 'who', sub));
+      b.disabled = isHere || !ce.ok;
+      if (!b.disabled) b.addEventListener('click', () => this.travel(id));
+      grid.appendChild(b);
+    }
+    mp.appendChild(grid);
+    hub.appendChild(mp);
+  },
+  actionButton(label, meta, why, onClick, special) {
+    const b = el('button', 'action' + (special ? ' special' : ''));
+    const left = el('span');
+    left.appendChild(el('span', 'label', label));
+    if (why) left.appendChild(el('span', 'why', why));
+    b.appendChild(left);
+    if (meta) b.appendChild(el('span', 'meta', meta));
+    if (onClick) b.addEventListener('click', onClick); else b.disabled = true;
+    return b;
+  },
+  charActions(c, box) {
+    const name = CHARS[c].name;
+    const closed = c === 'luna' && state.flags.luna_closed;
+    // encontro marcado
+    const inv = state.invites[c];
+    if (inv && inv.loc === state.loc && inv.day === state.day) {
+      if (state.time >= inv.from && state.time < inv.to) {
+        box.appendChild(this.actionButton(`Encontro com a ${name}`, COST.special + ' min', 'O momento que combinaram.', () => this.attend(c), true));
+      } else if (state.time < inv.from) {
+        box.appendChild(this.actionButton(`Encontro com a ${name}`, '', `Marcado para as ${fmtTime(inv.from)}.`, null));
+      }
+    }
+    // conversar
+    if (closed) {
+      box.appendChild(this.actionButton(`Conversar com a ${name}`, '', 'A Luna não te dirige a palavra.', null));
+    } else if (state.talked[c] === state.day) {
+      box.appendChild(this.actionButton(`Conversar com a ${name}`, '', 'Já conversaram esta noite.', null));
+    } else {
+      const confront = c === 'luna' && state.flags.luna_betrayed && !state.flags.luna_confronted;
+      const ch = nextChapter(state, c);
+      const story = confront || !!ch;
+      box.appendChild(this.actionButton(`Conversar com a ${name}`, (story ? COST.story : COST.small) + ' min',
+        confront ? 'Ela parece estar à tua espera. E não parece contente.' : story ? 'Algo de novo pode acontecer entre vocês.' : 'Uma conversa descontraída.',
+        () => this.talk(c), story));
+    }
+    // presente
+    const hasItems = ITEM_IDS.some(i => state.inv[i] > 0);
+    let why = null;
+    if (closed) why = 'Ela não aceita nada vindo de ti.';
+    else if (state.gifted[c] === state.day) why = 'Já lhe ofereceste algo esta noite.';
+    else if (!hasItems) why = 'Não tens presentes. A Boutique Noir vende alguns.';
+    box.appendChild(this.actionButton(`Oferecer um presente à ${name}`, why ? '' : COST.gift + ' min', why, why ? null : () => this.openInventory(c)));
+  },
+  placeActions(box) {
+    const id = state.loc;
+    box.appendChild(this.actionButton('Esperar', COST.wait + ' min', 'Deixar o tempo passar aqui.', () => {
+      state.time += COST.wait;
+      this.afterAction();
+    }));
+    if (id === 'rececao') {
+      box.appendChild(this.actionButton('Atender hóspedes', COST.work + ' min', 'Gorjetas entre 8 € e 18 €.', () => this.work()));
+    } else if (id === 'boutique') {
+      box.appendChild(this.actionButton('Ver a montra', '', 'Comprar presentes.', () => this.openShop()));
+    } else if (id === 'funcionarios') {
+      box.appendChild(this.actionButton('Gravar o jogo', '', 'Escolhe um espaço de gravação.', () => Menus.saveMenu()));
+      box.appendChild(this.actionButton('Terminar o turno mais cedo', '', 'Saltar para o fim da noite.', () => {
+        UI.confirm('Terminar o turno?', 'O resto da noite passa sem ti. Encontros marcados para esta noite serão perdidos.', 'Terminar turno', () => {
+          state.time = Math.max(state.time, NIGHT_END);
+          this.afterAction();
+        });
+      }));
+    }
+  },
+
+  /* ---------- ações ---------- */
+  travel(id) {
+    const ce = canEnter(state, id);
+    if (!ce.ok) { UI.toast(ce.why, 'bad'); return; }
+    state.loc = id;
+    state.time += COST.travel;
+    this.afterAction();
+  },
+  talk(c) {
+    if (state.talked[c] === state.day) return;
+    if (c === 'luna' && state.flags.luna_closed) return;
+    state.talked[c] = state.day;
+    if (c === 'luna' && state.flags.luna_betrayed && !state.flags.luna_confronted) {
+      state.flags.luna_confronted = true;
+      this.runScene(LUNA.confront, COST.story);
+      return;
+    }
+    const ch = nextChapter(state, c);
+    if (ch) {
+      if (ch.invite) this.runScene(CHAPTER_SCENES[c]['inv' + ch.n], COST.story);
+      else this.runScene(CHAPTER_SCENES[c][ch.n], COST.story, () => { state.chap[c] = ch.n; });
+      return;
+    }
+    this.runScene(this.smallTalk(c), COST.small);
+  },
+  smallTalk(c) {
+    const pool = SMALL_TALK[c].map((x, i) => ({ i, nodes: Array.isArray(x) ? x : x.nodes, min: Array.isArray(x) ? 0 : x.min }))
+      .filter(x => state.chap[c] >= x.min);
+    const options = pool.length > 1 ? pool.filter(x => x.i !== state.lastSmall[c]) : pool;
+    const sel = pick(options);
+    state.lastSmall[c] = sel.i;
+    const nodes = [...sel.nodes];
+    const inv = state.invites[c];
+    if (inv) {
+      nodes.push(SAY[c]('smile', `Não te esqueças: ${LOCS[inv.loc].name}, entre as ${fmtTime(inv.from)} e as ${fmtTime(inv.to)}.`));
+    } else {
+      const n = state.chap[c] + 1;
+      const d = CHAPTERS[c][n];
+      if (d && state.day >= d.day && state.aff[c] < d.aff && !state.flags[c + '_declined']) {
+        nodes.push(N('Sentes que ainda há alguma distância entre vocês. Talvez um gesto — ou um presente bem escolhido — ajude.'));
+      } else if (d && state.day < d.day) {
+        nodes.push(N('Há qualquer coisa por dizer entre vocês. Talvez numa próxima noite.'));
+      }
+    }
+    nodes.push(FX(() => addAff(c, 3)));
+    return nodes;
+  },
+  attend(c) {
+    const inv = state.invites[c];
+    if (!inv || inv.loc !== state.loc || !inviteActive(state, c)) return;
+    this.runScene(CHAPTER_SCENES[c][inv.n], COST.special, () => {
+      state.chap[c] = inv.n;
+      delete state.invites[c];
+    });
+  },
+  giveGift(c, item) {
+    if (!state.inv[item] || state.gifted[c] === state.day) return;
+    UI.closeModal();
+    state.inv[item] -= 1;
+    if (state.inv[item] <= 0) delete state.inv[item];
+    state.gifted[c] = state.day;
+    const g = giftScene(c, item);
+    state.known[c][item] = g.reaction;
+    this.runScene([...g.nodes, FX(() => addAff(c, GIFT_VALUE[g.reaction]))], COST.gift);
+  },
+  work() {
+    const tip = 8 + Math.floor(Math.random() * 11);
+    this.runScene([HIDE, N(pick(WORK_LINES)), N(`Ganhas ${tip} € em gorjetas.`), FX(s => { s.tipsTonight += tip; addMoney(tip); })], COST.work);
+  },
+
+  /* ---------- fim da noite e dia ---------- */
+  endNight() {
+    Engine.abort();
+    this.checkMissed(true);
+    state.money += SALARY;
+    state.lastNight = { day: state.day, salary: SALARY, tips: state.tipsTonight };
+    state.tipsTonight = 0;
+    state.phase = 'day';
+    state.time = NIGHT_END;
+    if (writeSlot('auto')) UI.toast('Gravação automática concluída.', 'info');
+    this.showDay();
+  },
+  showDay() {
+    UI.leaveDialogue();
+    UI.hideChar();
+    $('#hub').classList.add('hidden');
+    $('#game').classList.remove('mode-hub');
+    UI.setBg('dia');
+    UI.refreshHud();
+    const panelWrap = $('#dayPanel');
+    panelWrap.innerHTML = '';
+    panelWrap.classList.remove('hidden');
+    const p = el('div', 'panel');
+    p.appendChild(el('h3', null, 'Amanhecer'));
+    p.appendChild(el('h2', null, `Fim da Noite ${state.day}`));
+    p.appendChild(el('p', null, 'O sol nasce por cima dos telhados. Penduras o casaco do uniforme e sais para uma cidade que está só a acordar.'));
+    const sum = el('div', 'summary');
+    const cell = (label, val) => { const d = el('div', 'cell'); d.appendChild(el('b', null, val)); d.appendChild(document.createTextNode(label)); return d; };
+    const ln = state.lastNight || { salary: SALARY, tips: 0 };
+    sum.append(cell('Salário', '+' + ln.salary + ' €'), cell('Gorjetas da noite', ln.tips + ' €'), cell('Dinheiro total', state.money + ' €'));
+    for (const c of CHAR_IDS) sum.appendChild(cell(CHARS[c].name + ' · ' + affLevel(state.aff[c]), '♥ ' + state.aff[c]));
+    p.appendChild(sum);
+
+    const acts = el('div', 'actions');
+    if (state.day >= LAST_FREE_NIGHT) {
+      p.appendChild(el('h3', null, 'Amanhã é a Gala de Veludo'));
+      p.appendChild(el('p', null, 'É a última noite. O que vais vestir?'));
+      const can = state.money >= 50;
+      acts.appendChild(this.actionButton('Alugar um smoking elegante', '50 €', can ? 'Causa boa impressão a quem já te conhece.' : 'Não tens dinheiro suficiente.', can ? () => this.chooseDay('tux') : null));
+      acts.appendChild(this.actionButton('Usar o uniforme do hotel', '', 'Quem trabalha cá veste a casa.', () => this.chooseDay('uniform')));
+    } else {
+      p.appendChild(el('h3', null, 'Como passas o dia?'));
+      acts.appendChild(this.actionButton('Descansar até tarde', '', 'Começas a próxima noite às 19:00 — uma hora extra de turno.', () => this.chooseDay('rest')));
+      acts.appendChild(this.actionButton('Turno extra na pastelaria', '+35 €', 'Chegas cansado: só começas às 21:00.', () => this.chooseDay('work')));
+      acts.appendChild(this.actionButton('Passear pela cidade', '', 'Talvez encontres algo pelo caminho. Começas às 20:00.', () => this.chooseDay('city')));
+    }
+    p.appendChild(acts);
+    panelWrap.appendChild(p);
+  },
+  chooseDay(opt) {
+    if (state.phase !== 'day') return;
+    if (opt === 'tux') {
+      if (state.money < 50) return;
+      state.money -= 50;
+      state.flags.tux = true;
+      for (const c of CHAR_IDS) if (state.chap[c] >= 2 && !(c === 'luna' && state.flags.luna_closed)) addAff(c, 3);
+    } else if (opt === 'uniform') {
+      state.flags.uniform = true;
+    } else if (opt === 'rest') {
+      state.nextStart = 1140;
+    } else if (opt === 'work') {
+      state.nextStart = 1260;
+      addMoney(35);
+    } else if (opt === 'city') {
+      state.nextStart = 1200;
+      const found = pick(['rosa', 'chocolate', 'poesia', 'pinceis', 'vinil']);
+      if (addItem(found)) UI.toast(`Encontraste: ${ITEMS[found].icon} ${ITEMS[found].name}`, 'good');
+      else { addMoney(10); UI.toast('Já não cabia mais nada na mochila.', 'info'); }
+    }
+    state.day += 1;
+    state.phase = 'night';
+    state.time = state.day >= GALA_NIGHT ? 1260 : state.nextStart;
+    state.loc = 'rececao';
+    $('#dayPanel').classList.add('hidden');
+    writeSlot('auto');
+    this.resume();
+  },
+
+  /* ---------- Gala e final ---------- */
+  startGala() {
+    state.loc = 'rececao';
+    state.ending = null;
+    UI.refreshHud();
+    Engine.start(galaScene(), () => this.showEnding(state.ending || 'solitario'));
+  },
+  showEnding(id) {
+    if (!ENDINGS[id]) id = 'solitario';
+    unlockEnding(id);
+    UI.hideChar();
+    const bgMap = { victoria: 'suite', luna: 'terraco', sophie: 'jardim', solitario: 'rua', dividido: 'rua' };
+    const bg = $('#endBg');
+    bg.className = 'end-bg';
+    bg.innerHTML = '';
+    bg.appendChild(makeBg(bgMap[id]));
+    document.documentElement.style.setProperty('--sky1', '#2a2a5a');
+    document.documentElement.style.setProperty('--sky2', '#d98a8a');
+    document.documentElement.style.setProperty('--stars', '.3');
+    $('#endKicker').textContent = 'Final ' + (Object.keys(ENDINGS).indexOf(id) + 1) + ' de ' + Object.keys(ENDINGS).length;
+    $('#endTitle').textContent = ENDINGS[id].title;
+    const tx = $('#endText');
+    tx.innerHTML = '';
+    endingText(id, state).forEach((para, i) => {
+      const pEl = el('p', null, para);
+      pEl.style.animationDelay = (i * 0.25) + 's';
+      tx.appendChild(pEl);
+    });
+    UI.screen('ending');
+    $('#ending').scrollTop = 0;
+  }
+};
+
+/* =====================================================================
+   MENUS E MODAIS
+   ===================================================================== */
+const Menus = {
+  storageWarning(box) {
+    if (!Store.ok) box.appendChild(el('p', 'err', 'O armazenamento local não está disponível neste navegador (modo privado ou bloqueado). Não é possível gravar nem carregar.'));
+  },
+  newGameDialog() {
+    UI.openModal(box => {
+      UI.modalHead(box, 'Nova história');
+      box.appendChild(el('p', null, 'Como te chamas? É o nome pelo qual as personagens te vão tratar.'));
+      const inp = el('input', 'input');
+      inp.maxLength = 16; inp.placeholder = 'Alex'; inp.autocomplete = 'off';
+      inp.setAttribute('aria-label', 'Nome do jogador');
+      box.appendChild(inp);
+      const err = el('div', 'err');
+      box.appendChild(err);
+      const auto = readSlot('auto');
+      if (auto.state) box.appendChild(el('p', null, 'Nota: a gravação automática atual será substituída no fim da primeira noite.'));
+      const f = el('div', 'modal-foot');
+      const cancel = el('button', 'btn', 'Cancelar');
+      cancel.addEventListener('click', () => UI.closeModal());
+      const go = el('button', 'btn primary', 'Começar');
+      const start = () => {
+        const name = (inp.value.trim() || 'Alex').replace(/\s+/g, ' ');
+        if (name.length > 16) { err.textContent = 'O nome pode ter no máximo 16 caracteres.'; return; }
+        if (!/^[\p{L}\p{N}][\p{L}\p{N} '\-.]*$/u.test(name)) { err.textContent = 'Usa apenas letras, números, espaços, hífens ou apóstrofos.'; return; }
+        UI.closeModal();
+        Game.newGame(name);
+      };
+      go.addEventListener('click', start);
+      inp.addEventListener('keydown', e => { if (e.key === 'Enter') start(); });
+      f.append(cancel, go);
+      box.appendChild(f);
+    }, true);
+  },
+  slotRow(id, mode, rerender) {
+    const r = readSlot(id);
+    const row = el('div', 'row');
+    const g = el('div', 'grow');
+    g.appendChild(el('div', 'title', id === 'auto' ? 'Gravação automática' : 'Espaço ' + id));
+    let desc = 'Vazio';
+    if (r.corrupt) desc = 'Gravação corrompida ou incompatível.';
+    else if (r.state) desc = slotLabel(r.state) + ' · ' + r.state.name + (r.savedAt ? ' · ' + new Date(r.savedAt).toLocaleString('pt-PT') : '');
+    g.appendChild(el('div', 'desc', desc));
+    row.appendChild(g);
+    const btns = el('div', 'btns');
+    if (mode === 'save' && id !== 'auto') {
+      const b = el('button', 'btn small primary', 'Gravar aqui');
+      b.disabled = !Store.ok;
+      b.addEventListener('click', () => {
+        const doSave = () => {
+          if (writeSlot(id)) UI.toast('Jogo gravado no espaço ' + id + '.', 'good');
+          else UI.toast('Não foi possível gravar (armazenamento indisponível ou cheio).', 'bad');
+          rerender();
+        };
+        if (r.state || r.corrupt) UI.confirm('Substituir gravação?', 'O espaço ' + id + ' já tem uma gravação. Queres substituí-la?', 'Substituir', () => { doSave(); Menus.saveMenu(); });
+        else doSave();
+      });
+      btns.appendChild(b);
+    }
+    if (mode === 'load') {
+      const b = el('button', 'btn small primary', 'Carregar');
+      b.disabled = !r.state;
+      b.addEventListener('click', () => {
+        const fresh = readSlot(id);
+        if (!fresh.state) { UI.toast('Esta gravação já não existe ou está corrompida.', 'bad'); rerender(); return; }
+        const go = () => Game.load(fresh.state);
+        if (state && $('#game').classList.contains('active')) UI.confirm('Carregar jogo?', 'O progresso não gravado desta sessão será perdido.', 'Carregar', go);
+        else go();
+      });
+      btns.appendChild(b);
+    }
+    if (r.state || r.corrupt) {
+      const d = el('button', 'btn small danger', 'Apagar');
+      d.addEventListener('click', () => UI.confirm('Apagar gravação?', 'Esta ação não pode ser desfeita.', 'Apagar', () => {
+        Store.del(KEYS.slot(id)); UI.toast('Gravação apagada.', 'info');
+        if (mode === 'save') Menus.saveMenu(); else Menus.loadMenu();
+        refreshMenu();
+      }, true));
+      btns.appendChild(d);
+    }
+    row.appendChild(btns);
+    return row;
+  },
+  saveMenu() {
+    if (Engine.running) { UI.toast('Não é possível gravar a meio de um diálogo.', 'bad'); return; }
+    const build = box => {
+      UI.modalHead(box, 'Gravar jogo');
+      this.storageWarning(box);
+      const list = el('div', 'list');
+      for (const id of ['1', '2', '3']) list.appendChild(this.slotRow(id, 'save', () => this.saveMenu()));
+      box.appendChild(list);
+      box.appendChild(el('p', null, 'O jogo também grava automaticamente no fim de cada noite e ao começar a seguinte.'));
+    };
+    UI.openModal(build);
+  },
+  loadMenu() {
+    UI.openModal(box => {
+      UI.modalHead(box, 'Carregar jogo');
+      this.storageWarning(box);
+      const list = el('div', 'list');
+      for (const id of SLOTS) list.appendChild(this.slotRow(id, 'load', () => this.loadMenu()));
+      box.appendChild(list);
+    });
+  },
+  settingsMenu() {
+    const seg = (label, key, opts) => {
+      const row = el('div', 'setting');
+      row.appendChild(el('span', null, label));
+      const s = el('div', 'seg');
+      for (const [val, text] of opts) {
+        const b = el('button', settings[key] === val ? 'on' : '', text);
+        b.addEventListener('click', () => { settings[key] = val; saveSettings(); UI.applySettings(); this.settingsMenu(); });
+        s.appendChild(b);
+      }
+      row.appendChild(s);
+      return row;
+    };
+    UI.openModal(box => {
+      UI.modalHead(box, 'Configurações');
+      box.appendChild(seg('Velocidade do texto', 'textSpeed', [['slow', 'Lenta'], ['normal', 'Normal'], ['fast', 'Rápida'], ['instant', 'Instantânea']]));
+      box.appendChild(seg('Avanço automático', 'autoSpeed', [['slow', 'Lento'], ['normal', 'Normal'], ['fast', 'Rápido']]));
+      box.appendChild(seg('Tamanho do texto', 'bigText', [[false, 'Normal'], [true, 'Grande']]));
+      box.appendChild(seg('Animações', 'reduceMotion', [[false, 'Ativadas'], [true, 'Reduzidas']]));
+      box.appendChild(seg('Mostrar alterações de afinidade', 'showAff', [[true, 'Sim'], [false, 'Não']]));
+      const row = el('div', 'setting');
+      row.appendChild(el('span', null, 'Apagar gravações, finais e configurações'));
+      const b = el('button', 'btn small danger', 'Apagar tudo');
+      b.addEventListener('click', () => UI.confirm('Apagar todos os dados?', 'Todas as gravações, finais desbloqueados e configurações serão apagados deste navegador.', 'Apagar tudo', () => {
+        for (const id of SLOTS) Store.del(KEYS.slot(id));
+        Store.del(KEYS.endings); Store.del(KEYS.settings);
+        settings = Object.assign({}, DEFAULT_SETTINGS); UI.applySettings();
+        UI.toast('Dados apagados.', 'info'); refreshMenu();
+      }, true));
+      row.appendChild(b);
+      box.appendChild(row);
+      this.storageWarning(box);
+      box.appendChild(el('p', null, 'Atalhos: Espaço/Enter avança o texto · 1–4 escolhem opções · Esc abre o menu.'));
+    });
+  },
+  pauseMenu() {
+    if (!state) return;
+    UI.openModal(box => {
+      UI.modalHead(box, 'Menu');
+      const list = el('div', 'list');
+      const item = (label, desc, fn, disabled) => {
+        const b = el('button', 'action');
+        const l = el('span'); l.appendChild(el('span', 'label', label)); if (desc) l.appendChild(el('span', 'why', desc));
+        b.appendChild(l);
+        b.disabled = !!disabled;
+        if (!disabled) b.addEventListener('click', fn);
+        list.appendChild(b);
+      };
+      item('Retomar', null, () => UI.closeModal());
+      item('Gravar', Engine.running ? 'Disponível fora dos diálogos.' : (Store.ok ? null : 'Armazenamento indisponível.'), () => this.saveMenu(), Engine.running || !Store.ok);
+      item('Carregar', null, () => this.loadMenu());
+      item('Histórico de diálogo', null, () => this.logMenu());
+      item('Configurações', null, () => this.settingsMenu());
+      item('Reiniciar a história', 'Recomeça da primeira noite com o mesmo nome.', () => UI.confirm('Reiniciar a história?', 'Vais voltar à primeira noite. O progresso não gravado será perdido.', 'Reiniciar', () => Game.newGame(state.name), true));
+      item('Voltar ao menu inicial', 'O progresso não gravado será perdido.', () => UI.confirm('Voltar ao menu inicial?', 'O progresso não gravado desde a última gravação será perdido.', 'Sair', () => goMenu()));
+      box.appendChild(list);
+    }, true);
+  },
+  logMenu() {
+    UI.openModal(box => {
+      UI.modalHead(box, 'Histórico');
+      if (!UI.logLines.length) box.appendChild(el('p', null, 'Ainda não há diálogo nesta sessão.'));
+      const wrap = el('div');
+      for (const l of UI.logLines) {
+        const d = el('div', 'log-line');
+        if (l.who) { d.appendChild(el('b', null, l.who + ': ')); }
+        d.appendChild(document.createTextNode(l.text));
+        wrap.appendChild(d);
+      }
+      box.appendChild(wrap);
+      setTimeout(() => { box.scrollTop = box.scrollHeight; }, 20);
+    });
+  },
+  relMenu() {
+    if (!state) return;
+    UI.openModal(box => {
+      UI.modalHead(box, 'Relações');
+      const list = el('div', 'list');
+      for (const c of CHAR_IDS) {
+        const ch = CHARS[c];
+        const card = el('div', 'rel-card');
+        const mini = el('div', 'mini');
+        const mood = (c === 'luna' && state.flags.luna_closed) ? 'sad' : state.aff[c] >= 60 ? 'flirty' : state.aff[c] >= 25 ? 'smile' : 'neutral';
+        mini.appendChild(makePortrait(c, mood, false));
+        card.appendChild(mini);
+        const info = el('div');
+        info.appendChild(el('h4', null, ch.full + ', ' + ch.age));
+        info.appendChild(el('div', 'role', ch.role));
+        const bar = el('div', 'bar'); const fillb = el('i'); fillb.style.width = state.aff[c] + '%'; fillb.style.background = ch.color; bar.appendChild(fillb);
+        info.appendChild(bar);
+        const meta = el('div', 'rel-meta');
+        meta.append(el('span', null, 'Afinidade: ' + state.aff[c] + '/100'), el('span', null, affLevel(state.aff[c])));
+        info.appendChild(meta);
+        const dots = el('div', 'chap-dots');
+        dots.title = 'Capítulos da história';
+        for (let i = 1; i <= 5; i++) { const d = el('i', i <= state.chap[c] ? 'on' : ''); if (i <= state.chap[c]) d.style.background = ch.color; dots.appendChild(d); }
+        info.appendChild(dots);
+        info.appendChild(el('p', 'bio', ch.bio.slice(0, state.chap[c] + 1).join(' ')));
+        const status = [];
+        if (state.flags['promise_' + c]) status.push('Prometeste-lhe o teu coração.');
+        if (state.flags[c + '_declined']) status.push('Ficaram apenas amigos.');
+        if (c === 'luna' && state.flags.luna_closed) status.push('A Luna deixou de falar contigo.');
+        else if (c === 'luna' && state.flags.luna_betrayed && !state.flags.luna_forgiven) status.push('Contaste o segredo dela à Victoria.');
+        if (status.length) info.appendChild(el('div', 'invite', status.join(' ')));
+        const inv = state.invites[c];
+        if (inv) info.appendChild(el('div', 'invite', `✦ Encontro: ${LOCS[inv.loc].name}, ${fmtTime(inv.from)}–${fmtTime(inv.to)} (Noite ${inv.day}).`));
+        const known = Object.keys(state.known[c]);
+        info.appendChild(el('div', 'likes', known.length ? 'Gostos descobertos: ' + known.map(i => ITEMS[i].name + ' (' + REACTION_LABEL[state.known[c][i]] + ')').join(', ') + '.' : 'Ainda não sabes do que gosta. Experimenta oferecer-lhe algo.'));
+        info.appendChild(el('div', 'likes', ch.where));
+        card.appendChild(info);
+        list.appendChild(card);
+      }
+      box.appendChild(list);
+    });
+  },
+  inventory(giftTo) {
+    if (!state) return;
+    UI.openModal(box => {
+      UI.modalHead(box, giftTo ? 'Oferecer à ' + CHARS[giftTo].name : 'Inventário');
+      const list = el('div', 'list');
+      const owned = ITEM_IDS.filter(i => state.inv[i] > 0);
+      if (!owned.length) box.appendChild(el('p', null, 'Não tens nada. A Boutique Noir, ao pé do elevador, vende presentes das 18:00 às 03:00.'));
+      for (const i of owned) {
+        const it = ITEMS[i];
+        const row = el('div', 'row');
+        row.appendChild(el('div', 'ico', it.icon));
+        const g = el('div', 'grow');
+        g.appendChild(el('div', 'title', it.name + ' × ' + state.inv[i]));
+        let d = it.desc;
+        if (giftTo && state.known[giftTo][i]) d += ' · Ela ' + REACTION_LABEL[state.known[giftTo][i]] + ' disto.';
+        g.appendChild(el('div', 'desc', d));
+        row.appendChild(g);
+        if (giftTo) {
+          const b = el('button', 'btn small primary', 'Oferecer');
+          b.addEventListener('click', () => Game.giveGift(giftTo, i));
+          row.appendChild(b);
+        }
+        list.appendChild(row);
+      }
+      box.appendChild(list);
+    });
+  },
+  shop() {
+    const build = box => {
+      UI.modalHead(box, 'Boutique Noir');
+      box.appendChild(el('p', null, `Tens ${state.money} €. Comprar não gasta tempo. Podes levar até 9 unidades de cada artigo.`));
+      const list = el('div', 'list');
+      for (const i of ITEM_IDS) {
+        const it = ITEMS[i];
+        const row = el('div', 'row');
+        row.appendChild(el('div', 'ico', it.icon));
+        const g = el('div', 'grow');
+        g.appendChild(el('div', 'title', it.name + ' · ' + it.price + ' €'));
+        g.appendChild(el('div', 'desc', it.desc + (state.inv[i] ? ` (Tens ${state.inv[i]}.)` : '')));
+        row.appendChild(g);
+        const b = el('button', 'btn small primary', 'Comprar');
+        const full = (state.inv[i] || 0) >= 9;
+        b.disabled = state.money < it.price || full;
+        if (full) b.title = 'Já tens o máximo.'; else if (state.money < it.price) b.title = 'Dinheiro insuficiente.';
+        b.addEventListener('click', () => {
+          if (state.money < it.price || (state.inv[i] || 0) >= 9) return;
+          state.money -= it.price;
+          addItem(i);
+          UI.toast(`Compraste: ${it.icon} ${it.name} (−${it.price} €)`, 'good');
+          UI.refreshHud();
+          UI.openModal(build);
+        });
+        row.appendChild(b);
+        list.appendChild(row);
+      }
+      box.appendChild(list);
+    };
+    UI.openModal(build);
+  },
+  endingsMenu() {
+    UI.openModal(box => {
+      UI.modalHead(box, 'Finais desbloqueados');
+      const got = getEndings();
+      box.appendChild(el('p', null, `${got.filter(x => ENDINGS[x]).length} de ${Object.keys(ENDINGS).length} finais descobertos.`));
+      const grid = el('div', 'ending-grid');
+      for (const id of Object.keys(ENDINGS)) {
+        const on = got.includes(id);
+        const card = el('div', 'ending-card' + (on ? ' on' : ''));
+        card.appendChild(el('h4', null, on ? ENDINGS[id].title : '???'));
+        card.appendChild(el('p', null, on ? ENDINGS[id].teaser : 'Por descobrir.'));
+        grid.appendChild(card);
+      }
+      box.appendChild(grid);
+    });
+  }
+};
+Game.openInventory = c => Menus.inventory(c);
+Game.openShop = () => {
+  if (!canEnter(state, 'boutique').ok) { UI.toast('A boutique está fechada.', 'bad'); return; }
+  Menus.shop();
+};
+
+/* =====================================================================
+   MENU INICIAL E ARRANQUE
+   ===================================================================== */
+function refreshMenu() {
+  const last = latestSave();
+  const btn = $('#btnContinue');
+  btn.disabled = !last;
+  $('#continueSub').textContent = last ? '· ' + slotLabel(last.state) : '· sem gravações';
+}
+function goMenu() {
+  Engine.abort();
+  UI.closeModal();
+  UI.leaveDialogue();
+  $('#hub').classList.add('hidden');
+  $('#dayPanel').classList.add('hidden');
+  $('#charLayer').innerHTML = '';
+  state = null;
+  refreshMenu();
+  UI.screen('menu');
+}
+
+function init() {
+  loadSettings();
+  UI.applySettings();
+  // fundo e retratos do menu
+  $('#menuBg').innerHTML = BG_HTML.rua;
+  const mp = $('#menuPortraits');
+  ['victoria', 'luna', 'sophie'].forEach((c, i) => mp.appendChild(makePortrait(c, ['smirk', 'flirty', 'shy'][i], true)));
+  refreshMenu();
+  if (!Store.ok) setTimeout(() => UI.toast('Aviso: o armazenamento local está indisponível — não será possível gravar.', 'bad'), 400);
+
+  $('#btnNew').addEventListener('click', () => Menus.newGameDialog());
+  $('#btnContinue').addEventListener('click', () => {
+    const last = latestSave();
+    if (!last) { UI.toast('Não existem gravações válidas.', 'bad'); refreshMenu(); return; }
+    Game.load(last.state);
+  });
+  $('#btnLoad').addEventListener('click', () => Menus.loadMenu());
+  $('#btnSettings').addEventListener('click', () => Menus.settingsMenu());
+  $('#btnEndings').addEventListener('click', () => Menus.endingsMenu());
+  $('#btnRel').addEventListener('click', () => Menus.relMenu());
+  $('#btnInv').addEventListener('click', () => Menus.inventory(null));
+  $('#btnPause').addEventListener('click', () => Menus.pauseMenu());
+  $('#btnLog').addEventListener('click', e => { e.stopPropagation(); Menus.logMenu(); });
+  $('#btnAuto').addEventListener('click', e => { e.stopPropagation(); UI.toggleAuto(); });
+  $('#dialogue').addEventListener('click', () => UI.advance());
+  $('#btnEndMenu').addEventListener('click', () => goMenu());
+  $('#btnEndNew').addEventListener('click', () => { goMenu(); Menus.newGameDialog(); });
+  $('#modal').addEventListener('click', e => { if (e.target.id === 'modal') UI.closeModal(); });
+
+  document.addEventListener('keydown', e => {
+    const modalOpen = !$('#modal').classList.contains('hidden');
+    if (e.key === 'Escape') {
+      if (modalOpen) { UI.closeModal(); return; }
+      if ($('#game').classList.contains('active')) Menus.pauseMenu();
+      return;
+    }
+    if (modalOpen) return;
+    if (!$('#game').classList.contains('active')) return;
+    const choices = $('#choices');
+    if (!choices.classList.contains('hidden')) {
+      const n = parseInt(e.key, 10);
+      if (n >= 1 && n <= 9) { const b = choices.querySelectorAll('button')[n - 1]; if (b) { e.preventDefault(); b.click(); } }
+      return;
+    }
+    if ((e.key === ' ' || e.key === 'Enter') && !$('#dialogue').classList.contains('hidden')) {
+      if (document.activeElement && document.activeElement.closest && document.activeElement.closest('.dctrl')) return;
+      e.preventDefault();
+      UI.advance();
+    }
+  });
+  window.addEventListener('error', ev => { UI.toast('Ocorreu um erro inesperado: ' + (ev.message || 'desconhecido'), 'bad'); });
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
